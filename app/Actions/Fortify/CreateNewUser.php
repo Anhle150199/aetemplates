@@ -26,10 +26,13 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['required', 'accepted'] : '',
         ])->validate();
+        $avatarDefault = ['avatar1.png', 'avatar2.png', 'avatar3.png'];
+        $avatar = $avatarDefault[array_rand($avatarDefault)];
 
         return User::create([
             'name' => $input['name'],
             'email' => $input['email'],
+            'profile_photo_path' => $avatar,
             'password' => Hash::make($input['password']),
         ]);
     }
