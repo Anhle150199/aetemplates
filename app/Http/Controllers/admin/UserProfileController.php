@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
+class UserProfileController extends Controller
 {
 
     public function updateProfile(Request $request)

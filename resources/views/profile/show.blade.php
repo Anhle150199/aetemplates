@@ -3,8 +3,24 @@
 @section('content')
     <!-- Header -->
     <!-- Header -->
-    <div class="header pb-6 bg-primary" style="min-height: 150px; ">
+    <div class="header pb-6 bg-primary">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <h6 class="h2 text-white d-inline-block mb-0">{{ config('app.name') }}</h6>
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item"><a href="#"><i class="fa fa-users"></i></a></li>
+                                <li class="breadcrumb-item"><a href="#">Users</a></li>
+                                <li class="breadcrumb-item"><a href="#"> Profile </a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
 
+            </div>
+        </div>
     </div>
     <!-- Page content -->
     <div class="container-fluid mt--6">
@@ -293,7 +309,7 @@
                                                         class="w-8 h-8 text-gray-500" style="width:2rem;">
                                                         <path
                                                             d=" M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2
-                                                                        0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                                                            0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
                                                         </path>
                                                     </svg>
                                                 @else
@@ -321,7 +337,7 @@
 
                                                         @if ($session->is_current_device)
                                                             <span
-                                                                class="text-green-500 font-semibold">{{ __('This device') }}</span>
+                                                                class="text-success font-semibold">{{ __('This device') }}</span>
                                                         @else
                                                             {{ __('Last active') }} {{ $session->last_active }}
                                                         @endif
@@ -335,6 +351,20 @@
 
                         </div>
                     </div>
+                </div>
+                {{-- Delete Account --}}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h3 class="mb-0">Delete Account </h3>
+                            </div>
+                            <div class="col-4 text-right">
+                                <button type="submit" class="btn btn-sm btn-danger">Delete Account</a>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
