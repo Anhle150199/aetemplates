@@ -18,15 +18,17 @@
                             <div class="card-profile-image">
                                 <a href="#">
                                     <img src="{{ url('/') }}/img/avatar/{{ Auth::user()->profile_photo_path }}"
-                                        class="rounded-circle">
+                                        class="rounded-circle" id="avatar">
                                 </a>
                             </div>
                         </div>
                     </div>
                     <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                         <div class="d-flex justify-content-between">
-                            {{-- <a href="#" class="btn btn-sm btn-info mr-4">Connect</a>
-                            <a href="#" class="btn btn-sm btn-default float-right">Message</a> --}}
+                            {{-- <a href="#" class="btn btn-sm btn-info mr-4"></a> --}}
+                            <button class="btn btn-sm btn-default float-right" style="margin: auto;margin-top: 20px;"
+                                id="btn-upload-avatar">Upload avatar</button>
+                            <input type="file" hidden id="input-avatar" accept="image/*">
                         </div>
                     </div>
                     <div class="card-body pt-0">
@@ -49,18 +51,18 @@
                             </div>
                         </div>
                         <div class="text-center">
-                            <h5 class="h3">
+                            <h5 class="h3" id="name-user">
                                 {{ Auth::user()->name }}
                             </h5>
                             <div class="h5 font-weight-300">
                                 {{ Auth::user()->user_role }}
                             </div>
-                            <!-- <div class="h5 mt-4">
-                                                                                                    <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
-                                                                                                </div>
-                                                                                                <div>
-                                                                                                    <i class="ni education_hat mr-2"></i>University of Computer Science
-                                                                                                </div> -->
+                            {{-- <div class="h5 mt-4">
+                                <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
+                            </div>
+                            <div>
+                                <i class="ni education_hat mr-2"></i>University of Computer Science
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -253,7 +255,6 @@
                                                 Password</label>
                                             <input type="password" id="password_confirmation" class="form-control"
                                                 name="password_confirmation">
-                                            <x-jet-input-error for="password_confirmation" class="mt-2" />
                                             <p class="text-danger" id="error-password-confirmation"></p>
                                         </div>
                                     </div>
@@ -263,10 +264,90 @@
                         </div>
                     </form>
                 </div>
+                {{-- Manage Session --}}
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h3 class="mb-0">Browser Sessions </h3>
+                            </div>
+                            <div class="col-4 text-right">
+                                <button type="submit" class="btn btn-sm btn-warning">
+                                    Log Out Other Browser Sessions </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="pl-lg-4">
+                            <p class="text-success" id="info-success"></p>
+                            @if (count($sessions) > 0)
+                                <div class="space-y-6">
+                                    <!-- Other Browser Sessions -->
+                                    @foreach ($sessions as $session)
+                                        <div class="row items-center">
+                                            <div>
+                                                @if ($session->agent['is_desktop'])
+                                                    <svg fill="none" stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"
+                                                        class="w-8 h-8 text-gray-500" style="width:2rem;">
+                                                        <path
+                                                            d=" M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2
+                                                                        0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                                        </path>
+                                                    </svg>
+                                                @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                        stroke-width="2" stroke="currentColor" fill="none"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="w-8 h-8 text-gray-500" style="width:24px;">
+
+                                                        <path d="M0 0h24v24H0z" stroke="none"></path>
+                                                        <rect x="7" y="4" width="10" height="16" rx="1"></rect>
+                                                        <path d="M11 5h2M12 17v.01"></path>
+                                                    </svg>
+                                                @endif
+                                            </div>
+                                            <div class="ml-3">
+                                                <div class="text-sm text-gray-600">
+                                                    {{ $session->agent['platform'] ? $session->agent['platform'] : 'Unknown' }}
+                                                    -
+                                                    {{ $session->agent['browser'] ? $session->agent['browser'] : 'Unknown' }}
+                                                </div>
+
+                                                <div>
+                                                    <div class="text-xs text-gray-500">
+                                                        {{ $session->ip_address }},
+
+                                                        @if ($session->is_current_device)
+                                                            <span
+                                                                class="text-green-500 font-semibold">{{ __('This device') }}</span>
+                                                        @else
+                                                            {{ __('Last active') }} {{ $session->last_active }}
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    <style>
+        p {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+    </style>
     <script>
+        // Update info user
         $('#updateInfo').on('submit', function(e) {
             e.preventDefault();
             $.ajaxSetup({
@@ -287,6 +368,8 @@
                 dataType: 'json',
                 success: function(data) {
                     $('#info-success').text(data.msg);
+                    $('#name-user-topnav').text(data.name);
+                    $('#name-user').text(data.name);
                     $('#error-name').text("");
                     $('#error-email').text("");
 
@@ -312,6 +395,7 @@
             return false;
         });
 
+        // Update password
         $('#updatePassword').on('submit', function(e) {
             e.preventDefault();
             $.ajaxSetup({
@@ -341,29 +425,78 @@
                 error: function(data) {
                     console.log(data);
                     let errors = data.responseJSON.errors;
-                    // $('#password-success').text("");
-                    // if (errors.current_password) {
-                    //     $('#error-current-password').text(errors.current - password);
-                    // }
-                    // if (errors.password) {
-                    //     $('#error-password').text(errors.password);
-                    // }
-                    // if (errors.password_confirmation) {
-                    //     $('#error-password-confirmation').text(errors.password - confirmation);
-                    // }
-                    // setTimeout(function() {
-                    //     $('#error-current-password').text("");
-                    //     $('#error-password').text("");
-                    //     $('#error-password-confirmation').text("");
-                    // }, 5000);
+                    $('#password-success').text("");
+                    if (errors.current_password) {
+                        $('#error-current-password').text(errors.current_password);
+                    }
+                    if (errors.password) {
+                        $('#error-password').text(errors.password);
+                    }
+                    if (errors.password_confirmation) {
+                        $('#error-password-confirmation').text(errors.password_confirmation);
+                    }
+                    setTimeout(function() {
+                        $('#error-current-password').text("");
+                        $('#error-password').text("");
+                        $('#error-password-confirmation').text("");
+                    }, 5000);
                     console.log(errors);
                 }
             });
             return false;
         });
 
-        function emptyText(e) {
-            e.text("xxx");
+        // upload avatar
+        $('#btn-upload-avatar').click(function() {
+            $('#input-avatar').click();
+        });
+        $('#input-avatar').change(() => {
+            let match = ["image/gif", "image/png", "image/jpg", "image/jpeg"];
+            let file_data = $('#input-avatar').prop('files')[0];
+
+            if (!match.includes(file_data.type)) {
+                $("#photo").val("");
+                alert("Error: File isn't image!!!");
+                return
+            }
+
+            let file = $("#input-avatar")[0].files;
+            sentFileMedia(file);
+        })
+
+        // sent image with ajax
+        const sentFileMedia = (file) => {
+            let fd = new FormData();
+
+            if (file.length > 0) {
+                fd.append('file', file[0]);
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                let request = $.ajax({
+                    url: '/user/update-avatar',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                });
+                request.done(function(msg) {
+                    domain = window.location.origin;
+                    $('#avatar').attr("src", domain + msg.image)
+                    $('#avatar-topvar').attr("src", domain + msg.image)
+                    alert(msg.msg);
+                });
+
+                request.fail(function(request, status, error) {
+                    alert(request.responseText.errors.file);
+                });
+            } else {
+                alert("Please select a file.");
+            }
         }
     </script>
 @endsection

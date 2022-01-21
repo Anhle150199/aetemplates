@@ -7,11 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Rules\MatchOldPassword;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
     public function updateProfile(Request $request)
     {
         $validator = Validator::make(
@@ -32,6 +33,7 @@ class UserController extends Controller
         $response = array(
             'status' => 'success',
             'msg'    => 'Update successfully',
+            'name' => $user->name
         );
         return new JsonResponse($response, 200);
     }
@@ -60,6 +62,29 @@ class UserController extends Controller
         $response = array(
             'status' => 'success',
             'msg'    => 'Update successfully',
+        );
+        return new JsonResponse($response, 200);
+    }
+
+    public function updateAvatar(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $image = $request->file;
+        $pathFile = 'img/avatar/';
+        $newAvatar = date('YmdHis') . "." . $image->getClientOriginalExtension();
+        $image->move($pathFile, $newAvatar);
+        if ($user->profile_photo_path != 'avatar1.png') {
+            File::delete($pathFile . $user->profile_photo_path);
+        }
+        $user->profile_photo_path = $newAvatar;
+        $user->save();
+        $response = array(
+            'msg'    => 'Update successfully',
+            'image' => "/".$pathFile . $user->profile_photo_path
         );
         return new JsonResponse($response, 200);
     }

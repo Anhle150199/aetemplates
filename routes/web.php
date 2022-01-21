@@ -16,5 +16,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::post('update-profile', [UserController::class, 'updateProfile'])->name('update-profile');
         Route::post('update-password', [UserController::class, 'updatePassword'])->name('update-password');
+        Route::post('update-avatar', [UserController::class, 'updateAvatar'])->name('update-avatar');
     });
 });
