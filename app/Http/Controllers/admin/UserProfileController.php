@@ -26,7 +26,11 @@ class UserProfileController extends Controller
         if ($validator->fails()) {
             return new JsonResponse(['errors' => $validator->getMessageBag()->toArray()], 406);
         }
+
         $user = Auth::user();
+        if ( $user->name == $request->name && $user->email == $request->email){
+            return new JsonResponse(['errors' => ['name'=> 'Name and Email not change']], 406);
+        }
         $user->name = $request->name;
         $user->email = $request->email;
         $user->save();
@@ -87,5 +91,10 @@ class UserProfileController extends Controller
             'image' => "/".$pathFile . $user->profile_photo_path
         );
         return new JsonResponse($response, 200);
+    }
+    public function logoutOtherSession(Request $request)
+    {
+        $user = Auth::user();
+        
     }
 }
