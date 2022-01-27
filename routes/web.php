@@ -19,5 +19,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('update-password', [UserProfileController::class, 'updatePassword'])->name('update-password');
         Route::post('update-avatar', [UserProfileController::class, 'updateAvatar'])->name('update-avatar');
         Route::delete('logout-other-seesion', [UserProfileController::class, 'logoutOtherSession'])->name('logout-other-seesion');
+        Route::delete('delete-account', [UserProfileController::class, 'deleteAccount'])->name('delete-account');
     });
 });

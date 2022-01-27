@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Actions\ConfirmPassword;
+
 class UserProfileController extends Controller
 {
 
@@ -28,8 +33,8 @@ class UserProfileController extends Controller
         }
 
         $user = Auth::user();
-        if ( $user->name == $request->name && $user->email == $request->email){
-            return new JsonResponse(['errors' => ['name'=> 'Name and Email not change']], 406);
+        if ($user->name == $request->name && $user->email == $request->email) {
+            return new JsonResponse(['errors' => ['name' => 'Name and Email not change']], 406);
         }
         $user->name = $request->name;
         $user->email = $request->email;
@@ -88,13 +93,75 @@ class UserProfileController extends Controller
         $user->save();
         $response = array(
             'msg'    => 'Update successfully',
-            'image' => "/".$pathFile . $user->profile_photo_path
+            'image' => "/" . $pathFile . $user->profile_photo_path
         );
         return new JsonResponse($response, 200);
     }
-    public function logoutOtherSession(Request $request)
+
+    /**
+     * Log out from other browser sessions.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Contracts\Auth\StatefulGuard  $guard
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logoutOtherSession(Request $request, StatefulGuard $guard)
     {
         $user = Auth::user();
-        
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'password' => ['required', function ($attribute, $value, $fail) use ($user) {
+                    if (!Hash::check($value, $user->password)) {
+                        return $fail(__('The current password is incorrect.'));
+                    }
+                }],
+            ]
+        );
+
+        if ($validator->fails()) {
+            return new JsonResponse(['errors' => $validator->getMessageBag()->toArray(), ], 422);
+        }
+        $this->deleteOtherSessionRecords($request);
+        return new JsonResponse(['success' => 'success'], 200);
+    }
+
+    /**
+     * Delete the other browser session records from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    protected function deleteOtherSessionRecords(Request $request)
+    {
+        if (config('session.driver') !== 'database') {
+            return;
+        }
+
+        DB::connection(config('session.connection'))->table(config('session.table', 'sessions'))
+            ->where('user_id', $request->user()->getAuthIdentifier())
+            ->where('id', '!=', $request->session()->getId())
+            ->delete();
+    }
+    public function deleteAccount(Request $request)
+    {
+        $user = Auth::user();
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'password' => ['required', function ($attribute, $value, $fail) use ($user) {
+                    if (!Hash::check($value, $user->password)) {
+                        return $fail(__('The current password is incorrect.'));
+                    }
+                }],
+            ]
+        );
+
+        if ($validator->fails()) {
+            return new JsonResponse(['errors' => $validator->getMessageBag()->toArray(), 'msgg' => $request->password], 422);
+        }
+        $user->user_role = 'deleted';
+        $user->save();
+        return new JsonResponse(['success' => 'success'], 200);
     }
 }

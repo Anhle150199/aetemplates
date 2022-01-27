@@ -53,7 +53,7 @@
                         </div>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a href="user/profile" class="dropdown-item">
+                        <a href="{{route('profile.show')}}" class="dropdown-item">
                             <i class="ni ni-single-02"></i>
                             <span>My profile</span>
                         </a>
