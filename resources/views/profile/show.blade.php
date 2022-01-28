@@ -1,4 +1,4 @@
-@extends('layouts.app1')
+@extends('layouts.app')
 
 @section('content')
 <!-- Header -->
@@ -310,7 +310,7 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-warning" id="btn-logout-orther-session">Log Out Other Browser Sessions</button>
                                         </div>
                                     </div>
@@ -329,25 +329,26 @@
                         <div class="space-y-6">
                             <!-- Other Browser Sessions -->
                             @foreach ($sessions as $session)
-                            @if ($session->agent['is_desktop'])
-                            <div class="row items-center this-device">
+                            @if ($session->is_current_device)
+                            <div class="row items-center">
+                            @else
+                            <div class="row items-center not-current-device">
+                            @endif
                                 <div>
-                                    
+                                    @if ($session->agent['is_desktop'])
                                     <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8 text-gray-500" style="width:2rem;">
                                         <path d=" M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2
                                                                                         0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
                                         </path>
                                     </svg>
-                            @else
-                            <div class="row items-center other-device">
-                                <div>
+                                    @else
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-gray-500" style="width:24px;">
 
                                         <path d="M0 0h24v24H0z" stroke="none"></path>
                                         <rect x="7" y="4" width="10" height="16" rx="1"></rect>
                                         <path d="M11 5h2M12 17v.01"></path>
                                     </svg>
-                            @endif
+                                    @endif
                                 </div>
                                 <div class="ml-3">
                                     <div class="text-sm text-gray-600">
@@ -388,8 +389,8 @@
 
                             {{-- Modal Delete Account --}}
                             <div id="deleteAccount" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document" >
-                                    <form action="{{ route('logout-other-seesion') }}" id="form-logout-session">
+                                <div class="modal-dialog" role="document">
+                                    <form action="{{ route('delete-account') }}" id="form-delete-account">
 
                                         <!-- Modal content-->
                                         <div class="modal-content">
@@ -401,6 +402,7 @@
                                                 <div class="form-group">
                                                     <label for="passwordDeleteAccount" class="col-form-label" style="float: left;">Password:</label>
                                                     <input type="password" class="form-control" name="passwordDeleteAccount" id="passwordDeleteAccount" required>
+                                                    <p id="error-delete-account" class="text-danger" style="float: left;"></p>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -426,190 +428,7 @@
         font-weight: 600;
     }
 </style>
-<script>
-    // Update info user
-    $('#updateInfo').on('submit', function(e) {
-        e.preventDefault();
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        let data = {
-            name: $('#name').val(),
-            email: $('#email').val(),
-        }
-        let url = $('#updateInfo').attr('action');
-
-        $.ajax({
-            type: 'post',
-            url: url,
-            data: data,
-            dataType: 'json',
-            success: function(data) {
-                $('#info-success').text(data.msg);
-                $('#name-user-topnav').text(data.name);
-                $('#name-user').text(data.name);
-                $('#error-name').text("");
-                $('#error-email').text("");
-
-                setTimeout(function() {
-                    $('#info-success').text("");
-                }, 5000);
-            },
-            error: function(data) {
-                let errors = data.responseJSON.errors;
-                if (errors.name) {
-                    $('#error-name').text(errors.name);
-                }
-                if (errors.email) {
-                    $('#error-email').text(errors.email);
-                }
-                setTimeout(function() {
-                    $('#error-name').text("");
-                    $('#error-email').text("");
-                }, 5000);
-            }
-        });
-
-        return false;
-    });
-
-    // Update password
-    $('#updatePassword').on('submit', function(e) {
-        e.preventDefault();
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        let data = {
-            current_password: $('#current_password').val(),
-            password: $('#password').val(),
-            password_confirmation: $('#password_confirmation').val(),
-            _token: $("input[name=_token]").val()
-        }
-        let url = $('#updatePassword').attr('action');
-
-        $.ajax({
-            type: 'post',
-            url: url,
-            data: data,
-            dataType: 'json',
-            success: function(data) {
-                $('#password-success').text(data.msg);
-                setTimeout(function() {
-                    $('#password-success').text("");
-                }, 5000);
-            },
-            error: function(data) {
-                console.log(data);
-                let errors = data.responseJSON.errors;
-                $('#password-success').text("");
-                if (errors.current_password) {
-                    $('#error-current-password').text(errors.current_password);
-                }
-                if (errors.password) {
-                    $('#error-password').text(errors.password);
-                }
-                if (errors.password_confirmation) {
-                    $('#error-password-confirmation').text(errors.password_confirmation);
-                }
-                setTimeout(function() {
-                    $('#error-current-password').text("");
-                    $('#error-password').text("");
-                    $('#error-password-confirmation').text("");
-                }, 5000);
-                console.log(errors);
-            }
-        });
-        return false;
-    });
-
-    // upload avatar
-    $('#btn-upload-avatar').click(function() {
-        $('#input-avatar').click();
-    });
-    $('#input-avatar').change(() => {
-        let match = ["image/gif", "image/png", "image/jpg", "image/jpeg"];
-        let file_data = $('#input-avatar').prop('files')[0];
-
-        if (!match.includes(file_data.type)) {
-            $("#photo").val("");
-            alert("Error: File isn't image!!!");
-            return
-        }
-
-        let file = $("#input-avatar")[0].files;
-        sentFileMedia(file);
-    })
-    // sent image with ajax
-    const sentFileMedia = (file) => {
-        let fd = new FormData();
-
-        if (file.length > 0) {
-            fd.append('file', file[0]);
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            let request = $.ajax({
-                url: '/user/update-avatar',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-            });
-            request.done(function(msg) {
-                domain = window.location.origin;
-                $('#avatar').attr("src", domain + msg.image)
-                $('#avatar-topvar').attr("src", domain + msg.image)
-                alert(msg.msg);
-            });
-
-            request.fail(function(request, status, error) {
-                alert(request.responseText.errors.file);
-            });
-        } else {
-            alert("Please select a file.");
-        }
-    }
-
-    $('#form-logout-session').on('submit', function(e) {
-        e.preventDefault();
-        const passwordLogoutSession = $('#passwordLogoutSession').val();
-
-        const data = {
-            password: passwordLogoutSession
-        };
-        const urlSession = $('#form-logout-session').attr('action');
-        console.log(urlSession);
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $.ajax({
-            type: 'delete',
-            url: urlSession,
-            data: data,
-            dataType: 'json',
-            success: function(data) {
-                // console.log(data);
-                $('.other-device').remove();
-                // remove(".other-device")
-                $('#logoutSessionModal').modal('hide');
-            },
-            error: function(data) {
-                let errors = data.responseJSON.errors.password;
-                $('#error-logout-session').text(errors);
-            }
-        });
-
-    })
-</script>
 @endsection
+@push('js')
+    <script src="{{url('/')}}/js/admin/profile.js"></script>
+@endpush

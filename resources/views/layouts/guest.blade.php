@@ -7,15 +7,12 @@
 
         <!-- For action befor login -->
         <title>{{ config('app.name') }}</title>
-        <link href="images/logo/TF.png" rel="icon" type="image/png">
+        <link href="{{url('/')}}/img/logo/TF.png" rel="icon" type="image/png">
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
-        <!-- Styles -->
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-
-        <!-- Scripts -->
-        <script src="{{ mix('js/app.js') }}" defer></script>
+        <link rel="stylesheet" href="{{url('/')}}/css/app.css" type="text/css">
+        <script src="{{url('/')}}/js/app.js" defer></script>
     </head>
     <body>
         <div class="font-sans text-gray-900 antialiased">
