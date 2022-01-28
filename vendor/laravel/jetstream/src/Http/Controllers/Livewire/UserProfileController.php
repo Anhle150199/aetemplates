@@ -22,6 +22,7 @@ class UserProfileController extends Controller
             'request' => $request,
             'user' => $request->user(),
             'sessions' => $this->sessions($request)->all(),
+            'slidebar' => ['users', 'profile']
         ]);
     }
 

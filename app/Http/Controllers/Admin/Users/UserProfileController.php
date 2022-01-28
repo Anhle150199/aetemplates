@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin\Users;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
-use Laravel\Fortify\Actions\ConfirmPassword;
+use App\Models\User;
 
 class UserProfileController extends Controller
 {
@@ -105,7 +104,7 @@ class UserProfileController extends Controller
      * @param  \Illuminate\Contracts\Auth\StatefulGuard  $guard
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function logoutOtherSession(Request $request, StatefulGuard $guard)
+    public function logoutOtherSession(Request $request)
     {
         $user = Auth::user();
         $validator = Validator::make(
@@ -143,7 +142,7 @@ class UserProfileController extends Controller
             ->where('id', '!=', $request->session()->getId())
             ->delete();
     }
-    public function deleteAccount(Request $request)
+    public function deleteAccount(Request $request, StatefulGuard $guard)
     {
         $user = Auth::user();
         $validator = Validator::make(
@@ -162,6 +161,7 @@ class UserProfileController extends Controller
         }
         $user->user_role = 'deleted';
         $user->save();
+        $guard->logout();
         return new JsonResponse(['success' => 'success'], 200);
     }
 }

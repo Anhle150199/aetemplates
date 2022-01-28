@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->foreignId('current_team_id')->nullable();
             $table->enum('user_role',['superAdmin', 'admin', 'requestUser', 'deleted'])->default('requestUser');
             $table->string('profile_photo_path', 2048)->default('avatar1.png');
+            $table->integer('count_post')->default(0);
             $table->timestamps();
         });
     }
