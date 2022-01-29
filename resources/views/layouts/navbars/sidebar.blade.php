@@ -64,7 +64,7 @@
                         <div class="collapse" id="navbar-users">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item" id="all-user">
-                                    <a href="#" class="nav-link">All User</a>
+                                    <a href="{{route('get-all-user')}}" class="nav-link">All User</a>
                                 </li>
                                 <li class="nav-item" id="add-new-user">
                                     <a href="#" class="nav-link">Add New User</a>

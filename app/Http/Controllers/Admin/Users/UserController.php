@@ -11,6 +11,34 @@ use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
+    public function getAllUser()
+    {
+        $allUser = User::where('user_role','admin')->orWhere('user_role', 'superAdmin')->orWhere('user_role', 'deleted')->get();
+        return view('users.allUser', ['slidebar' => ['users', 'all-user'], 'allUser' => $allUser]);
+    }
+
+    public function deleteUser(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'email' => ['required', 'string', 'email', 'max:255'],
+            ]
+        );
+        if ($validator->fails()) {
+            return new JsonResponse(['errors' => $validator->getMessageBag()->toArray()], 406);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $user->user_role = 'deleted';
+        $user->save();
+        $response = array(
+            'status' => 'success',
+        );
+        return new JsonResponse($response, 200);
+
+    }
+
     public function showUserRequest()
     {
         $userRequest = User::where('user_role', 'requestUser')->get();
@@ -40,6 +68,25 @@ class UserController extends Controller
             'status' => 'success',
         );
         return new JsonResponse($response, 200);
+    }
 
+    public function deleteUserRequest(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'email' => ['required', 'string', 'email', 'max:255'],
+            ]
+        );
+        if ($validator->fails()) {
+            return new JsonResponse(['errors' => $validator->getMessageBag()->toArray()], 406);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $user->delete();
+        $response = array(
+            'status' => 'success',
+        );
+        return new JsonResponse($response, 200);
     }
 }

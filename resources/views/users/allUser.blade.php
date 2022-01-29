@@ -14,12 +14,12 @@
             <div class="header-body">
                 <div class="row align-items-center py-4">
                     <div class="col-lg-6 col-7">
-                        <h6 class="h2 text-white d-inline-block mb-0">Users Request</h6>
+                        <h6 class="h2 text-white d-inline-block mb-0">All Users</h6>
                         <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                                 <li class="breadcrumb-item"><a href="#"><i class="fa fa-users"></i></a></li>
                                 <li class="breadcrumb-item"><a href="#">Users </a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Request</li>
+                                <li class="breadcrumb-item active" aria-current="page">All Users</li>
                             </ol>
                         </nav>
                     </div>
@@ -37,10 +37,10 @@
             <div class="col">
                 <div class="card">
                     <!-- Card header -->
-                    {{-- <div class="card-header">
-                        <h3 class="mb-0"></h3>
+                    <div class="card-header">
+                        <h3 class="mb-0">All Users</h3>
                         <p class="text-sm mb-0"></p>
-                    </div> --}}
+                    </div>
                     <div class="table-responsive py-4">
                         <table class="table table-flush" id="datatable-basic">
                             <thead class="thead-light">
@@ -48,6 +48,8 @@
                                     {{-- <th>No.</th> --}}
                                     <th>Name</th>
                                     <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Post</th>
                                     <th>Time Register</th>
                                     @if (Auth::user()->user_role === 'superAdmin')
                                         <th></th>
@@ -56,18 +58,20 @@
                             </thead>
                             <tbody>
                                 <?php $indexUsers = 1; ?>
-                                @foreach ($userRequest as $user)
+                                @foreach ($allUser as $user)
                                     <tr id="{{ $indexUsers }}">
 
                                         <td>{{ $user->name }}</td>
                                         <td class="email" id="email{{ $indexUsers }}">{{ $user->email }}</td>
+                                        <td id="role{{$indexUsers}}">{{ $user->user_role }}</td>
+                                        <td>{{ $user->count_post }}</td>
                                         <td>{{ $user->created_at }}</td>
-                                        @if (Auth::user()->user_role === 'superAdmin')
+                                        @if (Auth::user()->user_role === 'superAdmin' && Auth::user()->email != $user->email)
                                             <td class="table-actions">
                                                 <a href="#!" class="table-action" data-toggle="modal"
                                                     data-original-title="Accept User" data-target="#acceptModal"
                                                     data-whatever="{{ $indexUsers }}">
-                                                    <i class="fas fa-check"></i>
+                                                    <i class="fas fa-user-edit"></i>
                                                 </a>
                                                 <a href="#!" class="table-action table-action-delete" data-toggle="modal"
                                                     data-original-title="Delete User" data-target="#deleteModal"
@@ -75,6 +79,8 @@
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             </td>
+                                        @else
+                                        <td></td>
                                         @endif
                                     </tr>
                                     <?php $indexUsers += 1; ?>
@@ -136,7 +142,7 @@
                                         <p id="error-delete"></p>
                                     </div>
                                     <div class="modal-footer">
-                                        <form action="{{ route('delete-request') }}" id="form-delete-request">
+                                        <form action="{{ route('delete-user') }}" id="form-delete-user">
                                             <input type="text" id="delete-email" name="delete-email" hidden>
                                             <input type="text" id="delete-id" name="delete-id" hidden>
 
