@@ -61,8 +61,8 @@ $('#acceptModal').on('show.bs.modal', function (event) {
 $('#form-delete-user').on('submit', function (e) {
     deleteAction(e, $('#form-delete-user'));
 })
-$('#form-delete-request').on('submit', function(e) {
-    deleteAction(e, $('#form-delete-request') );
+$('#form-delete-request').on('submit', function (e) {
+    deleteAction(e, $('#form-delete-request'));
 });
 const deleteAction = (e, element) => {
     e.preventDefault();
@@ -107,4 +107,57 @@ $('#deleteModal').on('show.bs.modal', function (event) {
     modal.find('.modal-title').text('Are you sure delete \"' + recipient + '\" ?');
     $('#delete-email').val(recipient);
     $('#delete-id').val(id);
+})
+
+// add new user
+var alertBlock =
+    '<div class="alert alert-dismissible fade show" role="alert" id="alert-notification"><span id="alert-content"></span><button type="button" class="close" id="close-alert" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+
+$('#form-add-user').on('submit', function (e) {
+    e.preventDefault();
+    const name = $('#user-name').val();
+    const email = $('#user-email').val();
+    const role = $('#user-role').val();
+    const password = $('#user-password').val();
+    const passwordConfirm = $('#user-password-confirmation').val();
+    const url = $(this).attr('action');
+    const data = {
+        name: name,
+        email: email,
+        role: role,
+        password: password,
+        password_confirmation: passwordConfirm
+    }
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        type: 'put',
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+            console.log(data.status);
+            $('#alert-block').html(alertBlock);
+            $('#alert-notification').addClass('alert-success');
+            $('#alert-content').text('Success ! Created account \"' + email + '\"');
+            $('#form-add-user')[0].reset();
+        },
+        error: function (data) {
+            let errors = data.responseJSON.errors;
+            $('#error-name').text(errors.name);
+            $('#error-email').text(errors.email);
+            $('#error-password').text(errors.password);
+            $('#error-role').text(errors.role);
+            setTimeout(() => {
+                $('#error-name').text('');
+                $('#error-email').text('');
+                $('#error-password').text('');
+                $('#error-role').text('');
+            }, 10000);
+        }
+    });
+
 })
