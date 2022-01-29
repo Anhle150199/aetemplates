@@ -1,3 +1,3 @@
 <a href="/">
-    <img src="images/logo/TF.png" alt="">
+    <img src="{{url('/')}}/img/logo/TF.png" alt="">
 </a>
