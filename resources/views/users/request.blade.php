@@ -24,7 +24,7 @@
                         </nav>
                     </div>
                     <div class="col-lg-6 col-5 text-right">
-                        <a href="#" class="btn btn-sm btn-neutral text-danger">New user</a>
+                        <a href="{{ route('new-user') }}" class="btn btn-sm btn-neutral text-danger">New user</a>
                     </div>
                 </div>
             </div>
@@ -37,10 +37,9 @@
             <div class="col">
                 <div class="card">
                     <!-- Card header -->
-                    {{-- <div class="card-header">
-                        <h3 class="mb-0"></h3>
-                        <p class="text-sm mb-0"></p>
-                    </div> --}}
+                    <div class="card-header">
+                        <h3 class="mb-0">User Request</h3>
+                    </div>
                     <div class="table-responsive py-4">
                         <table class="table table-flush" id="datatable-basic">
                             <thead class="thead-light">

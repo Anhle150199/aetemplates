@@ -26,7 +26,6 @@ class UserProfileController extends Controller
                 'email' => ['required', 'string', 'email', 'max:255'],
             ]
         );
-        // $validator = Validator::make(Input::all(), $rules);
         if ($validator->fails()) {
             return new JsonResponse(['errors' => $validator->getMessageBag()->toArray()], 406);
         }

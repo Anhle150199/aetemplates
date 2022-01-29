@@ -24,7 +24,7 @@
                         </nav>
                     </div>
                     <div class="col-lg-6 col-5 text-right">
-                        <a href="#" class="btn btn-sm btn-neutral text-danger">New user</a>
+                        <a href="{{ route('new-user') }}" class="btn btn-sm btn-neutral text-danger">New user</a>
                     </div>
                 </div>
             </div>
@@ -63,7 +63,7 @@
 
                                         <td>{{ $user->name }}</td>
                                         <td class="email" id="email{{ $indexUsers }}">{{ $user->email }}</td>
-                                        <td id="role{{$indexUsers}}">{{ $user->user_role }}</td>
+                                        <td id="role{{ $indexUsers }}">{{ $user->user_role }}</td>
                                         <td>{{ $user->count_post }}</td>
                                         <td>{{ $user->created_at }}</td>
                                         @if (Auth::user()->user_role === 'superAdmin' && Auth::user()->email != $user->email)
@@ -80,7 +80,7 @@
                                                 </a>
                                             </td>
                                         @else
-                                        <td></td>
+                                            <td></td>
                                         @endif
                                     </tr>
                                     <?php $indexUsers += 1; ?>

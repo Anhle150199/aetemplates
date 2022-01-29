@@ -107,7 +107,7 @@
                                             <label class="form-control-label" for="name">Username</label>
                                             <input type="text" id="name" class="form-control" placeholder="Username"
                                                 value="{{ Auth::user()->name }}" required>
-                                            <p class="text-danger" id="error-name"></p>
+                                            <p class="p-error text-danger" id="error-name"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@
                                             <label class="form-control-label" for="email">Email address</label>
                                             <input type="email" id="email" class="form-control" required
                                                 value="{{ Auth::user()->email }}" placeholder="email@example.com">
-                                            <p class="text-danger" id="error-email"></p>
+                                            <p class="p-error text-danger" id="error-email"></p>
 
                                         </div>
                                     </div>
@@ -151,7 +151,7 @@
                                             <label class="form-control-label" for="current_password">Current
                                                 Password</label>
                                             <input type="password" id="current_password" class="form-control" required>
-                                            <p class="text-danger" id="error-current-password"></p>
+                                            <p class="p-error text-danger" id="error-current-password"></p>
 
                                         </div>
                                     </div>
@@ -162,7 +162,7 @@
                                             <label class="form-control-label" for="password">New Password</label>
                                             <input type="password" id="password" name="password" class="form-control"
                                                 required>
-                                            <p class="text-danger" id="error-password"></p>
+                                            <p class="p-error text-danger" id="error-password"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@
                                                 Password</label>
                                             <input type="password" id="password_confirmation" class="form-control"
                                                 required name="password_confirmation">
-                                            <p class="text-danger" id="error-password-confirmation"></p>
+                                            <p class="p-error text-danger" id="error-password-confirmation"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -217,7 +217,7 @@
                                                         class="col-form-label">Password:</label>
                                                     <input type="password" class="form-control"
                                                         name="passwordLogoutSession" id="passwordLogoutSession" required>
-                                                    <p id="error-logout-session" class="text-danger"></p>
+                                                    <p id="error-logout-session" class="p-error text-danger"></p>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -327,7 +327,7 @@
                                                         style="float: left;">Password:</label>
                                                     <input type="password" class="form-control"
                                                         name="passwordDeleteAccount" id="passwordDeleteAccount" required>
-                                                    <p id="error-delete-account" class="text-danger"
+                                                    <p id="error-delete-account" class="p-error text-danger"
                                                         style="float: left;"></p>
                                                 </div>
                                             </div>
@@ -349,13 +349,6 @@
         </div>
     </div>
     </div>
-    <style>
-        p {
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-    </style>
 @endsection
 @push('js')
     <script src="{{ url('/') }}/js/admin/profile.js"></script>

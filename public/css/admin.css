@@ -10660,6 +10660,10 @@ button.bg-darker:focus
 {
     margin-left: 10rem !important;
 }
+.p-error {
+    font-size: 12px;
+    font-weight: 600;
+}
 
 .p-0
 {

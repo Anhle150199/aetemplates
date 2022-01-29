@@ -67,7 +67,7 @@
                                     <a href="{{route('get-all-user')}}" class="nav-link">All User</a>
                                 </li>
                                 <li class="nav-item" id="add-new-user">
-                                    <a href="#" class="nav-link">Add New User</a>
+                                    <a href="{{route('new-user')}}" class="nav-link">Add New User</a>
                                 </li>
                                 <li class="nav-item" id="request">
                                     <a href="{{route('user-request')}}" class="nav-link">Request</a>

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\Users\UserProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
+use Illuminate\Support\Facades\Redis;
 use Laravel\Jetstream\Http\Controllers\Inertia\OtherBrowserSessionsController;
 
 
@@ -13,12 +14,17 @@ Route::get('/', function () {
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard', ['slidebar'=>['dashboards',]]);
+        return view('dashboard', ['slidebar' => ['dashboards',]]);
     })->name('dashboard');
     Route::prefix('user')->group(function () {
         // All User
         Route::get('all', [UserController::class, 'getAllUser'])->name('get-all-user');
         Route::delete('delete-user', [UserController::class, 'deleteUser'])->name('delete-user');
+        // New user
+        Route::get('new-user', function () {
+            return view('users.newUser', ['slidebar' => ['users', 'add-new-user']]);
+        })->name('new-user');
+        Route::put('add-user', [UserController::class, 'addNewUser'])->name('add-user');
         // List user request
         Route::get('request', [UserController::class, 'showUserRequest'])->name('user-request');
         Route::put('edit-role', [UserController::class, 'acceptUserRequest'])->name('edit-role'); //Use for edit role user
