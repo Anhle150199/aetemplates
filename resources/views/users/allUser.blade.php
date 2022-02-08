@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{ url('/') }}/vendor/nucleo/css/nucleo.css" type="text/css">
     <link rel="stylesheet" href="{{ url('/') }}/vendor/datatables.net-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="{{ url('/') }}/vendor/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css">
-    <link rel="stylesheet" href="{{ url('/') }}/vendor/datatables.net-select-bs4/css/select.bootstrap4.min.css">
+    {{-- <link rel="stylesheet" href="{{ url('/') }}/vendor/datatables.net-select-bs4/css/select.bootstrap4.min.css"> --}}
 @endpush
 
 @section('content')
@@ -79,8 +79,6 @@
                                                     <i class="fas fa-trash"></i>
                                                 </a>
                                             </td>
-                                        @else
-                                            <td></td>
                                         @endif
                                     </tr>
                                     <?php $indexUsers += 1; ?>
@@ -163,6 +161,7 @@
 
 @endsection
 @push('js')
+<script src="{{ url('/') }}/js/admin/usersManage.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
@@ -170,5 +169,4 @@
     <script src="{{ url('/') }}/vendor/datatables.net-buttons/js/buttons.html5.min.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net-buttons/js/buttons.flash.min.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="{{ url('/') }}/js/admin/usersManage.js"></script>
 @endpush

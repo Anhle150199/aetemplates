@@ -16,7 +16,7 @@ class UserController extends Controller
     public function getAllUser()
     {
         $allUser = User::where('user_role', 'admin')->orWhere('user_role', 'superAdmin')->orWhere('user_role', 'deleted')->get();
-        return view('users.allUser', ['slidebar' => ['users', 'all-user'], 'allUser' => $allUser]);
+        return view('users.allUser', ['slidebar' => ['users', 'all-user'],  'allUser' => $allUser]);
     }
 
     public function deleteUser(Request $request)

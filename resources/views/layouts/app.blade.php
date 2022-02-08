@@ -37,6 +37,18 @@
     @stack('js')
     <script src="{{ url('/') }}/js/argon.js?v=1.1.0"></script>
     <script src="{{ url('/') }}/js/demo.min.js"></script>
+    <script>
+        for (let index = 0; index < 4; index++) {
+            let idElement = $('#slidebar-' + index).val();
+            if (idElement == "") break;
+            $(`#${idElement}`).addClass("active");
+            if (index == 0) {
+                $(`#${idElement}`).click();
+                $(`#${idElement}`).attr("aria-expanded", "true");
+            }
+        }
+    </script>
+
 </body>
 
 </html>

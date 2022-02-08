@@ -24064,7 +24064,7 @@ textarea[resize='horizontal']
 
     margin: 0 .25rem;
 
-    color: #adb5bd;
+    color: #fb6340;
 }
 .table-action:hover
 {
@@ -24075,7 +24075,10 @@ textarea[resize='horizontal']
 {
     color: #f5365c;
 }
-
+.table-action-success:hover
+{
+    color: #2dce89;
+}
 .table-dark .table-action
 {
     color: #4d7bca;

@@ -2,8 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\Users\UserProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
+use App\Http\Controllers\Admin\Users\UserProfileController;
+use App\Http\Controllers\Admin\Posts\TagController;
+use App\Http\Controllers\Admin\Posts\CategoryController;
+use App\Http\Controllers\Admin\Posts\PostController;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Jetstream\Http\Controllers\Inertia\OtherBrowserSessionsController;
 
@@ -16,6 +19,17 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard', ['slidebar' => ['dashboards',]]);
     })->name('dashboard');
+
+    // Posts manage
+    Route::prefix('posts')->group(function ()
+    {
+        // Tags
+        Route::get('tags',[TagController::class,'showTag'])->name('show-tags');
+        Route::put('add-tag',[TagController::class,'addTag'])->name('add-tag');
+        Route::put('edit-tag',[TagController::class,'editTag'])->name('edit-tag');
+        Route::delete('delete-tag',[TagController::class,'deleteTag'])->name('delete-tag');
+    });
+    //Users manage
     Route::prefix('user')->group(function () {
         // All User
         Route::get('all', [UserController::class, 'getAllUser'])->name('get-all-user');

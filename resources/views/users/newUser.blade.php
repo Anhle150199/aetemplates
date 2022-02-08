@@ -63,7 +63,9 @@
                                     select</label>
                                 <div class="col-md-10">
                                     <select class="form-control" id="user-role" name="role">
+                                        @if (Auth::user()->user_role === 'superAdmin')
                                         <option value="superAdmin">Super Admin</option>
+                                        @endif
                                         <option value="admin" selected>Admin</option>
                                     </select>
                                     <p class="p-error text-danger" id="error-role"></p>

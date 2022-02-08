@@ -49,7 +49,7 @@
                                     <a href="#" class="nav-link">Categories</a>
                                 </li>
                                 <li class="nav-item" id="tags">
-                                    <a href="#" class="nav-link">Tags</a>
+                                    <a href="{{route('show-tags')}}" class="nav-link">Tags</a>
                                 </li>
                             </ul>
                         </div>
