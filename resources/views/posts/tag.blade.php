@@ -334,17 +334,18 @@
                 error: function(data) {
                     let errors = data.responseJSON.errors;
                     console.log(errors);
+                    if (errors.tag_name) {
+                        $('#error-edit-tag').text(errors.tag_name);
+                    } else if (errors.tag_slug) {
+                        $('#error-edit-tag').text(errors.tag_slug);
+                    } else if (errors.slug_old_tag) {
+                        $('#error-edit-tag').text(errors.slug_old_tag);
+                    } else {
+                        $('#error-edit-tag').text(errors.other);
+                    }
                     setTimeout(() => {
-                        if (errors.tag_name) {
-                            $('#error-edit-tag').text(errors.tag_name)
-                        } else if (errors.tag_slug) {
-                            $('#error-edit-tag').text(errors.tag_slug)
-                        } else if (errors.slug_old_tag) {
-                            $('#error-edit-tag').text(errors.slug_old_tag)
-                        } else {
-                            $('#error-edit-tag').text(errors.other)
-                        }
-                    }, 10000);
+                        $('#error-edit-tag').text("");
+                    }, 8000);
                 }
             });
         })
