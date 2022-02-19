@@ -15,8 +15,8 @@ class CreateAeTagsTable extends Migration
     {
         Schema::create('ae_tags', function (Blueprint $table) {
             $table->id();
-            $table->string('tag_name', 50);
-            $table->string('tag_slug', 50);
+            $table->string('tag_name', 100);
+            $table->string('tag_slug', 100);
             $table->integer('posts_count')->default(0);
             $table->timestamps();
         });

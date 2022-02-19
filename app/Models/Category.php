@@ -12,8 +12,11 @@ class Category extends Model
 
     protected $fillable = [
         'cate_name',
-        'parrent_id',
+        'cate_slug',
+        'cate_level',
+        'parent_id',
+        'children_count',
         'cate_type',
-        'posts_count'
+        'posts_count',
     ];
 }

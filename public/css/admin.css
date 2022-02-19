@@ -599,8 +599,8 @@ h6,
 
 hr
 {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 
     border: 0;
     border-top: 1px solid rgba(0, 0, 0, .1);

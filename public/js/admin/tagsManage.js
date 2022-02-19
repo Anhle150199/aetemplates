@@ -46,10 +46,10 @@ $('#formAddTag').on('submit', function (e) {
 })
 
 function colAction(index) {
-    return '<td class="table-actions"><a href="#!" class="table-action" data-toggle="modal" data-original-title="Accept User" data-target="#editModal" data-whatever="' +
+    return '<a href="#!" class="table-action" data-toggle="modal" data-target="#editModal" data-whatever="' +
         index + '"><i class="fas fa-edit"></i></a>' +
-        '<a href="#" class="table-action table-action-delete" data-toggle="modal" data-original-title="Delete Tag" data-target="#deleteModal" data-whatever=\"' +
-        index + '\"><i class="fas fa-trash"></i></a></td>';
+        '<a href="#" class="table-action table-action-delete" data-toggle="modal" data-target="#deleteModal" data-whatever=\"' +
+        index + '\"><i class="fas fa-trash"></i></a>';
 }
 
 // Delete tag
@@ -81,9 +81,6 @@ $('#form-delete-tag').on('submit', (e) => {
 
             $('#deleteModal').modal('hide');
 
-            const range = (start, stop, step) => Array.from({
-                length: (stop - start) / step + 1
-            }, (_, i) => start + (i * step));
             for (i of range(parseInt(id) + 1, parseInt(rowTable), 1)) {
                 $('#' + i).find('a').attr('data-whatever', i - 1);
                 $('#tag-name-' + i).attr('id', 'tag-name-' + (i - 1));

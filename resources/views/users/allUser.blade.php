@@ -66,8 +66,8 @@
                                         <td id="role{{ $indexUsers }}">{{ $user->user_role }}</td>
                                         <td>{{ $user->count_post }}</td>
                                         <td>{{ $user->created_at }}</td>
-                                        @if (Auth::user()->user_role === 'superAdmin' && Auth::user()->email != $user->email)
-                                            <td class="table-actions">
+                                        <td class="table-actions">
+                                            @if (Auth::user()->user_role === 'superAdmin' && Auth::user()->email != $user->email)
                                                 <a href="#!" class="table-action" data-toggle="modal"
                                                     data-original-title="Accept User" data-target="#acceptModal"
                                                     data-whatever="{{ $indexUsers }}">
@@ -78,8 +78,8 @@
                                                     data-whatever="{{ $indexUsers }}">
                                                     <i class="fas fa-trash"></i>
                                                 </a>
-                                            </td>
-                                        @endif
+                                            @endif
+                                        </td>
                                     </tr>
                                     <?php $indexUsers += 1; ?>
                                 @endforeach
@@ -161,7 +161,7 @@
 
 @endsection
 @push('js')
-<script src="{{ url('/') }}/js/admin/usersManage.js"></script>
+    <script src="{{ url('/') }}/js/admin/usersManage.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net-buttons/js/dataTables.buttons.min.js"></script>

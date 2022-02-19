@@ -15,11 +15,13 @@ class CreateAeCategoriesTable extends Migration
     {
         Schema::create('ae_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('cate_name',50);
-            $table->integer('parrent_id')->default(0);
+            $table->string('cate_name',100);
+            $table->string('cate_slug',100);
+            $table->integer('cate_level')->default(0);
+            $table->integer('parent_id')->default(0);
+            $table->integer('children_count')->default(0);
             $table->enum('cate_type', ['public', 'deleted'])->default('public');
             $table->integer('posts_count')->default(0);
-            $table->string('cate_slug',50);
             $table->timestamps();
         });
     }

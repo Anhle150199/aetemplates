@@ -1,0 +1,257 @@
+// col action for row table
+function colAction(index) {
+    return '<a href="#!" class="table-action" data-toggle="modal" data-target="#editModal" data-whatever="' +
+        index + '"><i class="fas fa-edit"></i></a>' +
+        '<a href="#" class="table-action table-action-delete" data-toggle="modal" data-target="#deleteModal" data-whatever=\"' +
+        index + '\"><i class="fas fa-trash"></i></a>';
+}
+
+// new row of table
+const row = (name, slug, posts, action, id, level, parentId) => {
+    return '<div class="row " id="' + id + '"><div class="no"></div>' +
+        '<div class=\" col-4 level-' + level + '\" id="name-' + id + '\">' + name +
+        '</div>' +
+        '<div class="col-4" id=\"slug-' + id + '\">' + slug + '</div>' +
+        '<div class="col-2 ">' + posts + '</div>' +
+        '<div class="col">' + action + '</div>' +
+        '</div><div id="child-' + id + '"><hr></div></div>';
+};
+// new option of select
+const newOption = (id, name, level) => {
+    return '<option value="' + id + '">' + name + '</option>'
+}
+const showData = (data, level = 0, parentId = 0, space) => {
+    for (e of data) {
+        if (e.level == level && e.parentId == parentId) {
+            let name = e.name;
+            name = space + " " + e.name;
+            $('#child-' + e.parentId).append(row(name, e.slug, e.posts, e.action, e.key, e.level, e
+                .parentId));
+            $('#selectCateParent').append(newOption(e.key, name, e.level));
+
+            if (e.hasChild == true)
+                showData(data, level + 1, parseInt(e.key), space + '—');
+        }
+    }
+
+}
+const resetData = () => {
+    $('#selectCateParent').empty();
+    $('#child-0').empty();
+    $('#selectCateParent').append(newOption(0, 'None'));
+}
+// remove space, .....
+function removeVietnameseTones(str) {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    str = str.replace(/Đ/g, "D");
+    str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, "");
+    str = str.replace(/\u02C6|\u0306|\u031B/g, "");
+    str = str.replace(/ + /g, " ");
+    str = str.trim();
+    str = str.replace(
+        /!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g,
+        " "
+    );
+    return str;
+}
+
+// convert to URL
+function convertUrl(p) {
+    a = removeVietnameseTones(p);
+    return a.replace(/\s+/g, "-").toLowerCase();
+}
+
+jQuery.extend({
+    getValues: function () {
+        var result = null;
+        $.ajax({
+            url: '/posts/get-categories',
+            type: 'get',
+            dataType: 'json',
+            async: false,
+            success: function (json) {
+                let categories = [];
+                let hasChild = false;
+                for (category of json.categories) {
+                    if (category.children_count > 0) {
+                        hasChild = true;
+                    }
+
+                    categories.push({
+                        "key": parseInt(category.id),
+                        parentId: category.parent_id,
+
+                        name: category.cate_name,
+                        slug: category.cate_slug,
+                        posts: category.posts_count,
+                        status: category.cate_type,
+                        action: colAction(category.id),
+                        level: category.cate_level,
+                        hasChild: hasChild,
+                    });
+                }
+                result = categories;
+                if (result.length == 0)
+                    $('#status-table').text("No data available in table");
+                else {
+                    $('#child-0').empty();
+                    showData(result, 0, 0, '');
+                }
+            },
+        });
+        return result;
+    }
+});
+
+var dataResponse = $.getValues();
+
+// Add New Category
+$('#formAddCategory').on('submit', (e) => {
+    e.preventDefault();
+    const nameNewCate = $('#new-category').val();
+    let slugNewCate = convertUrl(nameNewCate);
+    const selectCateParent = $('#selectCateParent').val();
+    if (selectCateParent != 0) {
+        slugNewCate = $('#slug-' + selectCateParent).text() + "/" + slugNewCate;
+    }
+    const data = {
+        cate_name: nameNewCate,
+        cate_slug: slugNewCate,
+        parent_id: selectCateParent,
+    }
+    const url = $('#formAddCategory').attr('action');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        type: 'post',
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+            let category = data.newCategory;
+            $('#successModal').modal('show');
+            category = {
+                "key": parseInt(category.id),
+                parentId: category.parent_id,
+                name: category.cate_name,
+                slug: category.cate_slug,
+                posts: category.posts_count,
+                status: category.cate_type,
+                action: colAction(category.id),
+                level: category.cate_level,
+                hasChild: true,
+            };
+            dataResponse.push(category);
+            if (category.parentId != 0) {
+                dataResponse.find(x => x.key == category.parentId).hasChild = true;
+            }
+            resetData();
+            let cateList = dataResponse;
+            showData(cateList, 0, 0, '');
+            $('#new-category').val('');
+        },
+        error: function (data) {
+            let errors = data.responseJSON.errors;
+            if (errors.cate_name) {
+                $('#error-new-category').text(errors.cate_name);
+            } else if (errors.cate_slug) {
+                $('#error-new-category').text(errors.cate_slug);
+            } else {
+                $('#error-new-category').text(errors);
+            }
+            $('#error-parent-select').text(errors.parent_id);
+            setTimeout(() => {
+                $('#error-new-category').text("");
+                $('#error-parent-select').text("");
+            }, 5000);
+
+        }
+    });
+
+});
+
+
+//  ######### Modal Categories #########
+// Delete Categories Modal
+$('#deleteModal').on('show.bs.modal', function (event) {
+    const button = $(event.relatedTarget) // Button that triggered the modal
+    const id = button.data('whatever')
+    const recipient = dataResponse.find(x => x.key == id);
+    const modal = $(this)
+    $('#delete-id').val(id);
+    $('#deleteModalLabel').text("Are you sure delete \"" + recipient.name + "\" ?")
+    $('#slug-modal').text(recipient.slug)
+})
+// Edit Categories Modal
+$('#editModal').on('show.bs.modal', function (event) {
+    const button = $(event.relatedTarget) // Button that triggered the modal
+    const id = button.data('whatever')
+    const recipient = dataResponse.find(x => x.key == id);
+    $('#edit-id').val(id);
+    $('#edit-tag').val(recipient.name);
+})
+// #############  End Modal Categories #########
+
+// #############  Start Ajax Action ##########
+// Delete categories
+const deleteChild = (data, level = 0, parentId) => {
+    for (e of data) {
+        if (e.level == level && e.parentId == parentId) {
+            dataResponse = dataResponse.filter(item => item.key != e.key);
+            if (e.hasChild == true)
+                deleteChild(data, level + 1, parseInt(e.key));
+        }
+    }
+
+}
+
+$('#form-delete-category').on('submit', (e) => {
+    e.preventDefault();
+    const cateSlug = $('#slug-modal').text();
+    const data = {
+        cate_slug: cateSlug,
+    };
+    const url = $('#form-delete-category').attr('action');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        type: 'delete',
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+            const idDelete = data.idDelete;
+            $('#deleteModal').modal('hide');
+            $('#successModal').modal('show');
+            const dataDelete = dataResponse.find(x => x.key == idDelete);
+            deleteChild(dataResponse, dataDelete.level + 1, dataDelete.key)
+            dataResponse = dataResponse.filter(item => item.key != dataDelete.key);
+            resetData();
+            showData(dataResponse, 0, 0, '');
+        },
+        error: function (data) {
+            let errors = data.responseJSON;
+            $('#errorModal').modal('show');
+        }
+    });
+})
