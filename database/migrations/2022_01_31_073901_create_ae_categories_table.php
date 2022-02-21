@@ -17,7 +17,7 @@ class CreateAeCategoriesTable extends Migration
             $table->id();
             $table->string('cate_name',100);
             $table->string('cate_slug',100);
-            $table->integer('cate_level')->default(0);
+            // $table->integer('cate_level')->default(0);
             $table->integer('parent_id')->default(0);
             $table->integer('children_count')->default(0);
             $table->enum('cate_type', ['public', 'deleted'])->default('public');

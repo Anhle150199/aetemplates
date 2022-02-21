@@ -55,7 +55,8 @@
                                         <div class="form-group ">
                                             <label class=" col-form-label form-control-label" for="selectCateParent">Parent
                                                 Category</label>
-                                            <select class="form-control" id="selectCateParent" name="selectCateParent">
+                                            <select class="form-control selectCateParent" id="selectCateParent"
+                                                name="selectCateParent">
                                                 <option value="0">None</option>
                                             </select>
                                             <p class="p-error text-danger" id="error-parent-select"></p>
@@ -152,14 +153,28 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <form action="" id="form-edit-category">
+                                        <form action="{{route('edit-category')}}" id="form-edit-category" >
                                             <div class="modal-body">
                                                 @csrf
                                                 <div class="form-group">
                                                     <input type="text" id="edit-id" name="edit-id" hidden>
+                                                    <label for="edit-category"
+                                                        class=" col-form-label form-control-label">Category Name</label>
                                                     <input type="text" id="edit-category" name="edit-category"
                                                         class="form-control" required>
                                                     <p id="error-edit-category" class="p-error text-danger"></p>
+                                                </div>
+                                                <label class=" col-form-label form-control-label">Category Name: </label>
+                                                <span id="slugEdit"></span>
+                                                <div class="form-group ">
+                                                    <label class=" col-form-label form-control-label"
+                                                        for="selectCateParentEdit">Parent
+                                                        Category</label>
+                                                    <select class="form-control selectCateParent"
+                                                        name="selectCateParentEdit" id="selectCateParentEdit">
+                                                        <option value="0">None</option>
+                                                    </select>
+                                                    <p class="p-error text-danger" id="error-parent-edit"></p>
                                                 </div>
 
                                             </div>
@@ -188,7 +203,7 @@
                                         </div>
                                         <form action="{{ route('delete-category') }}" id="form-delete-category">
                                             <div class="modal-body">
-                                                Slug: <span id="slug-modal"></span>
+                                                Slug: <span id="slug-delete-modal"></span>
                                                 <p class="text-danger font-italic font-weight-bold">When you do a delete,
                                                     you will also delete its subcategories !!!</p>
                                             </div>

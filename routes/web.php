@@ -27,6 +27,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('categories',[CategoryController::class,'showCategory'])->name('show-categories');
         Route::get('get-categories',[CategoryController::class,'getAllCategories'])->name('get-categories');
         Route::post('add-category',[CategoryController::class,'addCategory'])->name('add-category');
+        Route::put('edit-category',[CategoryController::class,'editCategory'])->name('edit-category');
         Route::delete('delete-category',[CategoryController::class,'deleteCategory'])->name('delete-category');
 
         // Tags

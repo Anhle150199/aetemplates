@@ -7,9 +7,9 @@ function colAction(index) {
 }
 
 // new row of table
-const row = (name, slug, posts, action, id, level, parentId) => {
+const row = (name, slug, posts, action, id, parentId) => {
     return '<div class="row " id="' + id + '"><div class="no"></div>' +
-        '<div class=\" col-4 level-' + level + '\" id="name-' + id + '\">' + name +
+        '<div class=\"col-4\" id="name-' + id + '\">' + name +
         '</div>' +
         '<div class="col-4" id=\"slug-' + id + '\">' + slug + '</div>' +
         '<div class="col-2 ">' + posts + '</div>' +
@@ -17,20 +17,19 @@ const row = (name, slug, posts, action, id, level, parentId) => {
         '</div><div id="child-' + id + '"><hr></div></div>';
 };
 // new option of select
-const newOption = (id, name, level) => {
+const newOption = (id, name) => {
     return '<option value="' + id + '">' + name + '</option>'
 }
-const showData = (data, level = 0, parentId = 0, space) => {
+const showData = (data, parentId = 0, space) => {
     for (e of data) {
-        if (e.level == level && e.parentId == parentId) {
+        if (e.parentId == parentId) {
             let name = e.name;
             name = space + " " + e.name;
-            $('#child-' + e.parentId).append(row(name, e.slug, e.posts, e.action, e.key, e.level, e
-                .parentId));
-            $('#selectCateParent').append(newOption(e.key, name, e.level));
+            $('#child-' + e.parentId).append(row(name, e.slug, e.posts, e.action, e.key, e.parentId));
+            $('#selectCateParent').append(newOption(e.key, name));
 
             if (e.hasChild == true)
-                showData(data, level + 1, parseInt(e.key), space + '—');
+                showData(data, parseInt(e.key), space + '—');
         }
     }
 
@@ -98,7 +97,7 @@ jQuery.extend({
                         posts: category.posts_count,
                         status: category.cate_type,
                         action: colAction(category.id),
-                        level: category.cate_level,
+                        // level: category.cate_level,
                         hasChild: hasChild,
                     });
                 }
@@ -107,7 +106,7 @@ jQuery.extend({
                     $('#status-table').text("No data available in table");
                 else {
                     $('#child-0').empty();
-                    showData(result, 0, 0, '');
+                    showData(result, 0, '');
                 }
             },
         });
@@ -154,7 +153,7 @@ $('#formAddCategory').on('submit', (e) => {
                 posts: category.posts_count,
                 status: category.cate_type,
                 action: colAction(category.id),
-                level: category.cate_level,
+                // level: category.cate_level,
                 hasChild: true,
             };
             dataResponse.push(category);
@@ -163,7 +162,7 @@ $('#formAddCategory').on('submit', (e) => {
             }
             resetData();
             let cateList = dataResponse;
-            showData(cateList, 0, 0, '');
+            showData(cateList, 0, '');
             $('#new-category').val('');
         },
         error: function (data) {
@@ -193,29 +192,47 @@ $('#deleteModal').on('show.bs.modal', function (event) {
     const button = $(event.relatedTarget) // Button that triggered the modal
     const id = button.data('whatever')
     const recipient = dataResponse.find(x => x.key == id);
-    const modal = $(this)
     $('#delete-id').val(id);
     $('#deleteModalLabel').text("Are you sure delete \"" + recipient.name + "\" ?")
-    $('#slug-modal').text(recipient.slug)
+    $('#slug-delete-modal').text(recipient.slug)
 })
 // Edit Categories Modal
+const showEditSelect = (data, parentId = 0, space, idEdit) => {
+    for (e of data) {
+        if (e.parentId == parentId && e.key != idEdit) {
+            let name = e.name;
+            name = space + " " + e.name;
+            console.log(name);
+            $('#selectCateParentEdit').append(newOption(e.key, name));
+            if (e.hasChild == true)
+                showEditSelect(data, e.key, space + '—', idEdit);
+        }
+    }
+
+}
+
 $('#editModal').on('show.bs.modal', function (event) {
     const button = $(event.relatedTarget) // Button that triggered the modal
     const id = button.data('whatever')
     const recipient = dataResponse.find(x => x.key == id);
     $('#edit-id').val(id);
-    $('#edit-tag').val(recipient.name);
+    $('#edit-category').val(recipient.name);
+    $('#slugEdit').text(recipient.slug);
+    $('#selectCateParentEdit').empty();
+    $('#selectCateParentEdit').append(newOption(0, 'None'));
+    showEditSelect(dataResponse, 0, '', id);
+    $('#selectCateParentEdit').val(recipient.parentId);
 })
 // #############  End Modal Categories #########
 
 // #############  Start Ajax Action ##########
 // Delete categories
-const deleteChild = (data, level = 0, parentId) => {
+const deleteChild = (data, parentId) => {
     for (e of data) {
-        if (e.level == level && e.parentId == parentId) {
+        if (e.parentId == parentId) {
             dataResponse = dataResponse.filter(item => item.key != e.key);
             if (e.hasChild == true)
-                deleteChild(data, level + 1, parseInt(e.key));
+                deleteChild(data, parseInt(e.key));
         }
     }
 
@@ -223,7 +240,7 @@ const deleteChild = (data, level = 0, parentId) => {
 
 $('#form-delete-category').on('submit', (e) => {
     e.preventDefault();
-    const cateSlug = $('#slug-modal').text();
+    const cateSlug = $('#slug-delete-modal').text();
     const data = {
         cate_slug: cateSlug,
     };
@@ -244,10 +261,10 @@ $('#form-delete-category').on('submit', (e) => {
             $('#deleteModal').modal('hide');
             $('#successModal').modal('show');
             const dataDelete = dataResponse.find(x => x.key == idDelete);
-            deleteChild(dataResponse, dataDelete.level + 1, dataDelete.key)
+            deleteChild(dataResponse, dataDelete.key)
             dataResponse = dataResponse.filter(item => item.key != dataDelete.key);
             resetData();
-            showData(dataResponse, 0, 0, '');
+            showData(dataResponse, 0, '');
         },
         error: function (data) {
             let errors = data.responseJSON;
@@ -255,3 +272,82 @@ $('#form-delete-category').on('submit', (e) => {
         }
     });
 })
+
+// Edit Categories
+$('#form-edit-category').on('submit', (e) => {
+    e.preventDefault();
+    const editParentId = $('#selectCateParentEdit').val();
+    const editNameCate = $('#edit-category').val();
+    const cateSlug = $('#slugEdit').text();
+    let slugEditCate = convertUrl(editNameCate);
+    if (selectCateParent != 0) {
+        slugEditCate = $('#slug-' + editParentId).text() + "/" + slugEditCate;
+    }
+
+    const data = {
+        cate_old_slug: cateSlug,
+        cate_slug: slugEditCate,
+        parent_id: editParentId,
+        cate_name: editNameCate,
+
+    };
+    const url = $('#form-edit-category').attr('action');
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    $.ajax({
+        type: 'put',
+        url: url,
+        data: data,
+        dataType: 'json',
+        success: function (data) {
+            console.log(data.cateEdit);
+            let editData = data.cateEdit;
+            let hasChild = false;
+            if (editData.children_count > 0) {
+                hasChild = true;
+            }
+            let category = {
+                "key": editData.id,
+                parentId: editData.parent_id,
+                name: editData.cate_name,
+                slug: editData.cate_slug,
+                posts: editData.posts_count,
+                status: editData.cate_type,
+                action: colAction(editData.id),
+                hasChild: hasChild,
+            };
+            dataResponse = dataResponse.filter(item => item.key != category.key);
+            if (category.parentId != 0) {
+                dataResponse.find(x => x.key == category.parentId).hasChild = true;
+            }
+            dataResponse.push(category);
+            resetData();
+            // let cateList = dataResponse;
+            showData(dataResponse, 0, '');
+
+        },
+        error: function (data) {
+            let errors = data.responseJSON.errors;
+            if (errors.cate_name) {
+                $('#error-edit-category').text(errors.cate_name);
+            } else if (errors.cate_old_slug) {
+                $('#error-edit-category').text(errors.cate_old_slug);
+            } else if (errors.cate_slug) {
+                $('#error-edit-category').text(errors.cate_slug);
+            } else {
+                $('#error-edit-category').text(errors);
+            }
+            $('#error-parent-edit').text(errors.parent_id);
+            setTimeout(() => {
+                $('#error-edit-category').text("");
+                $('#error-parent-edit').text("");
+            }, 5000);
+        }
+    });
+})
+
+// ############# End Ajax Action ############

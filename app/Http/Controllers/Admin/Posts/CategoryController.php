@@ -47,9 +47,8 @@ class CategoryController extends Controller
                 if ($request->parent_id != 0) {
                     $parent = Category::where('id', $request->parent_id)->first();
                     $parent->children_count = $parent->children_count + 1;
-                    $newCategory->cate_level = $parent->cate_level + 1;
                     $parent->save();
-                } else $newCategory->cate_level = 0;
+                }
                 $newCategory->posts_count = 0;
                 $newCategory->save();
             } catch (\Throwable $th) {
@@ -59,6 +58,48 @@ class CategoryController extends Controller
         }
     }
 
+    public function editCategory(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'cate_name' => ['required', 'string', 'max:100'],
+                'cate_old_slug' => ['required', 'string', 'max:100'],
+                'cate_slug' => ['required', 'string', 'max:100', 'unique:ae_categories'],
+                'parent_id' => ['required'],
+            ]
+        );
+        if ($validator->fails()) {
+            return new JsonResponse(['errors' => $validator->getMessageBag()->toArray()], 422);
+        } else {
+            $editCate = Category::where('cate_slug', $request->cate_old_slug)->first();
+            if ($editCate == null) {
+                return new JsonResponse(['errors' => 'Haven\'t object to edit'], 422);
+            }
+            try {
+                if ($editCate->parent_id != 0) {
+
+                    $oldParentCate = Category::where('id', $editCate->parent_id)->first();
+                    $oldParentCate->children_count -= 1;
+                    $oldParentCate->save();
+                }
+
+                $editCate->cate_name = $request->cate_name;
+                $editCate->cate_slug = $request->cate_slug;
+                $editCate->parent_id = $request->parent_id;
+
+                if ($request->parent_id != 0) {
+                    $newParentCate = Category::where('id', $request->parent_id)->first();
+                    $newParentCate->children_count += 1;
+                    $newParentCate->save();
+                }
+                $editCate->save();
+            } catch (\Throwable $th) {
+                return new JsonResponse(['errors' => 'Have error when edit data',], 422);
+            }
+            return new JsonResponse(["cateEdit" => $editCate], 200);
+        }
+    }
 
     public function deleteCategory(Request $request)
     {
@@ -67,13 +108,13 @@ class CategoryController extends Controller
             return new JsonResponse(['errors' => 'Haven\'t object to delete'], 406);
         }
         try {
-            if ($deleteCate->children_count > 0) {
-                if ($deleteCate->parent_id != 0) {
+            if ($deleteCate->parent_id != 0) {
 
-                    $parentCate = Category::where('id', $deleteCate->parent_id)->first();
-                    $parentCate->children_count -= 1;
-                    $parentCate->save();
-                }
+                $parentCate = Category::where('id', $deleteCate->parent_id)->first();
+                $parentCate->children_count -= 1;
+                $parentCate->save();
+            }
+            if ($deleteCate->children_count > 0) {
                 $this->deleteChildCate($deleteCate->id);
             }
             $idDelete = $deleteCate->id;
