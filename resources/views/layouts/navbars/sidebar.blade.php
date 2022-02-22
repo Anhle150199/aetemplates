@@ -43,7 +43,7 @@
                                     <a href="#" class="nav-link">All Posts</a>
                                 </li>
                                 <li class="nav-item" id="all-new-post" >
-                                    <a href="#" class="nav-link">Add New Posts</a>
+                                    <a href="{{route('new-post')}}" class="nav-link">Add New Posts</a>
                                 </li>
                                 <li class="nav-item" id="categories">
                                     <a href="{{route('show-categories')}}" class="nav-link">Categories</a>

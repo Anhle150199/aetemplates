@@ -23,6 +23,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Posts manage
     Route::prefix('posts')->group(function ()
     {
+        // Posts
+        Route::get('new-post',[PostController::class,'getNewPost'])->name('new-post');
+
         // Categories
         Route::get('categories',[CategoryController::class,'showCategory'])->name('show-categories');
         Route::get('get-categories',[CategoryController::class,'getAllCategories'])->name('get-categories');

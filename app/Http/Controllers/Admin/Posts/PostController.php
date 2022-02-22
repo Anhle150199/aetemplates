@@ -8,4 +8,8 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     //
+    public function getNewPost()
+    {
+        return view('posts.newPost');
+    }
 }
