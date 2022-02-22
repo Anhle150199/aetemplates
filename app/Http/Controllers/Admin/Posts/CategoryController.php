@@ -15,6 +15,7 @@ class CategoryController extends Controller
         return view('posts.category', ['slidebar' => ['posts', 'categories']]);
     }
 
+    // API get all category
     public function getAllCategories(Request $request)
     {
         try {
@@ -25,6 +26,7 @@ class CategoryController extends Controller
         return new JsonResponse(['categories' => $categories], 200);
     }
 
+    // Add Category
     public function addCategory(Request $request)
     {
         $validator = Validator::make(
@@ -58,6 +60,7 @@ class CategoryController extends Controller
         }
     }
 
+    // Edit Category
     public function editCategory(Request $request)
     {
         $validator = Validator::make(
@@ -109,6 +112,7 @@ class CategoryController extends Controller
         }
     }
 
+    // Delete Category
     public function deleteCategory(Request $request)
     {
         $deleteCate = Category::where('cate_slug', $request->cate_slug)->first();
@@ -133,6 +137,7 @@ class CategoryController extends Controller
         return new JsonResponse(['idDelete' => $idDelete], 200);
     }
 
+    // Recursive child delete
     public function deleteChildCate(int $parentId)
     {
         $childCate = Category::where('parent_id', $parentId)->get();

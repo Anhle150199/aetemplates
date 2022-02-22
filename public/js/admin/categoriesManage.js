@@ -1,46 +1,31 @@
-// col action for row table
+// HTML col action for row table
 function colAction(index) {
-    return (
-        '<a href="#!" class="table-action" data-toggle="modal" data-target="#editModal" data-whatever="' +
-        index +
-        '"><i class="fas fa-edit"></i></a>' +
-        '<a href="#" class="table-action table-action-delete" data-toggle="modal" data-target="#deleteModal" data-whatever="' +
-        index +
-        '"><i class="fas fa-trash"></i></a>'
-    );
+    return `<a href="#!" class="table-action" data-toggle="modal" data-target="#editModal" data-whatever="${index}">
+            <i class="fas fa-edit"></i>
+        </a>
+        <a href="#" class="table-action table-action-delete" data-toggle="modal" data-target="#deleteModal" data-whatever="${index}">
+            <i class="fas fa-trash"></i>
+        </a>`;
 }
 
-// new row of table
+// HTML new row of table
 const row = (name, slug, posts, action, id, parentId) => {
-    return (
-        '<div class="row " id="' +
-        id +
-        '"><div class="no"></div>' +
-        '<div class="col-4" id="name-' +
-        id +
-        '">' +
-        name +
-        "</div>" +
-        '<div class="col-4" id="slug-' +
-        id +
-        '">' +
-        slug +
-        "</div>" +
-        '<div class="col-2 ">' +
-        posts +
-        "</div>" +
-        '<div class="col">' +
-        action +
-        "</div>" +
-        '</div><div id="child-' +
-        id +
-        '"><hr></div></div>'
-    );
+    return `<div class="row " id="${id}">
+            <div class="no"></div>
+            <div class="col-4" id="name-${id}">${name}</div>
+            <div class="col-4" id="slug-${id}">${slug} </div>
+            <div class="col-2">${posts}</div>
+            <div class="col">${action}</div></div>
+            <div id="child-${id}"><hr></div>
+        </div>`;
 };
-// new option of select
+
+// New option of select category
 const newOption = (id, name) => {
-    return '<option value="' + id + '">' + name + "</option>";
+    return `<option value="${id}">${name}</option>`;
 };
+
+// Show data for table and Select Tag
 const showData = (data, parentId = 0, space) => {
     for (e of data) {
         if (e.parentId == parentId) {
@@ -50,18 +35,20 @@ const showData = (data, parentId = 0, space) => {
                 row(name, e.slug, e.posts, e.action, e.key, e.parentId)
             );
             $("#selectCateParent").append(newOption(e.key, name));
-
             if (e.hasChild == true)
                 showData(data, parseInt(e.key), space + "—");
         }
     }
 };
+
+// Empty Table and Select Tag
 const resetData = () => {
     $("#selectCateParent").empty();
     $("#child-0").empty();
     $("#selectCateParent").append(newOption(0, "None"));
 };
-// remove space, .....
+
+// Remove redundant characters for URL
 function removeVietnameseTones(str) {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
@@ -88,12 +75,13 @@ function removeVietnameseTones(str) {
     return str;
 }
 
-// convert to URL
+// Convert name to URL
 function convertUrl(p) {
     a = removeVietnameseTones(p);
     return a.replace(/\s+/g, "-").toLowerCase();
 }
 
+// Initialization data categories by ajax
 jQuery.extend({
     getValues: function () {
         var result = null;
@@ -141,6 +129,7 @@ var dataResponse = $.getValues();
 // Add New Category
 $("#formAddCategory").on("submit", (e) => {
     e.preventDefault();
+
     const nameNewCate = $("#new-category").val();
     let slugNewCate = convertUrl(nameNewCate);
     const selectCateParent = $("#selectCateParent").val();
@@ -164,6 +153,7 @@ $("#formAddCategory").on("submit", (e) => {
         url: url,
         data: data,
         dataType: "json",
+
         success: function (data) {
             let category = data.newCategory;
             $("#successModal").modal("show");
@@ -175,20 +165,22 @@ $("#formAddCategory").on("submit", (e) => {
                 posts: category.posts_count,
                 status: category.cate_type,
                 action: colAction(category.id),
-                // level: category.cate_level,
                 hasChild: true,
             };
             dataResponse.push(category);
+
             if (category.parentId != 0) {
                 dataResponse.find(
                     (x) => x.key == category.parentId
                 ).hasChild = true;
             }
+
             resetData();
             let cateList = dataResponse;
             showData(cateList, 0, "");
             $("#new-category").val("");
         },
+
         error: function (data) {
             let errors = data.responseJSON.errors;
             if (errors.cate_name) {
@@ -208,7 +200,7 @@ $("#formAddCategory").on("submit", (e) => {
 });
 
 //  ######### Modal Categories #########
-// Delete Categories Modal
+// Event Delete Categories Modal
 $("#deleteModal").on("show.bs.modal", function (event) {
     const button = $(event.relatedTarget); // Button that triggered the modal
     const id = button.data("whatever");
@@ -219,7 +211,8 @@ $("#deleteModal").on("show.bs.modal", function (event) {
     );
     $("#slug-delete-modal").text(recipient.slug);
 });
-// Edit Categories Modal
+
+// Show select parent for Edit Modal
 const showEditSelect = (data, parentId = 0, space, idEdit) => {
     for (e of data) {
         if (e.parentId == parentId && e.key != idEdit) {
@@ -232,6 +225,7 @@ const showEditSelect = (data, parentId = 0, space, idEdit) => {
     }
 };
 
+// Event Edit Categories Modal
 $("#editModal").on("show.bs.modal", function (event) {
     const button = $(event.relatedTarget); // Button that triggered the modal
     const id = button.data("whatever");
@@ -248,15 +242,6 @@ $("#editModal").on("show.bs.modal", function (event) {
 
 // #############  Start Ajax Action ##########
 // Delete categories
-const deleteChild = (data, parentId) => {
-    for (e of data) {
-        if (e.parentId == parentId) {
-            dataResponse = dataResponse.filter((item) => item.key != e.key);
-            if (e.hasChild == true) deleteChild(data, parseInt(e.key));
-        }
-    }
-};
-
 $("#form-delete-category").on("submit", (e) => {
     e.preventDefault();
     const cateSlug = $("#slug-delete-modal").text();
@@ -277,6 +262,20 @@ $("#form-delete-category").on("submit", (e) => {
         dataType: "json",
         success: function (data) {
             const idDelete = data.idDelete;
+            
+            // recursive child
+            const deleteChild = (data, parentId) => {
+                for (e of data) {
+                    if (e.parentId == parentId) {
+                        dataResponse = dataResponse.filter(
+                            (item) => item.key != e.key
+                        );
+                        if (e.hasChild == true)
+                            deleteChild(data, parseInt(e.key));
+                    }
+                }
+            };
+
             $("#deleteModal").modal("hide");
             $("#successModal").modal("show");
             const dataDelete = dataResponse.find((x) => x.key == idDelete);
@@ -354,7 +353,6 @@ $("#form-edit-category").on("submit", (e) => {
             showData(dataResponse, 0, "");
             $("#editModal").modal("hide");
             $("#successModal").modal("show");
-
         },
         error: function (data) {
             let errors = data.responseJSON.errors;
