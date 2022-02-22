@@ -18,7 +18,7 @@ class CategoryController extends Controller
     public function getAllCategories(Request $request)
     {
         try {
-            $categories = Category::all();
+            $categories = Category::orderBy('parent_id', 'asc')->get();
         } catch (\Throwable $th) {
             return new JsonResponse(['errors' => 'Have error when get data'], 422);
         }
@@ -92,6 +92,14 @@ class CategoryController extends Controller
                     $newParentCate = Category::where('id', $request->parent_id)->first();
                     $newParentCate->children_count += 1;
                     $newParentCate->save();
+                }
+
+                if ($editCate->children_count > 0) {
+                    foreach ($request->child as $child) {
+                        $childCate = Category::where('id', $child['id'])->first();
+                        $childCate->cate_slug = $child['slug'];
+                        $childCate->save();
+                    }
                 }
                 $editCate->save();
             } catch (\Throwable $th) {
