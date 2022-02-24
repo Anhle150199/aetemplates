@@ -33,7 +33,7 @@
                                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                                     <li class="breadcrumb-item"><a href="#"><i class="fa fa-paper-plane"></i></a></li>
                                     <li class="breadcrumb-item"><a href="#">Posts</a></li>
-                                    <li class="breadcrumb-item"><a href="#"> New Post </a></li>
+                                    <li class="breadcrumb-item"><a href="#"> {{ $status }} </a></li>
                                 </ol>
                             </nav>
                         </div>
@@ -47,55 +47,86 @@
             <div class="row">
                 {{-- Custom Detail Post --}}
                 <div class="col-xl-3 order-xl-2">
-                    <div class="card card-profile">
-                                    <div class="accordion" id="accordionExample">
-                                        {{-- <div class="card"> --}}
-                                          <div class="card-header" id="headingOne">
-                                            <h5 class="mb-0">
-                                              <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                Collapsible Group Item #1
-                                              </button>
-                                            </h5>
-                                          </div>
+                    <div class="card">
+                        <div class="card-header" style="padding: 1.2rem">
+                            <h3 class="mb-0">Post Detail </h3>
+                        </div>
 
-                                          <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                            {{-- <div class="card-body"> --}}
-                                                Collapsible Group Item #1
+                        <div class="card-body" style="padding: 0;">
+                            <div class="card">
+                                <div class="card-header" id="headingOne">
+                                    <h5 class="mb-0" data-toggle="collapse" data-target="#collapseOne"
+                                        aria-expanded="true" aria-controls="collapseOne">
+                                        <button class="btn btn-link w-100 text-left">
+                                            Status & Visibility
+                                        </button>
+                                    </h5>
+                                </div>
 
-                                            {{-- </div> --}}
-                                          </div>
-                                        {{-- </div> --}}
-                                        <div class="card">
-                                          <div class="card-header" id="headingTwo">
-                                            <h5 class="mb-0">
-                                              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                                Collapsible Group Item #2
-                                              </button>
-                                            </h5>
-                                          </div>
-                                          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                                    data-parent="#accordion">
+                                    <div class="card-body" style="padding: 0.5rem 1.5rem;">
+                                        <div class="text-sm ">
+                                            <div class="w-100">
+                                                <label for="visibility" class="col-form-label">Visibility: </label>
+                                                <select name="" id="" class="btn btn-sm" style="box-shadow: none;">
+                                                    <option value="">Drafts</option>
+                                                    <option value="">Public</option>
+                                                </select>
                                             </div>
-                                          </div>
-                                        </div>
-                                        <div class="card">
-                                          <div class="card-header" id="headingThree">
-                                            <h5 class="mb-0">
-                                              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                                Collapsible Group Item #3
-                                              </button>
-                                            </h5>
-                                          </div>
-                                          <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                                            <div class="card-body">
-                                              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                            <div class="w-100">
+                                                <label for="" class="col-form-label">Create Time: </label>
+                                                <span>22-2-2222 15:15:15</span>
                                             </div>
-                                          </div>
+                                            <button class="btn btn-danger btn-sm"> Move to trash</button>
                                         </div>
-                                      </div>
-                        </form>
-                        {{-- End Form --}}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="accordion">
+                                {{-- URL Link --}}
+                                <div class="card">
+                                    <div class="card-header" id="headingTwo">
+                                        <h5 class="mb-0 collapsed " data-toggle="collapse" data-target="#collapseTwo"
+                                            aria-expanded="false" aria-controls="collapseTwo">
+                                            <button class="btn btn-link w-100 text-left">
+                                                URL Link
+                                            </button>
+                                        </h5>
+                                    </div>
+                                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                        data-parent="#accordion">
+                                        <div class="card-body text-sm">
+                                            <label for="slugPost">Slug Post</label>
+                                            <input type="text" class="form-control form-control-sm" id="slugPost"
+                                                aria-describedby="slug Post" placeholder="Enter slug" required>
+                                            <small id="urlPost" class="form-text text-muted"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header" id="headingThree">
+                                        <h5 class="mb-0 collapsed" data-toggle="collapse" data-target="#collapseThree"
+                                            aria-expanded="false" aria-controls="collapseThree">
+                                            <button class="btn btn-link ">
+                                                Categories
+                                            </button>
+                                        </h5>
+                                    </div>
+                                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                                        data-parent="#accordion">
+                                        <div class="card-body">
+                                            <select class="form-control selectCateParent" id="selectCateParent"
+                                                name="selectCateParent">
+                                                <option value="0">None</option>
+                                            </select>
+                                            <input type="text" id="slugCategory" value="" hidden>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -105,8 +136,9 @@
                     <div class="card ">
                         <!-- Card header -->
                         <div class="card-header">
-                                <input type="text" class="form-control border-top-0 border-right-0 border-left-0 shadow-none" id="inputTitle"
-                                placeholder="Title" required>
+                            <textarea name="" id="inputTitlePost" cols="30" rows="1"
+                                class="form-control border-0 shadow-none font-weight-bold "
+                                placeholder="Title"></textarea>
                         </div>
                         <div class="table-responsive py-4">
                         </div>
@@ -115,17 +147,35 @@
                 </div>
             </div>
         </div>
-        {{-- </div> --}}
 
     </div>
+    <style>
+        .card {
+            margin: 0;
+        }
 
+        .card-header {
+            padding: 0;
+        }
+
+        #inputTitlePost {
+            font-size: 20px;
+        }
+
+    </style>
     <script src="{{ url('/') }}/vendor/jquery/dist/jquery.min.js"></script>
     <script src="{{ url('/') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url('/') }}/vendor/js-cookie/js.cookie.js"></script>
     <script src="{{ url('/') }}/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
     <script src="{{ url('/') }}/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
-    <script src="{{ url('/') }}/js/argon.js?v=1.1.0"></script>
-    <script src="{{ url('/') }}/js/demo.min.js"></script>
+    {{-- <script src="{{ url('/') }}/js/argon.js?v=1.1.0"></script> --}}
+    {{-- <script src="{{ url('/') }}/js/demo.min.js"></script> --}}
+    <script src="{{ url('/') }}/js/admin/categoriesManage.js"></script>
+    <script src="{{ url('/') }}/js/admin/detailPost.js"></script>
+
+    <script>
+
+    </script>
 </body>
 
 </html>

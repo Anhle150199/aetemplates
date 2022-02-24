@@ -22,7 +22,7 @@ const row = (name, slug, posts, action, id, parentId) => {
 
 // New option of select category
 const newOption = (id, name) => {
-    return `<option value="${id}">${name}</option>`;
+    return `<option value="${id}" >${name}</option>`;
 };
 
 // Show data for table and Select Tag
@@ -262,7 +262,7 @@ $("#form-delete-category").on("submit", (e) => {
         dataType: "json",
         success: function (data) {
             const idDelete = data.idDelete;
-            
+
             // recursive child
             const deleteChild = (data, parentId) => {
                 for (e of data) {
