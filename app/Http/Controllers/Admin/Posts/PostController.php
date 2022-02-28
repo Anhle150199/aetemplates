@@ -10,6 +10,6 @@ class PostController extends Controller
     //
     public function getNewPost()
     {
-        return view('posts.newPost', ['status'=>'New Post']);
+        return view('posts.detailPost', ['status'=>'New Post']);
     }
 }

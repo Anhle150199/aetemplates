@@ -135,7 +135,8 @@ $("#formAddCategory").on("submit", (e) => {
     const selectCateParent = $("#selectCateParent").val();
     if (selectCateParent != 0) {
         slugNewCate = $("#slug-" + selectCateParent).text() + "/" + slugNewCate;
-    }
+    } else
+        slugNewCate = '/' + slugNewCate;
     const data = {
         cate_name: nameNewCate,
         cate_slug: slugNewCate,
@@ -305,7 +306,8 @@ $("#form-edit-category").on("submit", (e) => {
 
     if (editParentId != 0) {
         slugEditCate = $("#slug-" + editParentId).text() + "/" + slugEditCate;
-    }
+    } else
+        slugEditCate = '/' + slugEditCate;
     let child = [];
     const getChild = (parent) => {
         dataResponse

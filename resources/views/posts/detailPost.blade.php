@@ -20,7 +20,97 @@
     <script src="{{ url('/') }}/js/app.js" defer></script>
 </head>
 
-<body>
+<body>{{-- Sidenav --}}
+    <nav class="sidenav navbar navbar-vertical fixed-right navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+        <div class="scroll-wrapper scrollbar-inner" style="position: relative;"><div class="scrollbar-inner scroll-content scroll-scrolly_visible" style="height: auto; margin-bottom: 0px; margin-right: 0px; max-height: 317.642px;">
+
+            <div class=" d-flex justify-content-center">
+                <div>
+                    <!-- Sidenav toggler -->
+                    <div class="sidenav-toggler d-none d-xl-block active" data-action="sidenav-unpin" data-target="#sidenav-main">
+                        <div class="sidenav-toggler-inner">
+                            <i class="sidenav-toggler-line"></i>
+                            <i class="sidenav-toggler-line"></i>
+                            <i class="sidenav-toggler-line"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar-brand" style="padding: none;">
+                    <button class="btn btn-success">Pushlist</button>
+                </div>
+            </div>
+            <div class="navbar-inner">
+                <!-- Collapse -->
+                <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+                    <!-- Nav items -->
+                    <ul class="navbar-nav">
+                        <!-- Dashboards -->
+                        <li class="nav-item">
+                            <a class="nav-link active" href="http://127.0.0.1:8000/dashboard" id="dashboards" aria-expanded="true">
+                                <i class="fa fa-home text-primary"></i>
+                                <span class="nav-link-text">Dashboards</span>
+                            </a>
+                        </li>
+
+                        <!-- Posts -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#navbar-posts" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-posts" id="posts">
+                                <i class="fa fa-paper-plane text-orange"></i>
+                                <span class="nav-link-text">Posts</span>
+                            </a>
+                            <div class="collapse" id="navbar-posts">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item" id="all-post">
+                                        <a href="#" class="nav-link">All Posts</a>
+                                    </li>
+                                    <li class="nav-item" id="all-new-post">
+                                        <a href="http://127.0.0.1:8000/posts/new-post" class="nav-link">Add New Posts</a>
+                                    </li>
+                                    <li class="nav-item" id="categories">
+                                        <a href="http://127.0.0.1:8000/posts/categories" class="nav-link">Categories</a>
+                                    </li>
+                                    <li class="nav-item" id="tags">
+                                        <a href="http://127.0.0.1:8000/posts/tags" class="nav-link">Tags</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="#navbar-users" data-toggle="collapse" role="button" id="users" aria-expanded="false" aria-controls="navbar-users">
+                                <i class="fa fa-users text-info"></i>
+                                <span class="nav-link-text">Users</span>
+                            </a>
+                            <div class="collapse" id="navbar-users">
+                                <ul class="nav nav-sm flex-column">
+                                    <li class="nav-item" id="all-user">
+                                        <a href="http://127.0.0.1:8000/user/all" class="nav-link">All User</a>
+                                    </li>
+                                    <li class="nav-item" id="add-new-user">
+                                        <a href="http://127.0.0.1:8000/user/new-user" class="nav-link">Add New User</a>
+                                    </li>
+                                    <li class="nav-item" id="request">
+                                        <a href="http://127.0.0.1:8000/user/request" class="nav-link">Request</a>
+                                    </li>
+                                    <li class="nav-item" id="profile">
+                                        <a href="http://127.0.0.1:8000/user/profile" class="nav-link">Profile</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="media">
+                                <i class="fa fa-cube text-green"></i>
+                                <span class="nav-link-text">Media</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <hr class="my-3">
+                                                                                <input type="text" id="slidebar-0" value="dashboards" hidden="">
+                                                                            </div>
+            </div>
+        </div><div class="scroll-element scroll-x scroll-scrolly_visible"><div class="scroll-element_outer"><div class="scroll-element_size"></div><div class="scroll-element_track"></div><div class="scroll-bar" style="width: 0px;"></div></div></div><div class="scroll-element scroll-y scroll-scrolly_visible"><div class="scroll-element_outer"><div class="scroll-element_size"></div><div class="scroll-element_track"></div><div class="scroll-bar" style="height: 281px; top: 0px;"></div></div></div></div>
+    </nav>
     <div class="main-content overflow-hiden" id="panel">
         <div class="header pb-6 bg-primary">
             <div class="container-fluid">
@@ -53,7 +143,7 @@
                         </div>
 
                         <div class="card-body" style="padding: 0;">
-                            <div class="card">
+                            {{-- <div class="card">
                                 <div class="card-header" id="headingOne">
                                     <h5 class="mb-0" data-toggle="collapse" data-target="#collapseOne"
                                         aria-expanded="true" aria-controls="collapseOne">
@@ -85,7 +175,7 @@
                             </div>
 
                             <div id="accordion">
-                                {{-- URL Link --}}
+
                                 <div class="card">
                                     <div class="card-header" id="headingTwo">
                                         <h5 class="mb-0 collapsed " data-toggle="collapse" data-target="#collapseTwo"
@@ -125,7 +215,23 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="card">
+                                    <div class="card-header" id="heading4">
+                                        <h5 class="mb-0 collapsed" data-toggle="collapse" data-target="#collapse4"
+                                            aria-expanded="false" aria-controls="collapse4">
+                                            <button class="btn btn-link ">
+                                                Tag
+                                            </button>
+                                        </h5>
+                                    </div>
+                                    <div id="collapse4" class="collapse" aria-labelledby="heading4"
+                                        data-parent="#accordion">
+                                        <div class="card-body">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
+
                         </div>
                     </div>
                 </div>
@@ -161,6 +267,9 @@
         #inputTitlePost {
             font-size: 20px;
         }
+        textarea{
+            resize: none;
+        }
 
     </style>
     <script src="{{ url('/') }}/vendor/jquery/dist/jquery.min.js"></script>
@@ -168,8 +277,8 @@
     <script src="{{ url('/') }}/vendor/js-cookie/js.cookie.js"></script>
     <script src="{{ url('/') }}/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
     <script src="{{ url('/') }}/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
-    {{-- <script src="{{ url('/') }}/js/argon.js?v=1.1.0"></script> --}}
-    {{-- <script src="{{ url('/') }}/js/demo.min.js"></script> --}}
+    <script src="{{ url('/') }}/js/argon.js?v=1.1.0"></script>
+    <script src="{{ url('/') }}/js/demo.min.js"></script>
     <script src="{{ url('/') }}/js/admin/categoriesManage.js"></script>
     <script src="{{ url('/') }}/js/admin/detailPost.js"></script>
 
