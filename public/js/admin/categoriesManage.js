@@ -83,7 +83,7 @@ function convertUrl(p) {
 
 // Initialization data categories by ajax
 jQuery.extend({
-    getValues: function () {
+    getCategories: function () {
         var result = null;
         $.ajax({
             url: "/posts/get-categories",
@@ -122,9 +122,32 @@ jQuery.extend({
         });
         return result;
     },
+
+    getTags: function () {
+        var result = null;
+        $.ajax({
+            url: "/posts/get-tags",
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (json) {
+                let tags = [];
+                for (tag of json.tags) {
+                    tags.push({
+                        id: parseInt(tag.id),
+                        name: tag.tag_name,
+                        slug: tag.tag_slug,
+                        posts: tag.posts_count,
+                    });
+                }
+                result = tags;
+            },
+        });
+        return result;
+    },
 });
 
-var dataResponse = $.getValues();
+var dataResponse = $.getCategories();
 
 // Add New Category
 $("#formAddCategory").on("submit", (e) => {

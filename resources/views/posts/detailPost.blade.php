@@ -60,15 +60,15 @@
                                             <div class="text-sm ">
                                                 <div class="w-100">
                                                     <label for="visibility" class="col-form-label">Visibility: </label>
-                                                    <select name="" id="" class="btn btn-sm"
+                                                    <select name="" id="" class="btn btn-sm" select="Public"
                                                         style="box-shadow: none;">
-                                                        <option value="">Drafts</option>
-                                                        <option value="">Public</option>
+                                                        <option value="Drafts">Drafts</option>
+                                                        <option value="Public">Public</option>
                                                     </select>
                                                 </div>
                                                 <div class="w-100">
                                                     <label for="" class="col-form-label">Create Time: </label>
-                                                    <span>22-2-2222 15:15:15</span>
+                                                    <span>{{ date('Y/m/d H:i:s') }}</span>
                                                 </div>
                                                 <button class="btn btn-danger btn-sm"> Move to trash</button>
                                             </div>
@@ -134,11 +134,15 @@
                                             <div class="" tabindex="-1"><label for="input-tag">Add New
                                                     Tag</label>
                                                 <div class="form-control" id="input-tag" style="height: auto;">
-                                                    <input type="text" value="" />
-                                                </div>
-                                                <input type="text" id="input-tag-list" hidden value="" data-toggle="tags" />
 
-                                                <small>Separate with commas or the Enter key.</small>
+                                                    <input type="text" value="" class="border-0 shadow-none p-1" list="tag-list-available" />
+                                                    <datalist id="tag-list-available">
+                                                    </datalist>
+                                                </div>
+                                                <input type="text" id="input-tag-list" hidden value=""
+                                                    data-toggle="tags" />
+
+                                                <small>Separate with the Enter key and max tags is 10</small>
                                             </div>
 
 
@@ -160,7 +164,8 @@
                                         data-parent="#accordion">
                                         <div class="card-body justify-content-center d-flex align-items-center"
                                             id="imagePostBody">
-                                            <div id="imageInput" style="height: auto; width: 100%; cursor: pointer;">
+                                            <div id="imageInput" class="cursor-pointer"
+                                                style="height: auto; width: 100%;">
                                             </div>
                                             <div class="cropme" hidden style="height: 405px; width: 720px;">
                                             </div>
@@ -181,7 +186,8 @@
                                     <div id="collapse6" class="collapse" aria-labelledby="heading6"
                                         data-parent="#accordion">
                                         <div class="card-body">
-                                            <textarea name="excerpt" id="" cols="30" rows="1" class="form-control textareaInput"></textarea>
+                                            <textarea name="excerpt" id="" cols="30" rows="1"
+                                                class="form-control textareaInput"></textarea>
                                             <small>Enter Excerpt for your post</small>
                                         </div>
                                     </div>
@@ -240,12 +246,23 @@
         #input-tag>input {
             flex: 1;
             display: inline-block;
+            min-width: 20%;
+        }
+
+        input::-webkit-picker-indicator {
+            display: none;
+        }
+        .cursor-pointer {
+            cursor: pointer;
         }
 
         textarea {
             resize: none;
         }
+        .border-0{
+            outline: none;
 
+        }
         /* For other boilerplate styles, see: /docs/general-configuration-guide/boilerplate-content-css/ */
         /*
         * For rendering images inserted using the image plugin.
@@ -321,6 +338,7 @@
     <script src="{{ url('/') }}/js/demo.min.js"></script>
 
     <script>
+        setHeightDetailPost();
         var useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
         tinymce.init({
@@ -405,7 +423,7 @@
             ],
             template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
             template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
-            height: 600,
+            height: heightPostDiv,
             image_caption: true,
             quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
             noneditable_noneditable_class: 'mceNonEditable',
@@ -415,8 +433,6 @@
             content_css: useDarkMode ? 'dark' : 'default',
             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
         });
-
-        setHeightDetailPost();
     </script>
 
     <script>

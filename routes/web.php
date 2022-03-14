@@ -24,7 +24,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::prefix('posts')->group(function ()
     {
         // Posts
-        Route::get('new-post',[PostController::class,'getNewPost'])->name('new-post');
+        Route::get('new-post',[PostController::class,'getDetailPost'])->name('new-post');
 
         // Categories
         Route::get('categories',[CategoryController::class,'showCategory'])->name('show-categories');
@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         // Tags
         Route::get('tags',[TagController::class,'showTag'])->name('show-tags');
+        Route::get('get-tags',[TagController::class,'getAllTags'])->name('get-tags');
         Route::put('add-tag',[TagController::class,'addTag'])->name('add-tag');
         Route::put('edit-tag',[TagController::class,'editTag'])->name('edit-tag');
         Route::delete('delete-tag',[TagController::class,'deleteTag'])->name('delete-tag');

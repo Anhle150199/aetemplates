@@ -17511,11 +17511,6 @@ a.text-default:focus
     color: #050a12 !important;
 }
 
-.text-white
-{
-    color: #fff !important;
-}
-
 a.text-white:hover,
 a.text-white:focus
 {
@@ -26158,17 +26153,6 @@ a.text-cyan:hover,
 a.text-cyan:focus
 {
     color: #00dea2 !important;
-}
-
-.text-white
-{
-    color: #fff !important;
-}
-
-a.text-white:hover,
-a.text-white:focus
-{
-    color: #d9d9d9 !important;
 }
 
 .text-gray

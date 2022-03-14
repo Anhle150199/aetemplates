@@ -15,6 +15,18 @@ class TagController extends Controller
         $tagList = Tag::all();
         return view('posts.tag', ['slidebar' => ['posts', 'tags'], 'tags' => $tagList]);
     }
+
+    // API get all tags
+    public function getAllTags()
+    {
+        try {
+            $tags = Tag::orderBy('tag_name', 'asc')->get();
+        } catch (\Throwable $th) {
+            return new JsonResponse(['errors' => 'Have error when get data'], 422);
+        }
+        return new JsonResponse(['tags' => $tags], 200);
+    }
+
     public function addTag(Request $request)
     {
 

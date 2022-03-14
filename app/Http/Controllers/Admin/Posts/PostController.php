@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     //
-    public function getNewPost()
+    public function getDetailPost()
     {
         return view('posts.detailPost', ['status'=>'New Post']);
     }
