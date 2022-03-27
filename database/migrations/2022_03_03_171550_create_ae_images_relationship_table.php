@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AeImagesRelationship extends Migration
+class CreateAeImagesRelationshipTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,8 @@ class AeImagesRelationship extends Migration
     {
         Schema::create('ae_images_relationship', function (Blueprint $table) {
             $table->id();
+            $table->integer('post_id');
             $table->string('img_name', 100);
-            $table->timestamps();
         });
     }
 
@@ -27,6 +27,6 @@ class AeImagesRelationship extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ae_images');
+        Schema::dropIfExists('ae_images_relationship');
     }
 }

@@ -14,6 +14,7 @@ class CreateAeTagsRelationshipTable extends Migration
     public function up()
     {
         Schema::create('ae_tags_relationship', function (Blueprint $table) {
+            $table->id();
             $table->integer('tag_id');
             $table->integer('post_id');
             $table->timestamps();

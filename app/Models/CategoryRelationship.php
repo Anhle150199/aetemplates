@@ -14,4 +14,6 @@ class CategoryRelationship extends Model
         'cate_id',
         'post_id',
     ];
+    public $timestamps = true;
+
 }

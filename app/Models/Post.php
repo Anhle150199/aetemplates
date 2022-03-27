@@ -21,4 +21,6 @@ class Post extends Model
         'post_views',
         'updated_at'
     ];
+    public $timestamps = true;
+
 }

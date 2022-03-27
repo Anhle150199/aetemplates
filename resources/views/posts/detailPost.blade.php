@@ -7,16 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name') }} - Admin</title>
+    <title>{{ config('app.name') }} - Admin | {{ $status }} Post</title>
     <link href="{{ url('/') }}/img/logo/TF.png" rel="icon" type="image/png">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
 
     <!-- Icons -->
     <link rel="stylesheet" href="{{ url('/') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css"
         type="text/css">
-
-    <link rel="stylesheet" href="{{ url('/') }}/vendor/select2/dist/css/select2.min.css">
 
     <!-- Argon CSS -->
     <link rel="stylesheet" href="{{ url('/') }}/css/admin.css" type="text/css">
@@ -25,12 +22,10 @@
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/vendor/image-cropper/css/style.css" />
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/vendor/image-cropper/css/jquery.Jcrop.min.css" />
 
-    {{-- <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"> --}}
-
 </head>
 
 <body style="">
-    <div class="main-content " id="panel">
+    <div class="main-content " id="panel" data-type="{{ $status }}" data-id="{{$session}}">
         <!-- Page content -->
         <div class="container-fluid ">
             <div class="card">
@@ -38,8 +33,20 @@
                     {{-- Custom Detail Post --}}
                     <div class="col-xl-3 order-xl-2 " style="height: 100vh">
                         <div class="card " style="height: 100vh">
-                            <div class="card-header" id="cardHearder">
-                                <h3 class="mb-0">Post Detail </h3>
+                            <div class="card-header d-flex justify-content-between align-items-center" id="cardHearder">
+                                <h3 class="mb-0 ">{{ $status }} Post</h3>
+                                <div class="">
+                                    <button type="button" class="btn btn-success btn-sm" id="submit-post">
+                                        @if ($status == 'New')
+                                            Pushlist
+                                        @else
+                                            Update
+                                        @endif
+                                    </button>
+                                    <a href="{{ route('dashboard') }}" class="btn btn-danger btn-sm">Back
+                                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                    </a>
+                                </div>
                             </div>
 
                             <div class="card-body" id="detail" style="padding: 0; overflow-y: auto">
@@ -60,7 +67,7 @@
                                             <div class="text-sm ">
                                                 <div class="w-100">
                                                     <label for="visibility" class="col-form-label">Visibility: </label>
-                                                    <select name="" id="" class="btn btn-sm" select="Public"
+                                                    <select name="" id="post-type" class="btn btn-sm"
                                                         style="box-shadow: none;">
                                                         <option value="Drafts">Drafts</option>
                                                         <option value="Public">Public</option>
@@ -68,9 +75,20 @@
                                                 </div>
                                                 <div class="w-100">
                                                     <label for="" class="col-form-label">Create Time: </label>
-                                                    <span>{{ date('Y/m/d H:i:s') }}</span>
+                                                    <span id="post-created-at">
+                                                        @if ($status == 'New')
+                                                            {{ date('Y-m-d H:i:s') }}
+                                                        @else
+                                                            {{ $editPost->created_at }}
+                                                        @endif
+                                                    </span>
                                                 </div>
-                                                <button class="btn btn-danger btn-sm"> Move to trash</button>
+                                                <a class="btn btn-danger btn-sm text-white" id="remove-post"
+                                                @if ($status == 'New')
+                                                    style="display: none;"
+                                                @else
+                                                    data-id="{{$editPost->id}}"
+                                                @endif> Move to trash</a>
                                             </div>
                                         </div>
                                     </div>
@@ -90,8 +108,14 @@
                                         <div class="card-body text-sm">
                                             <label for="slugPost">Slug Post</label>
                                             <input type="text" class="form-control form-control-sm" id="slugPost"
-                                                aria-describedby="slug Post" placeholder="Enter slug" required>
-                                            <small id="urlPost" class="form-text text-muted"></small>
+                                                aria-describedby="slug Post" placeholder="Enter slug" required
+                                                @if ($status == 'Edit') <?php $postSlug = explode('/', $editPost->post_slug); ?>
+                                                value="{{ $postSlug[sizeof($postSlug) - 1] }}" @endif>
+                                            <small id="urlPost" class="form-text text-muted">
+                                                @if ($status == 'Edit')
+                                                   Link post: {{ url('/') . $editPost->post_slug }}
+                                                @endif
+                                            </small>
                                         </div>
                                     </div>
                                 </div>
@@ -113,7 +137,9 @@
                                                 name="selectCateParent">
                                                 <option value="0">None</option>
                                             </select>
-                                            <input type="text" id="slugCategory" value="" hidden>
+                                            <input type="text" id="slugCategory"
+                                                @if ($status == 'Edit' && $category) value="{{ $category->cate_slug }}" @endif
+                                                hidden>
                                         </div>
                                     </div>
                                 </div>
@@ -134,18 +160,24 @@
                                             <div class="" tabindex="-1"><label for="input-tag">Add New
                                                     Tag</label>
                                                 <div class="form-control" id="input-tag" style="height: auto;">
-
-                                                    <input type="text" value="" class="border-0 shadow-none p-1" list="tag-list-available" />
-                                                    <datalist id="tag-list-available">
+                                                    @if ($status == 'Edit' && $tags)
+                                                        @foreach ($tags as $tag)
+                                                            <small class="bg-warning p-1 m-1 text-white rounded old-tag"
+                                                                id="{{ $tag->tag_slug }}">{{ $tag->tag_name }}<i
+                                                                    class="fa fa-times p-1 ml-1 cursor-pointer"
+                                                                    aria-hidden="true"
+                                                                    onClick='removeTag("{{ $tag->tag_slug }}", "oldTagEdit")'></i></small>
+                                                        @endforeach
+                                                    @endif
+                                                    <input type="text" value="" class="border-0 shadow-none p-1"
+                                                        list="tag-list-available" />
+                                                    <datalist id="tag-list-available" >
                                                     </datalist>
                                                 </div>
                                                 <input type="text" id="input-tag-list" hidden value=""
                                                     data-toggle="tags" />
-
                                                 <small>Separate with the Enter key and max tags is 10</small>
                                             </div>
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -164,8 +196,11 @@
                                         data-parent="#accordion">
                                         <div class="card-body justify-content-center d-flex align-items-center"
                                             id="imagePostBody">
+                                            <input type="file" id="post-thumbnail" hidden />
                                             <div id="imageInput" class="cursor-pointer"
                                                 style="height: auto; width: 100%;">
+                                                <img @if ($status == 'Edit') src="{{ url('/') . '/storage/images/' . $editPost->post_thumbnail }}" @endif
+                                                    style="width: 100%;" alt="">
                                             </div>
                                             <div class="cropme" hidden style="height: 405px; width: 720px;">
                                             </div>
@@ -186,39 +221,103 @@
                                     <div id="collapse6" class="collapse" aria-labelledby="heading6"
                                         data-parent="#accordion">
                                         <div class="card-body">
-                                            <textarea name="excerpt" id="" cols="30" rows="1"
-                                                class="form-control textareaInput"></textarea>
+                                            <textarea name="excerpt" id="post-excerpt" cols="30" rows="1" class="form-control textareaInput"
+                                            >@if ($status == 'Edit'){{ $editPost->post_excerpt }}@endif</textarea>
                                             <small>Enter Excerpt for your post</small>
                                         </div>
                                     </div>
                                 </div>
-
                                 {{-- Group card --}}
                                 <div id="accordion">
                                 </div>
-
                             </div>
                         </div>
                     </div>
 
-                    {{-- Tags List --}}
+                    {{-- Post --}}
                     <div class="col-xl-9 order-xl-1 scroll h-100" style="height: 100vh">
-                        <!-- Card header -->
+                        <!-- post title -->
                         <div class="card-header">
                             <textarea name="" id="inputTitlePost" cols="30" rows="1"
                                 class="form-control border-0 shadow-none font-weight-bold textareaInput"
-                                placeholder="Title"></textarea>
+                                placeholder="Title">@if ($status == 'Edit'){{ $editPost->post_title }}@endif</textarea>
                         </div>
 
+                        {{-- post content --}}
                         <div class="table-responsive" id="divTinymce">
-                            <textarea id="postContent"></textarea>
+                            <form action="" method="post">
+                                <textarea id="postContent" hidden>
+                                    @if ($status == 'Edit')
+                                    {{ $editPost->post_content }}
+                                    @else
+                                        <p><span style="font-size: 14pt; font-family: helvetica, arial, sans-serif; background-color: #ffffff; color: #34495e;"><strong><span style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;">Videohive </span><span style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;">Wedding Photos Beautiful Slideshow 36649400 Free Download Premiere Pro Templates</span></strong></span></p>
+                                        <blockquote>
+                                        <p><span style="font-size: 14pt; font-family: helvetica, arial, sans-serif; background-color: #ffffff; color: #34495e;"><strong style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;"><span style="font-weight: 400;">Premiere Pro CC, After Effects CC | 1920&times;1080 | 636 Mb</span><br style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box; font-weight: 400;" /><strong style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;">Preview Page:</strong><a style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box; color: #34495e; transition: all 0.2s ease-in-out 0s; font-weight: 400; background-color: #ffffff;" href="https://videohive.net/item/wedding-photos-beautiful-slideshow/36649400">https://videohive.net/item/wedding-photos-beautiful-slideshow/36649400</a></strong></span></p>
+                                        </blockquote>
+                                        <p style="padding: 0px; margin: 0px 0px 20px; outline: none; list-style: none; border: 0px none; box-sizing: border-box; color: #333333; font-family: 'Droid Sans', Arial, Verdana, sans-serif; font-size: 13px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><span style="font-size: 18pt; font-family: helvetica, arial, sans-serif; background-color: #ffffff; color: #34495e;"><strong style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;">Preview Project:</strong></span></p>
+                                        <p style="padding: 0px; margin: 0px 0px 20px; outline: none; list-style: none; border: 0px none; box-sizing: border-box; color: #333333; font-family: 'Droid Sans', Arial, Verdana, sans-serif; font-size: 13px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;"><video style="width: 506px; height: 253px;" controls="controls" width="1280" height="720">
+                                        <source src="https://previews.customer.envatousercontent.com/h264-video-previews/865c6b90-50d6-4386-9298-488bd7418b92/36649400.mp4" type="video/mp4" /></video></p>
+                                        <p style="padding: 0px; margin: 0px 0px 20px; outline: none; list-style: none; border: 0px none; box-sizing: border-box; color: #333333; font-family: 'Droid Sans', Arial, Verdana, sans-serif; font-size: 13px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: #ffffff; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;">&nbsp;</p>
+                                        <h2 id="item-description__project-features" style="box-sizing: border-box; margin: 0px 0px 20px; padding: 0px 0px 10px; color: #545454; font-weight: inherit; font-size: 20px; line-height: 30px; border-bottom: 1px solid #d4d4d4;"><span style="background-color: #ffffff; color: #34495e;">Project features:</span></h2>
+                                        <ul style="box-sizing: border-box; list-style-position: initial; list-style-image: initial; margin: 0px; padding: 0px 0px 0px 35px;">
+                                        <li style="box-sizing: border-box; color: #545454; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px;"><span style="background-color: #ffffff; color: #34495e;">No plugins required</span></li>
+                                        <li style="box-sizing: border-box; color: #545454; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px;"><span style="background-color: #ffffff; color: #34495e;">Premiere Pro 2021 and above</span></li>
+                                        <li style="box-sizing: border-box; color: #545454; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px;"><span style="background-color: #ffffff; color: #34495e;">Full HD resolution</span></li>
+                                        <li style="box-sizing: border-box; color: #545454; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px;"><span style="background-color: #ffffff; color: #34495e;">Video tutorial included</span></li>
+                                        <li style="box-sizing: border-box; color: #545454; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px;"><span style="background-color: #ffffff; color: #34495e;">All images used in the preview video are licensed for commercial use (<a style="box-sizing: border-box; color: #34495e; background-color: #ffffff;" href="https://unsplash.com/" rel="nofollow">unsplash.com</a>)</span></li>
+                                        <li style="box-sizing: border-box; color: #545454; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px;"><span style="background-color: #ffffff; color: #34495e;"><a style="background-color: #ffffff; color: #34495e;" href="https://audiojungle.net/item/wedding-piano/6730328?_ga=2.144128245.1996835178.1647530701-1687734910.1636436684">Music&nbsp;</a>not included</span></li>
+                                        </ul>
+                                        <p style="text-align: center;">&nbsp;</p>
+                                        <p style="text-align: center;"><span style="font-size: 12pt; background-color: #ffffff; color: #34495e;"><strong>Download</strong></span></p>
+                                        <p style="text-align: center;"><span style="background-color: #ffffff; color: #34495e;"><a class="btn btn-warning text-white" style="background-color: #ffffff; color: #34495e;" href="https://prefiles.com/p4hnpz7i5ylx">Download File</a></span></p>
+                                    @endif
+                                </textarea>
+                            </form>
                         </div>
 
                     </div>
                 </div>
             </div>
         </div>
-
+        {{-- Success Modal --}}
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content" style="width: 65%;margin: auto;">
+                    <div class="modal-body row text-success" style="font-style: oblique;font-weight: 900;">
+                        <div class="col-4 text-right">
+                            <i class="fas fa-check-circle" style="font-size: 4rem;"></i>
+                        </div>
+                        <div class="col-7 d-flex align-items-center text-success" name="successModal"
+                            style='font-size: 1.5rem;'>
+                            Success !
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- End Success Modal --}}
+        {{-- Error Modal --}}
+        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body text-danger d-flex justify-content-around"
+                        style="font-style: oblique;font-weight: 700;">
+                        <div class="col-4 d-flex align-items-center justify-content-around text-right">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 4rem;"></i>
+                        </div>
+                        <div class="col-7  " name="errorModal">
+                            <h1 class="text-danger">Error!!</h1>
+                            <div id="statusError">
+                                <ul></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- End Error Modal --}}
     </div>
     <style>
         .card {
@@ -252,6 +351,7 @@
         input::-webkit-picker-indicator {
             display: none;
         }
+
         .cursor-pointer {
             cursor: pointer;
         }
@@ -259,10 +359,12 @@
         textarea {
             resize: none;
         }
-        .border-0{
+
+        .border-0 {
             outline: none;
 
         }
+
         /* For other boilerplate styles, see: /docs/general-configuration-guide/boilerplate-content-css/ */
         /*
         * For rendering images inserted using the image plugin.
@@ -319,22 +421,15 @@
     <script src="{{ url('/') }}/vendor/jquery/dist/jquery.min.js"></script>
     <script src="{{ url('/') }}/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url('/') }}/vendor/js-cookie/js.cookie.js"></script>
-    {{-- <script src="{{ url('/') }}/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
-    <script src="{{ url('/') }}/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
-    <script src="{{ url('/') }}/vendor/select2/dist/js/select2.min.js"></script>
-    <script src="{{ url('/') }}/vendor/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script> --}}
 
     <script type="text/javascript" src="{{ url('/') }}/vendor/image-cropper/scripts/jquery.Jcrop.js"></script>
     <script type="text/javascript" src="{{ url('/') }}/vendor/image-cropper/scripts/jquery.SimpleCropper.js"></script>
 
-    <script
-        src="https://cdn.tiny.cloud/1/pao7pcxj39wj2sh92diz9jtbf9njkfrqnlezjckjtrsz891m/tinymce/5.10.3-128/tinymce.min.js"
-        referrerpolicy="origin"></script>
+    <script src="{{ url('/') }}/vendor/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 
     <script src="{{ url('/') }}/js/admin/categoriesManage.js"></script>
     <script src="{{ url('/') }}/js/admin/detailPost.js"></script>
 
-    {{-- <script src="{{ url('/') }}/js/argon.js?v=1.1.0 "></script> --}}
     <script src="{{ url('/') }}/js/demo.min.js"></script>
 
     <script>
@@ -343,10 +438,44 @@
 
         tinymce.init({
             selector: 'textarea#postContent',
-            plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+            plugins: 'preview importcss searchreplace autolink autosave directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
             imagetools_cors_hosts: ['picsum.photos'],
-            menubar: 'file edit view insert format tools table help',
-            toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+            // menubar: 'file edit view insert format tools table help',
+            menu: {
+                file: {
+                    title: 'File',
+                    items: 'newdocument restoredraft | preview | print '
+                },
+                edit: {
+                    title: 'Edit',
+                    items: 'undo redo | cut copy paste | selectall | searchreplace'
+                },
+                view: {
+                    title: 'View',
+                    items: 'code | visualaid visualchars visualblocks | spellchecker | preview fullscreen'
+                },
+                insert: {
+                    title: 'Insert',
+                    items: 'image link media template codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime'
+                },
+                format: {
+                    title: 'Format',
+                    items: 'bold italic underline strikethrough superscript subscript codeformat | formats blockformats fontformats fontsizes align lineheight | forecolor backcolor | removeformat'
+                },
+                tools: {
+                    title: 'Tools',
+                    items: 'spellchecker spellcheckerlanguage | code wordcount'
+                },
+                table: {
+                    title: 'Table',
+                    items: 'inserttable | cell row column | tableprops deletetable'
+                },
+                help: {
+                    title: 'Help',
+                    items: 'help'
+                }
+            },
+            toolbar: 'undo redo | bold italic underline strikethrough | fontselect  fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview print | insertfile image media link anchor blockquote | ltr rtl',
             toolbar_sticky: true,
             autosave_ask_before_unload: true,
             autosave_interval: '30s',
@@ -354,90 +483,75 @@
             autosave_restore_when_empty: false,
             autosave_retention: '2m',
             image_advtab: true,
-            link_list: [{
-                    title: 'My page 1',
-                    value: 'https://www.tiny.cloud'
-                },
-                {
-                    title: 'My page 2',
-                    value: 'http://www.moxiecode.com'
-                }
-            ],
-            image_list: [{
-                    title: 'My page 1',
-                    value: 'https://www.tiny.cloud'
-                },
-                {
-                    title: 'My page 2',
-                    value: 'http://www.moxiecode.com'
-                }
-            ],
-            image_class_list: [{
-                    title: 'None',
-                    value: ''
-                },
-                {
-                    title: 'Some class',
-                    value: 'class-name'
-                }
-            ],
             importcss_append: true,
-            file_picker_callback: function(callback, value, meta) {
-                /* Provide file and text for the link dialog */
-                if (meta.filetype === 'file') {
-                    callback('https://www.google.com/logos/google.jpg', {
-                        text: 'My text'
-                    });
-                }
+            // images_upload_base_path: '/storage/images',
+            images_upload_credentials: true,
+            file_picker_types: 'image',
+            images_upload_handler: function(blobInfo, success, failure) {
+                var xhr, formData;
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', '/posts/upload-image');
+                var token = '{{ csrf_token() }}';
+                xhr.setRequestHeader("X-CSRF-Token", token);
+                xhr.onload = function() {
+                    var json;
+                    if (xhr.status != 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+                    json = JSON.parse(xhr.responseText);
 
-                /* Provide image and alt text for the image dialog */
-                if (meta.filetype === 'image') {
-                    callback('https://www.google.com/logos/google.jpg', {
-                        alt: 'My alt text'
-                    });
-                }
-
-                /* Provide alternative source and posted for the media dialog */
-                if (meta.filetype === 'media') {
-                    callback('movie.mp4', {
-                        source2: 'alt.ogg',
-                        poster: 'https://www.google.com/logos/google.jpg'
-                    });
-                }
+                    if (!json || typeof json.location != 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+                    success(json.location);
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                formData.append('ssImage', ssImage);
+                xhr.send(formData);
             },
-            templates: [{
-                    title: 'New Table',
-                    description: 'creates a new table',
-                    content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>'
-                },
-                {
-                    title: 'Starting my story',
-                    description: 'A cure for writers block',
-                    content: 'Once upon a time...'
-                },
-                {
-                    title: 'New list with dates',
-                    description: 'New List with dates',
-                    content: '<div class="mceTmpl"><span class="cdate">cdate</span><br /><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>'
-                }
-            ],
+
+            file_picker_callback: function(cb, value, meta) {
+                var input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function() {
+                    var file = this.files[0];
+
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function() {
+                        var id = 'blobid' + (new Date()).getTime();
+                        var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                        var base64 = reader.result.split(',')[1];
+                        var blobInfo = blobCache.create(id, file, base64);
+                        blobCache.add(blobInfo);
+                        cb(blobInfo.blobUri(), {
+                            title: file.name
+                        });
+                    };
+                };
+                input.click();
+            },
             template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
             template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
-            height: heightPostDiv,
+            height: '90vh',
             image_caption: true,
             quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
             noneditable_noneditable_class: 'mceNonEditable',
             toolbar_mode: 'sliding',
             contextmenu: 'link image imagetools table',
-            skin: useDarkMode ? 'oxide-dark' : 'oxide',
-            content_css: useDarkMode ? 'dark' : 'default',
+            // skin: useDarkMode ? 'oxide-dark' : 'oxide',
             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
         });
     </script>
-
-    <script>
-
-    </script>
+    @if ($status == 'Edit')
+        <script>
+        </script>
+    @endif
 </body>
 
 </html>

@@ -19,7 +19,7 @@ class CreateAePostsTable extends Migration
             $table->string('post_title', 150);
             $table->text('post_excerpt');
             $table->longText('post_content');
-            $table->enum('post_type', ['public', 'drafts', 'deleted' ])->default('drafts');
+            $table->enum('post_type', ['Public', 'Drafts', 'Deleted' ])->default('drafts');
             $table->string('post_slug', 150);
             $table->string('post_thumbnail');
             $table->integer('post_views');

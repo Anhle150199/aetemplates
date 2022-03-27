@@ -14,6 +14,7 @@ class CreateAeCategoriesRelationshipTable extends Migration
     public function up()
     {
         Schema::create('ae_categories_relationship', function (Blueprint $table) {
+            $table->id();
             $table->integer('cate_id');
             $table->integer('post_id');
             $table->timestamps();
