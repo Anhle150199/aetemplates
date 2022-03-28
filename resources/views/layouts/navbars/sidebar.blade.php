@@ -40,7 +40,7 @@
                         <div class="collapse" id="navbar-posts">
                             <ul class="nav nav-sm flex-column">
                                 <li class="nav-item" id="all-post">
-                                    <a href="#" class="nav-link">All Posts</a>
+                                    <a href="{{route('all-post')}}" class="nav-link">All Posts</a>
                                 </li>
                                 <li class="nav-item" id="all-new-post" >
                                     <a href="{{route('new-post')}}" class="nav-link">Add New Posts</a>

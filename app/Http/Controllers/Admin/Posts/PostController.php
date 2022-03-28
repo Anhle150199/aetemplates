@@ -22,6 +22,8 @@ class PostController extends Controller
 {
     public function getAllPost(Request $request)
     {
+        $allPosts = Post::all();
+        return view('posts.allPosts', ['slidebar' => ['posts', 'all-post'], 'allPosts'=>$allPosts]);
     }
     //
     public function getNewPost(Request $request)
@@ -49,10 +51,11 @@ class PostController extends Controller
                 'file' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 'created_at' => 'required|string',
                 'cate_id' => ['integer', function ($attribute, $value, $fail) {
-                    $checkCategory = Category::where('id', $value)->first();
-
-                    if ($checkCategory == null) {
-                        return $fail(__('Category is valid!' . $value));
+                    if ($value != 0){
+                        $checkCategory = Category::where('id', $value)->first();
+                        if ($checkCategory == null) {
+                            return $fail(__('Category is valid!' . $value));
+                        }
                     }
                 }],
                 'ssImage' => 'required| string| regex: /^image+[0-9]+$/',
@@ -138,11 +141,12 @@ class PostController extends Controller
                 'post_slug' => ['required', 'string', 'max:150', /*'unique:ae_posts'*/],
                 'file' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 'created_at' => 'required|string',
-                'cate_slug' => ['string', function ($attribute, $value, $fail) {
-                    $checkCategory = Category::where('cate_slug', $value)->first();
-
-                    if ($checkCategory == null) {
-                        return $fail(__('Category is valid!' . $value));
+                'cate_id' => ['integer', function ($attribute, $value, $fail) {
+                    if ($value != 0){
+                        $checkCategory = Category::where('id', $value)->first();
+                        if ($checkCategory == null) {
+                            return $fail(__('Category is valid!' . $value));
+                        }
                     }
                 }],
                 'tag_list' => 'string',
@@ -250,7 +254,9 @@ class PostController extends Controller
             } else {
                 $tagId = $checkTag->id;
                 $checkTag->posts_count = $checkTag->posts_count + 1;
+                $checkTag->save();
             }
+
             TagRelationship::insert(['tag_id' => $tagId, 'post_id' => $id]);
         }
         return $newTag;

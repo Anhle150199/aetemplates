@@ -14,7 +14,7 @@ var postDetail = {
     postType: "",
     postSlug: "",
     createdAt: "",
-    cateId: "",
+    cateId: 0,
 };
 var postDetailOld = {
     postTitle: "",
@@ -23,7 +23,7 @@ var postDetailOld = {
     postType: "",
     postSlug: "",
     createdAt: "",
-    cateId: "",
+    cateId: 0,
 };
 
 $(document).ready(function () {
@@ -194,8 +194,8 @@ $(document).ready(function () {
         }
 
         if (typePage == "New") {
-            if (postDetail.cateId != "") {
-                formData.append("cate_id", postDetail.cateId);
+            if (postDetail.cateId >= 0) {
+                formData.append("cate_id", parseInt(postDetail.cateId));
             }
             // console.log(formData.values());
             $.ajax({
