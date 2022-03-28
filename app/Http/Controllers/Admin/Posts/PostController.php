@@ -102,7 +102,6 @@ class PostController extends Controller
                 if ($request->has('tag_list') == true) {
                     $newTag = $this->addTagRelationship($request->tag_list, $newPost->id);
                 }
-                // return new JsonResponse(['errors' => $newTag], 419);
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => [`Have error when save tag`]], 419);
             }

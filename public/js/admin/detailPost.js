@@ -35,37 +35,26 @@ $(document).ready(function () {
     tagsList = $.getTags();
     typePage = $("#panel").data("type");
     ssImage = $("#panel").data("id");
-    var ctrlDown = false,
-        ctrlKey = 17,
-        vKey = 86;
+    var ctrlDown = false, ctrlKey = 17, vKey = 86;
 
     $(document)
-        .keydown(function (e) {
-            if (e.keyCode == ctrlKey) ctrlDown = true;
-        })
-        .keyup(function (e) {
-            if (e.keyCode == ctrlKey) ctrlDown = false;
-        });
+        .keydown(function (e) { if (e.keyCode == ctrlKey) ctrlDown = true;})
+        .keyup(function (e) { if (e.keyCode == ctrlKey) ctrlDown = false;});
     $("#inputTitlePost").keydown(function (e) {
         if (ctrlDown && e.keyCode == vKey) checkLengthTitle(e);
     });
 
     // Textarea block enter
     $("#inputTitlePost").keypress(function (event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode == 13)
             event.preventDefault();
-        }
         checkLengthTitle(event);
     });
+
     // textarea auto resize
     $(".textareaInput")
         .each(function () {
-            this.setAttribute(
-                "style",
-                "min-height: 60px;max-height:110px; height:" +
-                    this.scrollHeight +
-                    "px;overflow-y:auto;"
-            );
+            this.setAttribute("style", "min-height: 60px;max-height:110px; height:" + this.scrollHeight + "px;overflow-y:auto;");
         })
         .on("input", function () {
             this.style.height = "auto";
@@ -104,18 +93,13 @@ $(document).ready(function () {
                     (item) => item.slug == slug
                 );
                 if (checkDelete != null) {
-                    addDeleteTags = addDeleteTags.filter(
-                        (item) => item.slug != slug
-                    );
+                    addDeleteTags = addDeleteTags.filter((item) => item.slug != slug);
                 } else {
                     $("#input-tag>input").val("");
                     return;
                 }
             } else {
-                addTags.push({
-                    name: tagName,
-                    slug: slug,
-                });
+                addTags.push({name: tagName,slug: slug});
             }
 
             $(spanTag(tagName, "new-tag")).insertBefore("#input-tag>input");
@@ -146,7 +130,6 @@ $(document).ready(function () {
     // edit slug post then update url
     $("#slugPost").keyup(function () {
         const slugCategory = $("#slugCategory").val();
-
         let slugPost = $("#slugPost").val();
         slugPost = convertUrl(slugPost);
         const urlPost = setUrlPost(slugCategory, slugPost);
@@ -173,13 +156,8 @@ $(document).ready(function () {
         $(".cropme").click();
     });
     // Set name for image tag
-    $("#imageInput").attr(
-        "name",
-        "thumbnail" +
-            Math.random().toString(36).substring(2, 10) +
-            Date.now() +
-            ".jpg"
-    );
+    $("#imageInput").attr("name", "thumbnail" + Math.random().toString(36).substring(2, 10) + Date.now() + ".jpg");
+
     // Submit post
     $("#submit-post").click(() => {
         postDetail.postTitle = $("#inputTitlePost").val();
@@ -197,9 +175,8 @@ $(document).ready(function () {
             postDetail.postSlug,
             srcPostThumbnail
         );
-        if (check == false) {
-            return;
-        }
+        if (check == false) return;
+
         let file = DataURIToBlob(srcPostThumbnail);
         let formData = new FormData();
         formData.append("post_title", postDetail.postTitle);
@@ -396,10 +373,7 @@ function removeTag(tagSlug, statusAddTag) {
 function DataURIToBlob(dataURI) {
     const splitDataURI = dataURI.split(",");
     if (splitDataURI[1] == null) return null;
-    const byteString =
-        splitDataURI[0].indexOf("base64") >= 0
-            ? atob(splitDataURI[1])
-            : decodeURI(splitDataURI[1]);
+    const byteString = splitDataURI[0].indexOf("base64") >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1]);
     const mimeString = splitDataURI[0].split(":")[1].split(";")[0];
 
     const ia = new Uint8Array(byteString.length);
@@ -409,14 +383,7 @@ function DataURIToBlob(dataURI) {
     return new Blob([ia], { type: mimeString });
 }
 
-function validator(
-    postTitle,
-    postExcerpt,
-    postContent,
-    postType,
-    postSlug,
-    srcPostThumbnail
-) {
+function validator(postTitle, postExcerpt, postContent, postType, postSlug, srcPostThumbnail) {
     let statusCheck = [],
         numError = 0;
     if (postTitle == "") {
@@ -459,18 +426,11 @@ function editSelectCategory() {
     let slug = $("#slugCategory").val();
     if (slug == "") return;
     let cateId = dataResponse.find((item) => item.slug == slug).key;
-    $("#selectCateParent option[value = " + cateId + "]").prop(
-        "selected",
-        "selected"
-    );
+    $("#selectCateParent option[value = " + cateId + "]").prop("selected", "selected");
 }
 
 function addOptionDatalist(list) {
-    list.forEach((tag) => {
-        $("#tag-list-available").append(
-            `<option value="${tag.name}">${tag.slug}</option>`
-        );
-    });
+    list.forEach((tag) => {$("#tag-list-available").append(`<option value="${tag.name}">${tag.slug}</option>`);});
 }
 
 $("#tag-list-available").click((event) => {
