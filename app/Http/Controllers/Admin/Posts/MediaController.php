@@ -40,7 +40,7 @@ class MediaController extends Controller
                 if (in_array($fileName, Session::get($request->ssImage))) {
                     return response()->json(['location' => "/storage/images/" . $fileName]);
                 }
-                $fileName = $this->saveImage($file);
+                $fileName = $this->saveImage($file, 'image');
                 Session::push($request->ssImage, $fileName);
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => 'Have error when upload image'], 419);
@@ -49,7 +49,7 @@ class MediaController extends Controller
         }
     }
 
-    public function saveImage($file)
+    public function saveImage($file, $typeImg)
     {
         $fileName = $file->getClientOriginalName();
         $fileExt = $file->getClientOriginalExtension();
@@ -57,7 +57,7 @@ class MediaController extends Controller
             $fileName = $fileName . '.jpg';
         }
         while (file_exists("storage/images/" . $fileName)) {
-            $fileName = strtotime("now") . $fileName;
+            $fileName = $typeImg . strtotime("now") . $fileExt;
         }
         $newImage = new Image();
         $newImage->img_name = $fileName;

@@ -1,4 +1,3 @@
-
 // Ready load ...
 var heightPostDiv,
     ssImage,
@@ -9,22 +8,33 @@ var heightPostDiv,
     tagsList,
     countTags = 0;
 var postDetail = {
-    postTitle: "", postExcerpt: "", postContent: "", postType: "", postSlug: "", createdAt: "", cateSlug: ""
-}
+    postTitle: "",
+    postExcerpt: "",
+    postContent: "",
+    postType: "",
+    postSlug: "",
+    createdAt: "",
+    cateId: "",
+};
 var postDetailOld = {
-    postTitle: "", postExcerpt: "", postContent: "", postType: "", postSlug: "", createdAt: "", cateSlug: "",
-}
+    postTitle: "",
+    postExcerpt: "",
+    postContent: "",
+    postType: "",
+    postSlug: "",
+    createdAt: "",
+    cateId: "",
+};
 
 $(document).ready(function () {
-
     $.ajaxSetup({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
         },
     });
     tagsList = $.getTags();
-    typePage = $('#panel').data("type");
-    ssImage = $('#panel').data("id");
+    typePage = $("#panel").data("type");
+    ssImage = $("#panel").data("id");
     var ctrlDown = false,
         ctrlKey = 17,
         vKey = 86;
@@ -53,8 +63,8 @@ $(document).ready(function () {
             this.setAttribute(
                 "style",
                 "min-height: 60px;max-height:110px; height:" +
-                this.scrollHeight +
-                "px;overflow-y:auto;"
+                    this.scrollHeight +
+                    "px;overflow-y:auto;"
             );
         })
         .on("input", function () {
@@ -87,15 +97,19 @@ $(document).ready(function () {
                 $("#input-tag>input").val("");
                 return;
             }
-            let slug = convertUrl(tagName)
+            let slug = convertUrl(tagName);
             let checkOld = oldTags.find((item) => item.name == tagName);
             if (checkOld != null) {
-                let checkDelete = addDeleteTags.find((item) => item.slug == slug);
+                let checkDelete = addDeleteTags.find(
+                    (item) => item.slug == slug
+                );
                 if (checkDelete != null) {
-                    addDeleteTags = addDeleteTags.filter(item => item.slug != slug);
+                    addDeleteTags = addDeleteTags.filter(
+                        (item) => item.slug != slug
+                    );
                 } else {
                     $("#input-tag>input").val("");
-                    return
+                    return;
                 }
             } else {
                 addTags.push({
@@ -159,132 +173,171 @@ $(document).ready(function () {
         $(".cropme").click();
     });
     // Set name for image tag
-    $("#imageInput").attr('name', 'thumbnail' + Math.random().toString(36).substring(2, 10) + Date.now() + '.jpg');
+    $("#imageInput").attr(
+        "name",
+        "thumbnail" +
+            Math.random().toString(36).substring(2, 10) +
+            Date.now() +
+            ".jpg"
+    );
     // Submit post
-    $('#submit-post').click(() => {
-        postDetail.postTitle = $('#inputTitlePost').val();
-        postDetail.postExcerpt = $('#post-excerpt').val();
+    $("#submit-post").click(() => {
+        postDetail.postTitle = $("#inputTitlePost").val();
+        postDetail.postExcerpt = $("#post-excerpt").val();
         postDetail.postContent = tinymce.get("postContent").getContent();
-        postDetail.postType = $('#post-type').val();
-        const srcPostThumbnail = $("#imageInput>img").attr('src');
-        const namePostThumbnail = $("#imageInput").attr('name');
-        postDetail.createdAt = $('#post-created-at').text();
-        const check = validator(postDetail.postTitle, postDetail.postExcerpt, postDetail.postContent, postDetail.postType, postDetail.postSlug, srcPostThumbnail);
+        postDetail.postType = $("#post-type").val();
+        const srcPostThumbnail = $("#imageInput>img").attr("src");
+        const namePostThumbnail = $("#imageInput").attr("name");
+        postDetail.createdAt = $("#post-created-at").text();
+        const check = validator(
+            postDetail.postTitle,
+            postDetail.postExcerpt,
+            postDetail.postContent,
+            postDetail.postType,
+            postDetail.postSlug,
+            srcPostThumbnail
+        );
         if (check == false) {
-            return
+            return;
         }
         let file = DataURIToBlob(srcPostThumbnail);
         let formData = new FormData();
-        formData.append('post_title', postDetail.postTitle);
-        formData.append('post_excerpt', postDetail.postExcerpt);
-        formData.append('post_content', postDetail.postContent);
-        formData.append('post_type', postDetail.postType);
-        formData.append('post_slug', postDetail.postSlug);
+        formData.append("post_title", postDetail.postTitle);
+        formData.append("post_excerpt", postDetail.postExcerpt);
+        formData.append("post_content", postDetail.postContent);
+        formData.append("post_type", postDetail.postType);
+        formData.append("post_slug", postDetail.postSlug);
         if (file != null) {
-            formData.append('file', file, namePostThumbnail);
+            formData.append("file", file, namePostThumbnail);
         }
-        formData.append('created_at', postDetail.createdAt);
-        formData.append('ssImage', ssImage);
+        formData.append("created_at", postDetail.createdAt);
+        formData.append("ssImage", ssImage);
         if (addTags.length > 0) {
-            formData.append('tag_list', JSON.stringify(addTags));
+            formData.append("tag_list", JSON.stringify(addTags));
         }
 
-        if (typePage == 'New') {
-            if (postDetail.cateSlug != "") {
-                formData.append('cate_slug', postDetail.cateSlug);
+        if (typePage == "New") {
+            if (postDetail.cateId != "") {
+                formData.append("cate_id", postDetail.cateId);
             }
             // console.log(formData.values());
             $.ajax({
-                type: 'post',
-                url: '/posts/add-new-post',
+                type: "post",
+                url: "/posts/add-new-post",
                 data: formData,
                 contentType: false,
                 processData: false,
 
                 success: function (data) {
-                    $('#successModal').modal('show');
-                    typePage = 'Edit';
-                    $('#panel').data("type", 'Edit');
-                    $('#remove-post').show().data("id", data.newPost.id);
+                    $("#successModal").modal("show");
+                    typePage = "Edit";
+                    $("#panel").data("type", "Edit");
+                    $("#remove-post").show().data("id", data.newPost.id);
+                    $("#imageInput img").attr(
+                        "src",
+                        location.origin +
+                            "/storage/images/" +
+                            data.newPost.post_thumbnail
+                    );
                     postDetailOld = { ...postDetail };
                     oldTags = [...addTags];
                     addDeleteTags = [];
-                    addTags.forEach((e)=>{
-                        $('#'+e.slug+' i').attr('onclick', `removeTag("${e.slug}", "oldTagEdit")`)
-
-                    })
+                    addTags.forEach((e) => {
+                        $("#" + e.slug + " i").attr(
+                            "onclick",
+                            `removeTag("${e.slug}", "oldTagEdit")`
+                        );
+                    });
                     addTags = [];
                     tagsList = tagsList.concat(data.newTag);
                     addOptionDatalist(data.newTag);
-
                 },
                 error: function (data) {
                     errors = data.responseJSON.errors;
                     console.log(errors);
                     errors = Object.keys(errors).map((key) => errors[key]);
 
-                    $('#statusError>ul').empty();
-                    errors.forEach(e => $('#statusError>ul').append(`<li>${e}</li>`));
-                    $('#errorModal').modal('show');
-                }
-            })
-        } else if (typePage == 'Edit') {
+                    $("#statusError>ul").empty();
+                    errors.forEach((e) =>
+                        $("#statusError>ul").append(`<li>${e}</li>`)
+                    );
+                    $("#errorModal").modal("show");
+                },
+            });
+        } else if (typePage == "Edit") {
             if (addDeleteTags.length > 0) {
-                formData.append('tag_delete', JSON.stringify(addDeleteTags));
+                formData.append("tag_delete", JSON.stringify(addDeleteTags));
             }
-            if (postDetail.cateSlug != "" && postDetail.cateSlug != postDetailOld.cateSlug) {
-                formData.append('cate_slug', postDetail.cateSlug);
+            if (
+                postDetail.cateId != "" &&
+                postDetail.cateId != postDetailOld.cateId
+            ) {
+                formData.append("cate_id", postDetail.cateId);
             }
-            let postId = $('#remove-post').data("id");
-            formData.append('post_id', postId);
+            let postId = $("#remove-post").data("id");
+            formData.append("post_id", postId);
 
             // console.log(formData.values());
             $.ajax({
-                type: 'post',
-                url: '/posts/update-post',
+                type: "post",
+                url: "/posts/update-post",
                 data: formData,
                 contentType: false,
                 processData: false,
 
                 success: function (data) {
-                    $('#successModal').modal('show');
+                    $("#successModal").modal("show");
                     postDetailOld = { ...postDetail };
-                    if(addDeleteTags.length>0){
-                        addDeleteTags.forEach((e)=>{
-                            oldTags = oldTags.filter(item=>item.slug != e.slug);
-                        })
-                    };
+                    $("#imageInput img").attr(
+                        "src",
+                        location.origin +
+                            "/storage/images/" +
+                            data.editPost.post_thumbnail
+                    );
 
-                    addTags.forEach((e)=>{
-                        $('#'+e.slug+' i').attr('onclick', `removeTag("${e.slug}", "oldTagEdit")`);
-                    })
+                    if (addDeleteTags.length > 0) {
+                        addDeleteTags.forEach((e) => {
+                            oldTags = oldTags.filter(
+                                (item) => item.slug != e.slug
+                            );
+                        });
+                    }
+
+                    addTags.forEach((e) => {
+                        $("#" + e.slug + " i").attr(
+                            "onclick",
+                            `removeTag("${e.slug}", "oldTagEdit")`
+                        );
+                    });
+
                     oldTags = oldTags.concat(addTags);
                     addDeleteTags = [];
                     addTags = [];
                     tagsList = tagsList.concat(data.newTag);
                     addOptionDatalist(data.newTag);
-
                 },
                 error: function (data) {
                     errors = data.responseJSON.errors;
                     console.log(errors);
                     errors = Object.keys(errors).map((key) => errors[key]);
 
-                    $('#statusError>ul').empty();
-                    errors.forEach(e => $('#statusError>ul').append(`<li>${e}</li>`));
-                    $('#errorModal').modal('show');
-                }
-            })
+                    $("#statusError>ul").empty();
+                    errors.forEach((e) =>
+                        $("#statusError>ul").append(`<li>${e}</li>`)
+                    );
+                    $("#errorModal").modal("show");
+                },
+            });
         }
+    });
 
-    })
-
-    if (typePage == 'Edit') {
+    if (typePage == "Edit") {
         editSelectCategory();
-        postDetail.postSlug = $('#slugCategory').val() + '/' + $('#slugPost').val();
+        postDetail.postSlug =
+            $("#slugCategory").val() + "/" + $("#slugPost").val();
         $(".old-tag").each(function (index) {
-            oldTags.push({ name: $(this).text(), slug: $(this).attr('id') });
-        })
+            oldTags.push({ name: $(this).text(), slug: $(this).attr("id") });
+        });
         countTags = oldTags.length;
     }
 });
@@ -301,8 +354,7 @@ const checkLengthTitle = (event) => {
     if ($("#inputTitlePost").val().length >= 150) {
         event.preventDefault();
         alert(
-            `max title's length is 150,  ${$("#inputTitlePost").val().length
-            } `
+            `max title's length is 150,  ${$("#inputTitlePost").val().length} `
         );
         return false;
     }
@@ -310,13 +362,16 @@ const checkLengthTitle = (event) => {
 
 const getSlugCategory = () => {
     const category = $("#selectCateParent").val();
-    const slugCategory = dataResponse.find((item) => item.key == category).slug;
-    return slugCategory;
+    postDetail.cateId = category;
+    if (category == 0) {
+        return "";
+    } else {
+        return dataResponse.find((item) => item.key == category).slug;
+    }
 };
 
 const setUrlPost = (slugCategory, slugPost) => {
     postDetail.postSlug = slugCategory + "/" + slugPost;
-    postDetail.cateSlug = slugCategory;
     return window.location.origin + postDetail.postSlug;
 };
 
@@ -329,9 +384,9 @@ const resizeImagePre = () => {
 
 function removeTag(tagSlug, statusAddTag) {
     addTags = addTags.filter((item) => item.slug != tagSlug);
-    $('#' + tagSlug).remove();
+    $("#" + tagSlug).remove();
     if (statusAddTag == "oldTagEdit") {
-        let tagDel = tagsList.find(item => item.slug == tagSlug);
+        let tagDel = tagsList.find((item) => item.slug == tagSlug);
         // oldTags = oldTags.filter((item)=>item.slug != tagDel.slug);
         addDeleteTags.push({ id: tagDel.id, slug: tagDel.slug });
     }
@@ -339,20 +394,31 @@ function removeTag(tagSlug, statusAddTag) {
 }
 
 function DataURIToBlob(dataURI) {
-    const splitDataURI = dataURI.split(',');
+    const splitDataURI = dataURI.split(",");
     if (splitDataURI[1] == null) return null;
-    const byteString = splitDataURI[0].indexOf('base64') >= 0 ? atob(splitDataURI[1]) : decodeURI(splitDataURI[1])
-    const mimeString = splitDataURI[0].split(':')[1].split(';')[0]
+    const byteString =
+        splitDataURI[0].indexOf("base64") >= 0
+            ? atob(splitDataURI[1])
+            : decodeURI(splitDataURI[1]);
+    const mimeString = splitDataURI[0].split(":")[1].split(";")[0];
 
-    const ia = new Uint8Array(byteString.length)
+    const ia = new Uint8Array(byteString.length);
     for (let i = 0; i < byteString.length; i++)
-        ia[i] = byteString.charCodeAt(i)
+        ia[i] = byteString.charCodeAt(i);
 
-    return new Blob([ia], { type: mimeString })
+    return new Blob([ia], { type: mimeString });
 }
 
-function validator(postTitle, postExcerpt, postContent, postType, postSlug, srcPostThumbnail) {
-    let statusCheck = [], numError = 0;
+function validator(
+    postTitle,
+    postExcerpt,
+    postContent,
+    postType,
+    postSlug,
+    srcPostThumbnail
+) {
+    let statusCheck = [],
+        numError = 0;
     if (postTitle == "") {
         statusCheck.push("The post title field is required !");
         numError++;
@@ -378,20 +444,25 @@ function validator(postTitle, postExcerpt, postContent, postType, postSlug, srcP
         numError++;
     }
     if (numError > 0) {
-        $('#statusError>ul').empty();
-        statusCheck.forEach(e => $('#statusError>ul').append(`<li>${e}</li>`));
-        $('#errorModal').modal('show');
+        $("#statusError>ul").empty();
+        statusCheck.forEach((e) =>
+            $("#statusError>ul").append(`<li>${e}</li>`)
+        );
+        $("#errorModal").modal("show");
         return false;
-    };
+    }
     return true;
 }
 
 // Functions for edit
 function editSelectCategory() {
-    let slug = $('#slugCategory').val();
-    if (slug == "") return ;
+    let slug = $("#slugCategory").val();
+    if (slug == "") return;
     let cateId = dataResponse.find((item) => item.slug == slug).key;
-    $('#selectCateParent option[value = ' + cateId + ']').prop('selected', 'selected');
+    $("#selectCateParent option[value = " + cateId + "]").prop(
+        "selected",
+        "selected"
+    );
 }
 
 function addOptionDatalist(list) {
@@ -402,7 +473,6 @@ function addOptionDatalist(list) {
     });
 }
 
-$('#tag-list-available').click((event) => {
-    console.log($('#input-tag>input').val());
-})
-
+$("#tag-list-available").click((event) => {
+    console.log($("#input-tag>input").val());
+});

@@ -15,6 +15,7 @@ use App\Models\Image;
 use App\Models\ImageRelationship;
 use App\Models\TagRelationship;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class PostController extends Controller
@@ -47,15 +48,13 @@ class PostController extends Controller
                 'post_slug' => ['required', 'string', 'max:150', 'unique:ae_posts'],
                 'file' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 'created_at' => 'required|string',
-                'cate_slug' => ['string', function ($attribute, $value, $fail) {
-                    $checkCategory = Category::where('cate_slug', $value)->first();
+                'cate_id' => ['integer', function ($attribute, $value, $fail) {
+                    $checkCategory = Category::where('id', $value)->first();
 
                     if ($checkCategory == null) {
                         return $fail(__('Category is valid!' . $value));
                     }
                 }],
-                'tag_list.*.name' => 'string',
-                'tag_list.*.slug' => 'string',
                 'ssImage' => 'required| string| regex: /^image+[0-9]+$/',
             ]
         );
@@ -63,7 +62,7 @@ class PostController extends Controller
             return new JsonResponse(['errors' => $validator->getMessageBag()->toArray()], 419);
         } else {
             $file = $request->file('file');
-            $fileName = (new MediaController)->saveImage($file);
+            $fileName = (new MediaController)->saveImage($file, 'thumbnail');
             $imageArr = Session::get($request->ssImage);
             array_push($imageArr, $fileName);
             try {
@@ -90,8 +89,8 @@ class PostController extends Controller
             }
             // process category
             try {
-                if ($request->has('cate_slug') == true) {
-                    $this->addCategoryRelationship($request->cate_slug, $newPost->id);
+                if ($request->has('cate_id') == true) {
+                    CategoryRelationship::insert(['cate_id' => $request->cate_id, 'post_id' => $newPost->id]);
                 }
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => ['Have error when save category. Please update latter.']], 419);
@@ -103,6 +102,7 @@ class PostController extends Controller
                 if ($request->has('tag_list') == true) {
                     $newTag = $this->addTagRelationship($request->tag_list, $newPost->id);
                 }
+                // return new JsonResponse(['errors' => $newTag], 419);
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => [`Have error when save tag`]], 419);
             }
@@ -153,50 +153,54 @@ class PostController extends Controller
         );
         if ($validator->fails()) {
             return new JsonResponse(['errors' => $validator->getMessageBag()->toArray()], 419);
-        } else {
-            $editPost = Post::where('id', $request->post_id)->first();
+        }
 
-            if ($editPost != null) {
-                $editPost->post_title = $request->post_title;
-                $editPost->post_excerpt = $request->post_excerpt;
-                $editPost->post_content = $request->post_content;
-                $editPost->post_type = $request->post_type;
-                if ($editPost->post_slug != $request->post_slug) {
-                    $checkSlug = Post::where('post_slug', $request->post_slug)->first();
-                    if ($checkSlug != null) return new JsonResponse(['errors' => ['This slug post is must be unique!']], 419);
-                    else $editPost->post_slug = $request->post_slug;
-                }
-            } else
-                return new JsonResponse(['errors' => ['This post is not available on the server!']], 419);
+        $editPost = Post::where('id', $request->post_id)->first();
 
+        if ($editPost != null) {
+            $editPost->post_title = $request->post_title;
+            $editPost->post_excerpt = $request->post_excerpt;
+            $editPost->post_content = $request->post_content;
+            $editPost->post_type = $request->post_type;
+            if ($editPost->post_slug != $request->post_slug) {
+                $checkSlug = Post::where('post_slug', $request->post_slug)->first();
+                if ($checkSlug != null) return new JsonResponse(['errors' => ['This slug post is must be unique!']], 419);
+                else $editPost->post_slug = $request->post_slug;
+            }
             if ($request->has('file')) {
                 $file = $request->file('file');
-                $fileName = (new MediaController)->saveImage($file);
-                $editPost->post_thumbnail = $fileName;
-                ImageRelationship::where('post_id', $editPost->id)
-                    ->where('img_name', 'regex', '^thumbnail([\w-]{8})+([0-9]{13,14}\.)+[a-zA-Z]{3,4}$')
+                $fileName = (new MediaController)->saveImage($file, 'thumbnail');
+                $imgRelation = DB::table('ae_images_relationship')
+                    ->where('post_id', $editPost->id)
+                    ->where('img_name', $editPost->post_thumbnail)
                     ->update(['img_name' => $fileName]);
-                $imageArr = Session::get($request->ssImage);
+
+                $editPost->post_thumbnail = $fileName;
+            }
+            $editPost->save();
+            // return new JsonResponse(['errors' => [$editPost, $imgRelation]], 419);
+            $imageArr = Session::get($request->ssImage);
+            if (sizeof($imageArr) > 0) {
                 try {
                     $this->addImageRelation($imageArr, $editPost->id);
                 } catch (\Throwable $th) {
                     return new JsonResponse(['errors' => ['An error occurred while connecting the image to this post. But this post and image stored. Rest assured, the article will still work normally.']], 419);
                 }
             }
-
             // process category
             if ($request->has('cate_slug')) {
                 try {
-                    $this->addCategoryRelationship($request->cate_slug, $editPost->id);
+                    $category = Category::where('cate_slug', $request->cate_slug)->first();
+                    $cateRelation = DB::table('ae_categories_relationship')
+                        ->where('post_id', $editPost->id)
+                        ->update(['cate_id' => $category->id]);
                 } catch (\Throwable $th) {
-                    return new JsonResponse(['errors' => ['An error occurred while connecting the category to this post. But this post and image stored.']], 419);
+                    return new JsonResponse(['errors' => ['An error occurred while connecting the category to this post. Please update affter.']], 419);
                 }
             }
-
-            $editPost->save();
+            $newTag = [];
             // process tag
             try {
-                $newTag = [];
                 if ($request->has('tag_delete') == true) {
                     $deleteTags = json_decode($request->tag_delete);
                     foreach ($deleteTags as $tag) {
@@ -211,8 +215,9 @@ class PostController extends Controller
             }
 
             session([$request->ssImage => []]);
-            return new JsonResponse(['newTag' => $newTag], 419);
-        }
+            return new JsonResponse(['newTag' => $newTag, 'editPost' => $editPost], 200);
+        } else
+            return new JsonResponse(['errors' => ['This post is not available on the server!']], 419);
     }
 
     public function getDetailPost(Request $request)
@@ -232,36 +237,23 @@ class PostController extends Controller
         ImageRelationship::insert($data);
     }
 
-    public function addCategoryRelationship($slug, $id)
-    {
-        $category = Category::where('cate_slug', $slug)->first();
-        CategoryRelationship::insert(['cate_id' => $category->id, 'post_id' => $id]);
-    }
-
     public function addTagRelationship($tagListStr, $id)
     {
         $newTag = [];
-        $tagIdArr = array();
-        $tagSlugArr = array();
-        $tags = Tag::all();
-        foreach ($tags as $tag) {
-            array_push($tagIdArr, $tag->id);
-            array_push($tagSlugArr, $tag->tag_slug);
-        }
         $tagList  = json_decode($tagListStr);
         foreach ($tagList as $addTag) {
-            $arrKey = array_search($addTag->slug, $tagSlugArr);
-            if ($arrKey == null) {
+            $checkTag = Tag::where('tag_slug', $addTag->slug)->first();
+            if ($checkTag === null) {
                 $dataTag = ['tag_name' => $addTag->name, 'tag_slug' => $addTag->slug, 'posts_count' => 1];
                 $tagId = Tag::insertGetId($dataTag);
                 $dataTag = ['id' => $tagId, 'name' => $addTag->name, 'slug' => $addTag->slug, 'posts' => 1];
                 array_push($newTag, (object)$dataTag);
             } else {
-                $tagId = $tagIdArr[$arrKey];
+                $tagId = $checkTag->id;
+                $checkTag->posts_count = $checkTag->posts_count + 1;
             }
             TagRelationship::insert(['tag_id' => $tagId, 'post_id' => $id]);
         }
-
         return $newTag;
     }
 }
