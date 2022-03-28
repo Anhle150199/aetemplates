@@ -2670,12 +2670,6 @@ var Tags = (function() {
 
 })();
 
-for (let index = 0; index < 4; index++) {
-    let idElement = $(`#slidebar-${index}`).val();
-    if (idElement == "") break;
-    $(`#${idElement}`).addClass("active");
-    if (index == 0) {
-        $(`#${idElement}`).click();
-        $(`#${idElement}`).attr("aria-expanded", "true");
-    }
-}
+const range = (start, stop, step) => Array.from({
+    length: (stop - start) / step + 1
+}, (_, i) => start + (i * step));

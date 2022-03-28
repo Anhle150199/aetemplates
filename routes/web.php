@@ -2,8 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\Users\UserProfileController;
 use App\Http\Controllers\Admin\Users\UserController;
+use App\Http\Controllers\Admin\Users\UserProfileController;
+use App\Http\Controllers\Admin\Posts\TagController;
+use App\Http\Controllers\Admin\Posts\CategoryController;
+use App\Http\Controllers\Admin\Posts\PostController;
+use App\Http\Controllers\Admin\Posts\MediaController;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Jetstream\Http\Controllers\Inertia\OtherBrowserSessionsController;
 
@@ -16,6 +20,38 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard', ['slidebar' => ['dashboards',]]);
     })->name('dashboard');
+
+    // Posts manage
+    Route::prefix('posts')->group(function () {
+        Route::post('upload-image', [MediaController::class, 'uploadImange'])->name('upload-image');
+
+        // Posts
+        Route::get('/', function () {
+            return redirect()->route('all-post');
+        });
+        Route::get('all', [PostController::class, 'getAllPost'])->name('all-post');
+        Route::get('new-post', [PostController::class, 'getNewPost'])->name('new-post');
+        Route::post('add-new-post', [PostController::class, 'addNewPost'])->name('add-new-post');
+        Route::get('edit-post/{id}', [PostController::class, 'getEditPost'])->name('edit-post');
+        Route::post('update-post', [PostController::class, 'updatePost'])->name('update-post');
+        Route::get('detail-post', [PostController::class, 'getDetailPost'])->name('detail-post');
+        Route::delete('delete-post', [PostController::class, 'deletePost'])->name('delete-post');
+
+        // Categories
+        Route::get('categories', [CategoryController::class, 'showCategory'])->name('show-categories');
+        Route::get('get-categories', [CategoryController::class, 'getAllCategories'])->name('get-categories');
+        Route::post('add-category', [CategoryController::class, 'addCategory'])->name('add-category');
+        Route::put('edit-category', [CategoryController::class, 'editCategory'])->name('edit-category');
+        Route::delete('delete-category', [CategoryController::class, 'deleteCategory'])->name('delete-category');
+
+        // Tags
+        Route::get('tags', [TagController::class, 'showTag'])->name('show-tags');
+        Route::get('get-tags', [TagController::class, 'getAllTags'])->name('get-tags');
+        Route::put('add-tag', [TagController::class, 'addTag'])->name('add-tag');
+        Route::put('edit-tag', [TagController::class, 'editTag'])->name('edit-tag');
+        Route::delete('delete-tag', [TagController::class, 'deleteTag'])->name('delete-tag');
+    });
+    //Users manage
     Route::prefix('user')->group(function () {
         // All User
         Route::get('all', [UserController::class, 'getAllUser'])->name('get-all-user');

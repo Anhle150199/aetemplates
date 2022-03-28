@@ -2,8 +2,8 @@
 <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
     <div class="scrollbar-inner">
         {{-- Brand --}}
-        <div class="sidenav-header d-flex align-items-center">
-            <a class="navbar-brand ml-auto" href="{{ route('home') }}">
+        <div class="sidenav-header d-flex justify-content-center">
+            <a class="navbar-brand" href="{{ route('home') }}">
                 <img src="{{ url('/') }}/img/logo/TF.png" class="navbar-brand-img">
             </a>
             <div>
@@ -43,13 +43,13 @@
                                     <a href="#" class="nav-link">All Posts</a>
                                 </li>
                                 <li class="nav-item" id="all-new-post" >
-                                    <a href="#" class="nav-link">Add New Posts</a>
+                                    <a href="{{route('new-post')}}" class="nav-link">Add New Posts</a>
                                 </li>
                                 <li class="nav-item" id="categories">
-                                    <a href="#" class="nav-link">Categories</a>
+                                    <a href="{{route('show-categories')}}" class="nav-link">Categories</a>
                                 </li>
                                 <li class="nav-item" id="tags">
-                                    <a href="#" class="nav-link">Tags</a>
+                                    <a href="{{route('show-tags')}}" class="nav-link">Tags</a>
                                 </li>
                             </ul>
                         </div>
