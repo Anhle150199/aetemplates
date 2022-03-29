@@ -228,6 +228,8 @@ $(document).ready(function () {
                     addTags = [];
                     tagsList = tagsList.concat(data.newTag);
                     addOptionDatalist(data.newTag);
+                    $("#submit-post").text('Update');
+                    history.pushState(null, null, "/posts/edit-post/"+data.newPost.id);
                 },
                 error: function (data) {
                     errors = data.responseJSON.errors;
@@ -254,7 +256,6 @@ $(document).ready(function () {
             let postId = $("#remove-post").data("id");
             formData.append("post_id", postId);
 
-            // console.log(formData.values());
             $.ajax({
                 type: "post",
                 url: "/posts/update-post",

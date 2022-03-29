@@ -7,12 +7,18 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tag;
+use App\Models\TagRelationship;
 
 class TagController extends Controller
 {
     public function showTag()
     {
         $tagList = Tag::all();
+        foreach($tagList as $tag) {
+            $postCount = TagRelationship::where('tag_id', $tag->id)->count();
+            $tag->posts_count = $postCount;
+            $tag->save();
+        }
         return view('posts.tag', ['slidebar' => ['posts', 'tags'], 'tags' => $tagList]);
     }
 

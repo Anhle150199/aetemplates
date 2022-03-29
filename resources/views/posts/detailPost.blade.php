@@ -25,7 +25,7 @@
 </head>
 
 <body style="">
-    <div class="main-content " id="panel" data-type="{{ $status }}" data-id="{{$session}}">
+    <div class="main-content " id="panel" data-type="{{ $status }}" data-id="{{ $session }}">
         <div class="container-fluid ">
             <div class="card">
                 <div class="row" style="height: 100vh">
@@ -41,7 +41,7 @@
                                             Update
                                         @endif
                                     </button>
-                                    <a href="{{ route('dashboard') }}" class="btn btn-danger btn-sm">Back
+                                    <a href="{{ route('all-post') }}" class="btn btn-danger btn-sm">Back
                                         <i class="fa fa-arrow-right" aria-hidden="true"></i>
                                     </a>
                                 </div>
@@ -67,8 +67,13 @@
                                                     <label for="visibility" class="col-form-label">Visibility: </label>
                                                     <select name="" id="post-type" class="btn btn-sm"
                                                         style="box-shadow: none;">
-                                                        <option value="Drafts">Drafts</option>
-                                                        <option value="Public">Public</option>
+                                                        @if ($status == 'Edit' && $editPost->post_type == 'Drafts')
+                                                            <option value="Drafts" selected>Drafts</option>
+                                                            <option value="Public">Public</option>
+                                                        @else
+                                                            <option value="Drafts">Drafts</option>
+                                                            <option value="Public" selected>Public</option>
+                                                        @endif
                                                     </select>
                                                 </div>
                                                 <div class="w-100">
@@ -82,11 +87,10 @@
                                                     </span>
                                                 </div>
                                                 <a class="btn btn-danger btn-sm text-white" id="remove-post"
-                                                @if ($status == 'New')
-                                                    style="display: none;"
+                                                    @if ($status == 'New') style="display: none;"
                                                 @else
-                                                    data-id="{{$editPost->id}}"
-                                                @endif> Move to trash</a>
+                                                    data-id="{{ $editPost->id }}" @endif>
+                                                    Move to trash</a>
                                             </div>
                                         </div>
                                     </div>
@@ -111,7 +115,7 @@
                                                 value="{{ $postSlug[sizeof($postSlug) - 1] }}" @endif>
                                             <small id="urlPost" class="form-text text-muted">
                                                 @if ($status == 'Edit')
-                                                   Link post: {{ url('/') . $editPost->post_slug }}
+                                                    Link post: {{ url('/') . $editPost->post_slug }}
                                                 @endif
                                             </small>
                                         </div>
@@ -169,7 +173,7 @@
                                                     @endif
                                                     <input type="text" value="" class="border-0 shadow-none p-1"
                                                         list="tag-list-available" />
-                                                    <datalist id="tag-list-available" >
+                                                    <datalist id="tag-list-available">
                                                     </datalist>
                                                 </div>
                                                 <input type="text" id="input-tag-list" hidden value=""
@@ -219,8 +223,11 @@
                                     <div id="collapse6" class="collapse" aria-labelledby="heading6"
                                         data-parent="#accordion">
                                         <div class="card-body">
-                                            <textarea name="excerpt" id="post-excerpt" cols="30" rows="1" class="form-control textareaInput"
-                                            >@if ($status == 'Edit'){{ $editPost->post_excerpt }}@endif</textarea>
+                                            <textarea name="excerpt" id="post-excerpt" cols="30" rows="1" class="form-control textareaInput">
+@if ($status == 'Edit')
+{{ $editPost->post_excerpt }}
+@endif
+</textarea>
                                             <small>Enter Excerpt for your post</small>
                                         </div>
                                     </div>
@@ -238,7 +245,11 @@
                         <div class="card-header">
                             <textarea name="" id="inputTitlePost" cols="30" rows="1"
                                 class="form-control border-0 shadow-none font-weight-bold textareaInput"
-                                placeholder="Title">@if ($status == 'Edit'){{ $editPost->post_title }}@endif</textarea>
+                                placeholder="Title">
+@if ($status == 'Edit')
+{{ $editPost->post_title }}
+@endif
+</textarea>
                         </div>
 
                         {{-- post content --}}
@@ -246,9 +257,9 @@
                             <form action="" method="post">
                                 <textarea id="postContent" hidden>
                                     @if ($status == 'Edit')
-                                    {{ $editPost->post_content }}
-                                    @else
-                                        <p><span style="font-size: 14pt; font-family: helvetica, arial, sans-serif; background-color: #ffffff; color: #34495e;"><strong><span style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;">Videohive </span><span style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;">Wedding Photos Beautiful Slideshow 36649400 Free Download Premiere Pro Templates</span></strong></span></p>
+{{ $editPost->post_content }}
+@else
+<p><span style="font-size: 14pt; font-family: helvetica, arial, sans-serif; background-color: #ffffff; color: #34495e;"><strong><span style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;">Videohive </span><span style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;">Wedding Photos Beautiful Slideshow 36649400 Free Download Premiere Pro Templates</span></strong></span></p>
                                         <blockquote>
                                         <p><span style="font-size: 14pt; font-family: helvetica, arial, sans-serif; background-color: #ffffff; color: #34495e;"><strong style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;"><span style="font-weight: 400;">Premiere Pro CC, After Effects CC | 1920&times;1080 | 636 Mb</span><br style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box; font-weight: 400;" /><strong style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box;">Preview Page:</strong><a style="padding: 0px; margin: 0px; outline: none; list-style: none; border: 0px none; box-sizing: border-box; color: #34495e; transition: all 0.2s ease-in-out 0s; font-weight: 400; background-color: #ffffff;" href="https://videohive.net/item/wedding-photos-beautiful-slideshow/36649400">https://videohive.net/item/wedding-photos-beautiful-slideshow/36649400</a></strong></span></p>
                                         </blockquote>
@@ -268,7 +279,7 @@
                                         <p style="text-align: center;">&nbsp;</p>
                                         <p style="text-align: center;"><span style="font-size: 12pt; background-color: #ffffff; color: #34495e;"><strong>Download</strong></span></p>
                                         <p style="text-align: center;"><span style="background-color: #ffffff; color: #34495e;"><a class="btn btn-warning text-white" style="background-color: #ffffff; color: #34495e;" href="https://prefiles.com/p4hnpz7i5ylx">Download File</a></span></p>
-                                    @endif
+@endif
                                 </textarea>
                             </form>
                         </div>

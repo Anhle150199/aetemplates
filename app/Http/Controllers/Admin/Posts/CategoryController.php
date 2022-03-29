@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Posts;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\CategoryRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
@@ -20,6 +21,11 @@ class CategoryController extends Controller
     {
         try {
             $categories = Category::orderBy('parent_id', 'asc')->get();
+            foreach ($categories as $category) {
+                $postCount = CategoryRelationship::where('cate_id', $category->id)->count();
+                $category->posts_count = $postCount;
+                $category->save();
+            }
         } catch (\Throwable $th) {
             return new JsonResponse(['errors' => 'Have error when get data'], 422);
         }

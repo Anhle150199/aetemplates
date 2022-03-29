@@ -93,10 +93,8 @@ class PostController extends Controller
             // process category
             try {
                 if ($request->has('cate_id') == true) {
-                    CategoryRelationship::insert(['cate_id' => $request->cate_id, 'post_id' => $newPost->id]);
-                    $category = Category::where('id', $request->cate_id)->first();
-                    $category->posts_count = $category->posts_count +1;
-                    $category->save();
+                    // CategoryRelationship::insert(['cate_id' => $request->cate_id, 'post_id' => $newPost->id]);
+                    $this->addCategoryRelationship($request->cate_id, $newPost->id);
                 }
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => ['Have error when save category. Please update latter.']], 419);
@@ -124,7 +122,7 @@ class PostController extends Controller
 
         $editPost = Post::where('id', $id)->first();
         $tags = TagRelationship::where('post_id', $editPost->id)->join('ae_tags', 'ae_tags.id', 'tag_id')->get();
-        $category = CategoryRelationship::where('post_id', $editPost->id)->join('ae_categories', 'ae_categories.id', 'cate_id')->select('ae_categories.id', 'cate_name', 'cate_slug')->first();
+        $category = CategoryRelationship::where('post_id', $editPost->id)->join('ae_categories', 'ae_categories.id', 'cate_id')->select('ae_categories.id', 'cate_name', 'cate_slug')->orderBy('ae_categories_relationship.id','asc')->first();
         return view('posts.detailPost', ['status' => 'Edit', 'session' => $session, 'editPost' => $editPost, 'tags' => $tags, 'category' => $category]);
     }
 
@@ -198,17 +196,8 @@ class PostController extends Controller
             // process category
             if ($request->has('cate_id')) {
                 try {
-                    $categoryRelationship = CategoryRelationship::where('post_id', $editPost->id)->first();
-                    $oldCategory = Category::where('id', $categoryRelationship->cate_id)->first();
-                    $newCategory = Category::where('id', $request->cate_id)->first();
-
-                    $cateRelation = DB::table('ae_categories_relationship')
-                        ->where('post_id', $editPost->id)
-                        ->update(['cate_id' => $request->cate_id]);
-                    $oldCategory->posts_count = $oldCategory->posts_count - 1;
-                    $newCategory->posts_count = $newCategory->posts_count + 1;
-                    $oldCategory->save();
-                    $newCategory->save();
+                    CategoryRelationship::where('post_id', $editPost->id)->delete();
+                    $this->addCategoryRelationship($request->cate_id, $editPost->id);
                 } catch (\Throwable $th) {
                     return new JsonResponse(['errors' => ['An error occurred while connecting the category to this post. Please update affter.']], 419);
                 }
@@ -220,9 +209,6 @@ class PostController extends Controller
                     $deleteTags = json_decode($request->tag_delete);
                     foreach ($deleteTags as $tag) {
                         TagRelationship::where('tag_id', $tag->id)->where('post_id', $editPost->id)->delete();
-                        $deleteTag = Tag::where('id', $tag->id)->first();
-                        $deleteTag->posts_count = $deleteTag->posts_count -1;
-                        $deleteTag->save();
                     }
                 }
                 if ($request->has('tag_list') == true) {
@@ -283,7 +269,11 @@ class PostController extends Controller
         $post = Post::where('id', $request->post_id)->first();
         if ($post != null) {
             try {
+                TagRelationship::where('post_id', $post->id)->delete();
+                CategoryRelationship::where('post_id', $post->id)->delete();
+                ImageRelationship::where('post_id', $post->id)->delete();
                 $post->delete();
+
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => ['Cant delete post']], 419);
             }
@@ -315,12 +305,19 @@ class PostController extends Controller
                 array_push($newTag, (object)$dataTag);
             } else {
                 $tagId = $checkTag->id;
-                $checkTag->posts_count = $checkTag->posts_count + 1;
-                $checkTag->save();
             }
 
             TagRelationship::insert(['tag_id' => $tagId, 'post_id' => $id]);
         }
         return $newTag;
+    }
+
+    public function addCategoryRelationship($cateId, $postId)
+    {
+        if ($cateId != 0) {
+            CategoryRelationship::insert(['cate_id' => $cateId, 'post_id' => $postId]);
+            $parentCategory = Category::where('id',$cateId)->first();
+            $this->addCategoryRelationship( $parentCategory->parent_id, $postId);
+        }
     }
 }
