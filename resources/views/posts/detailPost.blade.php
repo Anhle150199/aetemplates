@@ -26,11 +26,9 @@
 
 <body style="">
     <div class="main-content " id="panel" data-type="{{ $status }}" data-id="{{$session}}">
-        <!-- Page content -->
         <div class="container-fluid ">
             <div class="card">
                 <div class="row" style="height: 100vh">
-                    {{-- Custom Detail Post --}}
                     <div class="col-xl-3 order-xl-2 " style="height: 100vh">
                         <div class="card " style="height: 100vh">
                             <div class="card-header d-flex justify-content-between align-items-center" id="cardHearder">

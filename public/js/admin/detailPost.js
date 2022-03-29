@@ -307,6 +307,29 @@ $(document).ready(function () {
         }
     });
 
+    $("#remove-post").click(()=>{
+        let postId = $("#remove-post").data('id');
+        $.ajax({
+            type: "delete",
+            url: "/posts/delete-post",
+            data: {
+                post_id: parseInt(postId),
+            },
+            dataType: "json",
+            success: function (data) {
+                window.location.href = location.origin+'/posts/all';
+            },
+            error: function (data) {
+                errors = data.responseJSON.errors;
+                console.log(errors);
+                errors = Object.keys(errors).map((key) => errors[key]);
+
+                $("#statusError>ul").empty();
+                errors.forEach((e) => $("#statusError>ul").append(`<li>${e}</li>`));
+                $("#errorModal").modal("show");
+            },
+        });
+    })
     if (typePage == "Edit") {
         editSelectCategory();
         postDetail.postSlug =

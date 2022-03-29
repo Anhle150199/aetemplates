@@ -94,6 +94,9 @@ class PostController extends Controller
             try {
                 if ($request->has('cate_id') == true) {
                     CategoryRelationship::insert(['cate_id' => $request->cate_id, 'post_id' => $newPost->id]);
+                    $category = Category::where('id', $request->cate_id)->first();
+                    $category->posts_count = $category->posts_count +1;
+                    $category->save();
                 }
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => ['Have error when save category. Please update latter.']], 419);
@@ -195,10 +198,17 @@ class PostController extends Controller
             // process category
             if ($request->has('cate_id')) {
                 try {
-                    // $category = Category::where('', $request->cate_slug)->first();
+                    $categoryRelationship = CategoryRelationship::where('post_id', $editPost->id)->first();
+                    $oldCategory = Category::where('id', $categoryRelationship->cate_id)->first();
+                    $newCategory = Category::where('id', $request->cate_id)->first();
+
                     $cateRelation = DB::table('ae_categories_relationship')
                         ->where('post_id', $editPost->id)
                         ->update(['cate_id' => $request->cate_id]);
+                    $oldCategory->posts_count = $oldCategory->posts_count - 1;
+                    $newCategory->posts_count = $newCategory->posts_count + 1;
+                    $oldCategory->save();
+                    $newCategory->save();
                 } catch (\Throwable $th) {
                     return new JsonResponse(['errors' => ['An error occurred while connecting the category to this post. Please update affter.']], 419);
                 }
@@ -210,6 +220,9 @@ class PostController extends Controller
                     $deleteTags = json_decode($request->tag_delete);
                     foreach ($deleteTags as $tag) {
                         TagRelationship::where('tag_id', $tag->id)->where('post_id', $editPost->id)->delete();
+                        $deleteTag = Tag::where('id', $tag->id)->first();
+                        $deleteTag->posts_count = $deleteTag->posts_count -1;
+                        $deleteTag->save();
                     }
                 }
                 if ($request->has('tag_list') == true) {
