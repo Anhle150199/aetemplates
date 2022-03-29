@@ -1,12 +1,11 @@
 $(function(){
-    let widthCardBody = $('#body-images').innerWidth();
-    let heightImage = (widthCardBody/100*15)/16*9;
-    // load image
-    $('.card-img-name').each((e)=>{
-        let imgName = $(this).find('span').text();
-        let imgId = $(this).data('id');
-
-        $(`<div class="card-img-top w-100" style="height: ${heightImage}; background:url(${location.origin + "/storage/images/"+imgName})"></div>`).insertBefore($(this))
-
+    // let widthCardBody = $('#body-images').innerWidth();
+    // let width = widthCardBody*9/10;
+    // let heightImage = (widthCardBody/5)/16*9;
+    // // load image
+    $('.card-img-name').each(function(e){
+        let imgName = $(this).find('small').text();
+        if (imgName.length >25)
+        $(this).find('small').text(imgName.substring(0,10)+'...'+imgName.substring(imgName.length - 15,imgName.length));
     });
 });

@@ -2,6 +2,12 @@
 
 @push('css')
     <style>
+    .card-img-top{
+        position: relative;
+        /* padding-top: 56.52%; */
+        height: 56.52%;
+
+    }
         div.gallery {
             border: 1px solid #ccc;
         }
@@ -91,13 +97,13 @@
                                     <div class="desc">{{ $image->img_name }}</div>
                                 </div>
                             </div> --}}
-                            <div class="card float-left mr-2 card-image" style="width: 15%;">
-                                {{-- <div class="card-img-top"> --}}
-                                    {{-- <img src="{{ url('/') . '/storage/images/' . $image->img_name }}"
-                                        class="" alt="..."> --}}
-                                {{-- </div> --}}
+                            <div class="card float-left mr-2 card-image" style="width: 24%">
+                                <div class="card-img-top ">
+                                    <img src="{{ url('/') . '/storage/images/' . $image->img_name }}"
+                                        class="" alt="..." style="width: 100%">
+                                </div>
                                 <div class="p-3 card-img-name" data-id="{{$image->id}}">
-                                    <span class="">{{ $image->img_name }}</span>
+                                    <small class="">{{ $image->img_name }}</small>
                                 </div>
                             </div>
                         @endforeach
