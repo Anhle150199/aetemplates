@@ -141,7 +141,7 @@ class PostController extends Controller
                         return $fail(__('Post type valid!' . $value));
                     }
                 }],
-                'post_slug' => ['required', 'string', 'max:150', /*'unique:ae_posts'*/],
+                'post_slug' => ['required', 'string', 'max:150', 'unique:ae_posts'],
                 'file' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 'created_at' => 'required|string',
                 'cate_id' => ['integer', function ($attribute, $value, $fail) {
