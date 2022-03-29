@@ -191,12 +191,12 @@ class PostController extends Controller
                 }
             }
             // process category
-            if ($request->has('cate_slug')) {
+            if ($request->has('cate_id')) {
                 try {
-                    $category = Category::where('cate_slug', $request->cate_slug)->first();
+                    // $category = Category::where('', $request->cate_slug)->first();
                     $cateRelation = DB::table('ae_categories_relationship')
                         ->where('post_id', $editPost->id)
-                        ->update(['cate_id' => $category->id]);
+                        ->update(['cate_id' => $request->cate_id]);
                 } catch (\Throwable $th) {
                     return new JsonResponse(['errors' => ['An error occurred while connecting the category to this post. Please update affter.']], 419);
                 }
