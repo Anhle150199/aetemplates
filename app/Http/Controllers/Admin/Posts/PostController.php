@@ -23,9 +23,9 @@ class PostController extends Controller
     public function getAllPost(Request $request)
     {
         $allPosts = Post::all();
-        return view('posts.allPosts', ['slidebar' => ['posts', 'all-post'], 'allPosts'=>$allPosts]);
+        return view('posts.allPosts', ['slidebar' => ['posts', 'all-post'], 'allPosts' => $allPosts]);
     }
-    //
+    // Get New Post
     public function getNewPost(Request $request)
     {
         $session = "image" . strtotime("now");
@@ -51,7 +51,7 @@ class PostController extends Controller
                 'file' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 'created_at' => 'required|string',
                 'cate_id' => ['integer', function ($attribute, $value, $fail) {
-                    if ($value != 0){
+                    if ($value != 0) {
                         $checkCategory = Category::where('id', $value)->first();
                         if ($checkCategory == null) {
                             return $fail(__('Category is valid!' . $value));
@@ -113,6 +113,7 @@ class PostController extends Controller
         }
     }
 
+    // Get Edit Post
     public function getEditPost($id)
     {
         $session = "image" . strtotime("now");
@@ -124,6 +125,7 @@ class PostController extends Controller
         return view('posts.detailPost', ['status' => 'Edit', 'session' => $session, 'editPost' => $editPost, 'tags' => $tags, 'category' => $category]);
     }
 
+    // Process update Post
     public function updatePost(Request $request)
     {
         $validator = Validator::make(
@@ -142,7 +144,7 @@ class PostController extends Controller
                 'file' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 'created_at' => 'required|string',
                 'cate_id' => ['integer', function ($attribute, $value, $fail) {
-                    if ($value != 0){
+                    if ($value != 0) {
                         $checkCategory = Category::where('id', $value)->first();
                         if ($checkCategory == null) {
                             return $fail(__('Category is valid!' . $value));
@@ -223,12 +225,59 @@ class PostController extends Controller
             return new JsonResponse(['errors' => ['This post is not available on the server!']], 419);
     }
 
-    public function getDetailPost(Request $request)
+    // Process update post type
+    public function updatePostType(Request $request)
     {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'post_id' => ['required', 'integer'],
+                'post_type' => ['required', 'string', function ($attribute, $value, $fail) {
+                    if (!in_array($value, ['Drafts', 'Public'])) {
+                        return $fail(__('Post type is valid!' . $value));
+                    }
+                }]
+            ]
+        );
+        if ($validator->fails()) {
+            return new JsonResponse(['errors' => $validator->getMessageBag()->toArray()], 419);
+        }
+        $post = Post::where('id', $request->post_id)->first();
+        if ($post != null) {
+            try {
+                $post->post_type = $request->post_type;
+                $post->save();
+            } catch (\Throwable $th) {
+                return new JsonResponse(['errors' => ['Cant delete post']], 419);
+            }
+            return new JsonResponse([], 200);
+        } else {
+            return new JsonResponse(['errors' => ['Post does not exist']], 419);
+        }
     }
 
     public function deletePost(Request $request)
     {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'post_id' => ['required', 'integer']
+            ]
+        );
+        if ($validator->fails()) {
+            return new JsonResponse(['errors' => $validator->getMessageBag()->toArray()], 419);
+        }
+        $post = Post::where('id', $request->post_id)->first();
+        if ($post != null) {
+            try {
+                $post->delete();
+            } catch (\Throwable $th) {
+                return new JsonResponse(['errors' => ['Cant delete post']], 419);
+            }
+            return new JsonResponse([], 200);
+        } else {
+            return new JsonResponse(['errors' => ['Post does not exist']], 419);
+        }
     }
 
     public function addImageRelation($imageArr, $id)

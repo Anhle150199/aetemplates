@@ -34,7 +34,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('add-new-post', [PostController::class, 'addNewPost'])->name('add-new-post');
         Route::get('edit-post/{id}', [PostController::class, 'getEditPost'])->name('edit-post');
         Route::post('update-post', [PostController::class, 'updatePost'])->name('update-post');
-        Route::get('detail-post', [PostController::class, 'getDetailPost'])->name('detail-post');
+        Route::put('update-post-type', [PostController::class, 'updatePostType'])->name('update-post-type');
         Route::delete('delete-post', [PostController::class, 'deletePost'])->name('delete-post');
 
         // Categories

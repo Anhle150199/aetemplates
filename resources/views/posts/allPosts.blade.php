@@ -19,7 +19,7 @@
                             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                                 <li class="breadcrumb-item"><a href="#"><i class="fa fa-users"></i></a></li>
                                 <li class="breadcrumb-item"><a href="#">Posts </a></li>
-                                <li class="breadcrumb-item active" aria-current="page">All</li>
+                                <li class="breadcrumb-item active" aria-current="page">All Posts</li>
                             </ol>
                         </nav>
                     </div>
@@ -32,11 +32,9 @@
     </div>
     <!-- Page content -->
     <div class="container-fluid mt--6">
-        <!-- Table -->
         <div class="row">
             <div class="col">
                 <div class="card">
-                    <!-- Card header -->
                     <div class="card-header">
                         <h3 class="mb-0">All Posts</h3>
                         <p class="text-sm mb-0"></p>
@@ -45,7 +43,7 @@
                         <table class="table table-flush" id="datatable-basic">
                             <thead class="thead-light">
                                 <tr>
-                                    <th>Post Title</th>
+                                    <th> Post Title</th>
                                     <th>Post Views</th>
                                     <th>Post Type</th>
                                     <th>Created At</th>
@@ -54,17 +52,38 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $indexPost = 1; ?>
                                 @foreach ($allPosts as $post)
-                                    <tr id="{{ $indexPost }}" data-id="{{ $post->id }}">
-                                        <td>{{ $post->post_title }}</td>
+                                    <tr id="{{ $post->id }}" data-id="{{ $post->id }}">
+                                        <td><a href="{{ url('/') . $post->post_slug }}" id="title{{$post->id}}">{{ $post->post_title }}</a></td>
                                         <td>{{ $post->post_views }}</td>
-                                        <td>{{ $post->post_type }}</td>
+                                        <td>
+                                            <div class="w-100">
+                                                <select name="" class="btn btn-sm"
+                                                    onchange="updateTypePost(this,'{{ $post->id }}')"
+                                                    style="box-shadow: none;">
+                                                    @if ($post->post_type == 'Drafts')
+                                                        <option value="Drafts" selected>Drafts</option>
+                                                        <option value="Public">Public</option>
+                                                    @else
+                                                        <option value="Drafts" selected>Drafts</option>
+                                                        <option value="Public" selected>Public</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </td>
                                         <td>{{ $post->created_at }}</td>
                                         <td>{{ $post->updated_at }}</td>
-                                        <td class="table-actions"></td>
+                                        <td class="table-actions">
+                                            <a href="{{ route('edit-post', ['id' => $post->id]) }}"
+                                                class="table-action-edit" data-original-title="Edit Post"><i
+                                                    class="fas fa-edit"></i></a>
+                                            <a href="#!" class="table-action table-action-delete" data-toggle="modal"
+                                                data-original-title="Delete Post" data-target="#deleteModal"
+                                                 data-post-id="{{$post->id}}">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </td>
                                     </tr>
-                                    <?php $indexPost += 1; ?>
                                 @endforeach
                             </tbody>
                         </table>
@@ -73,9 +92,60 @@
             </div>
         </div>
     </div>
+    {{-- Success Modal --}}
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="width: 65%;margin: auto;">
+                <div class="modal-body row text-success" style="font-style: oblique;font-weight: 900;">
+                    <div class="col-4 text-right">
+                        <i class="fas fa-check-circle" style="font-size: 4rem;"></i>
+                    </div>
+                    <div class="col-7 d-flex align-items-center text-success" name="successModal"
+                        style='font-size: 1.5rem;'>
+                        Success !
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Error Modal --}}
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-danger d-flex justify-content-around"
+                    style="font-style: oblique;font-weight: 700;">
+                    <div class="col-4 d-flex align-items-center justify-content-around text-right">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 4rem;"></i>
+                    </div>
+                    <div class="col-7  " name="errorModal">
+                        <h1 class="text-danger">Error!!</h1>
+                        <div id="statusError">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Delete Modal --}}
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-success" id="btnYesDeletePost">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('js')
-    <script src="{{ url('/') }}/js/admin/usersManage.js"></script>
+    <script src="{{ url('/') }}/js/admin/allPosts.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ url('/') }}/vendor/datatables.net-buttons/js/dataTables.buttons.min.js"></script>

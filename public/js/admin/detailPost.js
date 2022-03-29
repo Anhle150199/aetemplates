@@ -295,7 +295,6 @@ $(document).ready(function () {
                 },
                 error: function (data) {
                     errors = data.responseJSON.errors;
-                    console.log(errors);
                     errors = Object.keys(errors).map((key) => errors[key]);
 
                     $("#statusError>ul").empty();
