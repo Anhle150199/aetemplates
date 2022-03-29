@@ -18,6 +18,13 @@ use Illuminate\Support\Facades\Auth;
 
 class MediaController extends Controller
 {
+    // get all image
+    public function getAllImage()
+    {
+        $images = Image::all();
+        return view('medias', ['slidebar' => ['media'],'images'=>$images]);
+    }
+
     // upload image
     public function uploadImange(Request $request)
     {

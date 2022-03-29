@@ -11,7 +11,6 @@ use App\Http\Controllers\Admin\Posts\MediaController;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Jetstream\Http\Controllers\Inertia\OtherBrowserSessionsController;
 
-
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -72,4 +71,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete('logout-other-seesion', [UserProfileController::class, 'logoutOtherSession'])->name('logout-other-seesion');
         Route::delete('delete-account', [UserProfileController::class, 'deleteAccount'])->name('delete-account');
     });
+
+    Route::get('/media', [MediaController::class, 'getAllImage'])->name('media');
 });

@@ -79,7 +79,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="media">
+                        <a class="nav-link" href="{{route('media')}}" id="media">
                             <i class="fa fa-cube text-green"></i>
                             <span class="nav-link-text">Media</span>
                         </a>
