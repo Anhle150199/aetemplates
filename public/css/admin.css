@@ -599,8 +599,8 @@ h6,
 
 hr
 {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 
     border: 0;
     border-top: 1px solid rgba(0, 0, 0, .1);
@@ -908,8 +908,8 @@ pre code
     position: relative;
 
     width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-right: 9px;
+    padding-left: 9px;
 }
 
 .col
@@ -17511,11 +17511,6 @@ a.text-default:focus
     color: #050a12 !important;
 }
 
-.text-white
-{
-    color: #fff !important;
-}
-
 a.text-white:hover,
 a.text-white:focus
 {
@@ -19800,7 +19795,7 @@ a.btn-icon-only
 
 .dropdown-menu
 {
-    min-width: 12rem;
+    min-width: 8rem;
 }
 .dropdown-menu .dropdown-item
 {
@@ -24064,7 +24059,7 @@ textarea[resize='horizontal']
 
     margin: 0 .25rem;
 
-    color: #adb5bd;
+    color: #fb6340;
 }
 .table-action:hover
 {
@@ -24075,7 +24070,10 @@ textarea[resize='horizontal']
 {
     color: #f5365c;
 }
-
+.table-action-success:hover
+{
+    color: #2dce89;
+}
 .table-dark .table-action
 {
     color: #4d7bca;
@@ -26155,17 +26153,6 @@ a.text-cyan:hover,
 a.text-cyan:focus
 {
     color: #00dea2 !important;
-}
-
-.text-white
-{
-    color: #fff !important;
-}
-
-a.text-white:hover,
-a.text-white:focus
-{
-    color: #d9d9d9 !important;
 }
 
 .text-gray
@@ -29627,3 +29614,26 @@ html:not([dir='rtl']) .noUi-horizontal .noUi-handle
 {
     max-width: 200px;
 }
+
+/* width */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: var(--gray);
+    border-radius: 10px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: gray;
+  }
