@@ -8,14 +8,14 @@ use App\Http\Controllers\Admin\Posts\TagController;
 use App\Http\Controllers\Admin\Posts\CategoryController;
 use App\Http\Controllers\Admin\Posts\PostController;
 use App\Http\Controllers\Admin\Posts\MediaController;
+use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Jetstream\Http\Controllers\Inertia\OtherBrowserSessionsController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [WebsiteController::class, 'getHome'])->name('home');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::redirect('/admin', '/dashboard');
     Route::get('/dashboard', function () {
         return view('dashboard', ['slidebar' => ['dashboards',]]);
     })->name('dashboard');
