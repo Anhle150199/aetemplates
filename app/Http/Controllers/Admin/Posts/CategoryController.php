@@ -8,6 +8,7 @@ use App\Models\CategoryRelationship;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -62,6 +63,11 @@ class CategoryController extends Controller
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => 'Have error when insert data',], 422);
             }
+            try {
+                $this->updateMenu();
+            } catch (\Throwable $th) {
+                return new JsonResponse(['errors' => $th], 419);
+            }
             return new JsonResponse(['newCategory' => $newCategory], 200);
         }
     }
@@ -114,6 +120,11 @@ class CategoryController extends Controller
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => 'Have error when edit data',], 422);
             }
+            try {
+                $this->updateMenu();
+            } catch (\Throwable $th) {
+                return new JsonResponse(['errors' => $th], 419);
+            }
             return new JsonResponse(["cateEdit" => $editCate], 200);
         }
     }
@@ -140,6 +151,11 @@ class CategoryController extends Controller
         } catch (\Throwable $th) {
             return new JsonResponse(['errors' => 'Error when delete'], 406);
         }
+        try {
+            $this->updateMenu();
+        } catch (\Throwable $th) {
+            return new JsonResponse(['errors' => $th], 419);
+        }
         return new JsonResponse(['idDelete' => $idDelete], 200);
     }
 
@@ -154,5 +170,33 @@ class CategoryController extends Controller
             if ($children_count > 0)
                 $this->deleteChildCate($id);
         }
+    }
+
+    public function updateMenu()
+    {
+        $categories = Category::all();
+        $startMenu = '<div class="main-menu d-none d-md-block"><nav><ul id="navigation"><li><a href="' . url('/') . '">Home</a></li>';
+        $startMenu = $this->printItemMenu($categories, 0, $startMenu);
+        $menu = $startMenu . "</ul></nav></div>";
+        DB::table('ae_system')->where('system_key', 'menu_html')->update(['system_value' => $menu]);
+    }
+
+    public function printItemMenu($data, $parentId, $text)
+    {
+        foreach ($data as $key => $category) {
+            if ($category->parent_id == $parentId && $category->children_count > 0) {
+
+                $text = $text . "<li><a href=" . url('/') . "/category" . $category->cate_slug . ">" . $category->cate_name . '</a><ul class="submenu">';
+
+                $text = $this->printItemMenu($data, $category->id, $text);
+                $text = $text . "</ul></li>";
+            } else if ($category->parent_id == $parentId && $category->children_count == 0) {
+
+                $text = $text . "<li><a href=" . url('/') . "/category" . $category->cate_slug . ">" . $category->cate_name . "</a></li>";
+
+                $text = $this->printItemMenu($data, $category->id, $text);
+            }
+        }
+        return $text;
     }
 }
