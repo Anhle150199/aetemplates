@@ -7,7 +7,7 @@
 
         <!-- For action befor login -->
         <title>{{ config('app.name') }}</title>
-        <link href="{{url('/')}}/img/logo/TF.png" rel="icon" type="image/png">
+        <link href="{{url('/')}}/img/logo/favicon.ico" rel="icon" type="image/x-icon">
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 

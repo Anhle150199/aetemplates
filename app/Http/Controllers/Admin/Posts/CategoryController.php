@@ -5,13 +5,26 @@ namespace App\Http\Controllers\Admin\Posts;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\CategoryRelationship;
+use App\Models\System;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
+    public function __construct(){
+        // if (Cache::has('systemDetail') == false) {
+            $system = System::all();
+            $systemArr = array();
+            foreach ($system as $item){
+                $systemArr[$item->system_key] = $item->system_value;
+            }
+            Cache::put('systemDetail', $systemArr, 600);
+        // }
+    }
+
     public function showCategory(Request $request)
     {
         return view('posts.category', ['slidebar' => ['posts', 'categories']]);

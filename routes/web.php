@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Redis;
 use Laravel\Jetstream\Http\Controllers\Inertia\OtherBrowserSessionsController;
 
 Route::get('/', [WebsiteController::class, 'getHome'])->name('home');
+Route::get('/post/{slug}', [WebsiteController::class, 'getPost'])->where('slug', '.*');
+Route::get('/categories/{category}',[WebsiteController::class, 'getPostForCategory'])->where('slug', '.*');
+Route::get('/tags/{tag}', [WebsiteController::class, 'getPostForTag']);
+Route::get('/search/{search}', [WebsiteController::class, 'getSearch']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::redirect('/admin', '/dashboard');

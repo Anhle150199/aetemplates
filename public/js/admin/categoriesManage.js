@@ -13,7 +13,7 @@ const row = (name, slug, posts, action, id, parentId) => {
     return `<div class="row " id="${id}">
             <div class="no"></div>
             <div class="col-4" id="name-${id}">${name}</div>
-            <div class="col-4" id="slug-${id}">${slug} </div>
+            <div class="col-4" id="slug-${id}">${slug}</div>
             <div class="col-2">${posts}</div>
             <div class="col">${action}</div></div>
             <div id="child-${id}"><hr></div>

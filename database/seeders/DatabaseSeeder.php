@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
 
         DB::table('ae_system')->insert([
             ['system_key' => 'app_name', 'system_value' => 'AeFreeTemplate'],
-            ['system_key' => 'menu_html', 'system_value' => '']
+            ['system_key' => 'menu_html', 'system_value' => ''],
+            ['system_key' => 'logo', 'system_value' => 'logo.png']
         ]);
     }
 }
