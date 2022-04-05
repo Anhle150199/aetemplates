@@ -12,7 +12,10 @@
                             <div class="single-slider">
                                 <div class="trending-top mb-30">
                                     <div class="trend-top-img">
-                                        <img src="{{ url('/') . '/storage/images/' . $posts[0]->post_thumbnail }}" alt="">
+                                        <a href="{{ url('/') . '/post' . $posts[0]->post_slug }}">
+                                            <img src="{{ url('/') . '/storage/images/' . $posts[0]->post_thumbnail }}"
+                                                alt="">
+                                        </a>
                                         <div class="trend-top-cap trend-top-cap2">
                                             <?php $categoryArr = explode('/', $posts[0]->post_slug);
                                             $category = str_replace('-', ' ', $categoryArr[1]); ?>
@@ -20,8 +23,8 @@
                                                 <span class="bgr">{{ $category }}</span>
                                             @endif
                                             <h2 class="text-white string-2" style="height: 57px;"><a
-                                                    href="{{ url('/') .'/post'. $posts[0]->post_slug }}" data-animation="fadeInUp"
-                                                    data-delay=".4s"
+                                                    href="{{ url('/') . '/post' . $posts[0]->post_slug }}"
+                                                    data-animation="fadeInUp" data-delay=".4s"
                                                     data-duration="1000ms">{{ $posts[0]->post_title }}</a></h2>
                                             <p data-animation="fadeInUp" data-delay=".6s" data-duration="1000ms">
                                                 {{ date('F d, Y', strtotime($posts[0]->created_at)) }}</p>
@@ -38,7 +41,10 @@
                             <div class="col-lg-12 col-md-6 col-sm-6">
                                 <div class="trending-top mb-15">
                                     <div class="trend-top-img">
-                                        <img src="{{ url('/') . '/storage/images/' . $posts[1]->post_thumbnail }}" alt="">
+                                        <a href="{{ url('/') . '/post' . $posts[1]->post_slug }}">
+                                            <img src="{{ url('/') . '/storage/images/' . $posts[1]->post_thumbnail }}"
+                                                alt="">
+                                        </a>
                                         <div class="trend-top-cap trend-top-cap2">
                                             <?php $categoryArr = explode('/', $posts[1]->post_slug);
                                             $category = str_replace('-', ' ', $categoryArr[1]); ?>
@@ -46,8 +52,8 @@
                                                 <span class="bgr">{{ $category }}</span>
                                             @endif
                                             <h2 class="text-white string-2" style="font-size: 17px;height: 50px;"><a
-                                                    href="{{ url('/') .'/post'. $posts[1]->post_slug }}" data-animation="fadeInUp"
-                                                    data-delay=".4s"
+                                                    href="{{ url('/') . '/post' . $posts[1]->post_slug }}"
+                                                    data-animation="fadeInUp" data-delay=".4s"
                                                     data-duration="1000ms">{{ $posts[1]->post_title }}</a></h2>
                                             <p data-animation="fadeInUp" data-delay=".6s" data-duration="1000ms">
                                                 {{ date('F d, Y', strtotime($posts[1]->created_at)) }}</p>
@@ -58,9 +64,10 @@
                             <div class="col-lg-12 col-md-6 col-sm-6">
                                 <div class="trending-top mb-30">
                                     <div class="trend-top-img">
-
-                                        <img src="{{ url('/') . '/storage/images/' . $posts[2]->post_thumbnail }}"
-                                            alt="">
+                                        <a href="{{ url('/') . '/post' . $posts[2]->post_slug }}">
+                                            <img src="{{ url('/') . '/storage/images/' . $posts[2]->post_thumbnail }}"
+                                                alt="">
+                                        </a>
                                         <div class="trend-top-cap trend-top-cap2">
                                             <?php $categoryArr = explode('/', $posts[2]->post_slug);
                                             $category = str_replace('-', ' ', $categoryArr[1]); ?>
@@ -68,7 +75,7 @@
                                                 <span class="bgr">{{ $category }}</span>
                                             @endif
                                             <h2 class="text-white string-2" style="font-size: 17px;height: 50px;"><a
-                                                    href="{{ url('/') .'/post' . $posts[2]->post_slug }}"
+                                                    href="{{ url('/') . '/post' . $posts[2]->post_slug }}"
                                                     data-animation="fadeInUp" data-delay=".4s"
                                                     data-duration="1000ms">{{ $posts[2]->post_title }}</a></h2>
                                             <p data-animation="fadeInUp" data-delay=".6s" data-duration="1000ms">
@@ -101,12 +108,15 @@
                                 @foreach ($postsPopular as $post)
                                     <div class="weekly2-single">
                                         <div class="weekly2-img">
-                                            <img src="{{ url('/') . '/storage/images/' . $post->post_thumbnail }}"
-                                                alt="">
+                                            <a style="font-size:21px;"
+                                                href="{{ url('/') . '/post' . $post->post_slug }}">
+                                                <img src="{{ url('/') . '/storage/images/' . $post->post_thumbnail }}"
+                                                    alt="">
+                                            </a>
                                         </div>
                                         <div class="weekly2-caption">
                                             <h4 class="string-2" style="height: 45px;"><a
-                                                    href="{{url('/').'/post'.$post->post_slug}}">{{ $post->post_title }}</a>
+                                                    href="{{ url('/') . '/post' . $post->post_slug }}">{{ $post->post_title }}</a>
                                             </h4>
                                             <p>
                                                 <?php $categoryArr = explode('/', $post->post_slug);
@@ -146,8 +156,7 @@
                                 <!--Nav Button  -->
                                 <nav>
                                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab"
-                                            href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">More
+                                        <a class="nav-item nav-link active" href="{{ route('get-all-posts') }}">More
                                             Templates <i class="fas fa-angle-double-right"></i></a>
                                     </div>
                                 </nav>
@@ -168,12 +177,16 @@
                                             <div class="col-xxl-6 col-lg-6 col-md-6">
                                                 <div class="whats-news-single mb-40 mb-40">
                                                     <div class="whates-img">
-                                                        <img src="{{ url('/') . '/storage/images/' . $post->post_thumbnail }}"
-                                                            alt="">
+                                                        <a style="font-size:21px;"
+                                                            href="{{ url('/') . '/post' . $post->post_slug }}">
+                                                            <img src="{{ url('/') . '/storage/images/' . $post->post_thumbnail }}"
+                                                                alt="">
+                                                        </a>
                                                     </div>
                                                     <div class="whates-caption whates-caption2">
                                                         <h4 class="string-2"><a
-                                                                href="{{url('/').'/post'.$post->post_slug}}">{{ $post->post_title }}</a></h4>
+                                                                href="{{ url('/') . '/post' . $post->post_slug }}">{{ $post->post_title }}</a>
+                                                        </h4>
                                                         <span>
                                                             <?php $categoryArr = explode('/', $post->post_slug);
                                                             $category = str_replace('-', ' ', $categoryArr[1]); ?>
@@ -191,8 +204,8 @@
                                         @endforeach
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <a href="#" class="btn btn-danger btn-sm"> <span>More <i
-                                                    class="fas fa-angle-double-right"></i></span></a>
+                                        <a href="{{ route('get-all-posts') }}" class="btn btn-danger btn-sm"> <span>More
+                                                <i class="fas fa-angle-double-right"></i></span></a>
                                     </div>
                                 </div>
                             </div>

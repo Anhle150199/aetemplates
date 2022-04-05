@@ -124,7 +124,7 @@ $(document).ready(function () {
         const slugPost = convertUrl(titlePost);
         const urlPost = setUrlPost(slugCategory, slugPost);
         $("#slugPost").val(slugPost);
-        $("#urlPost").text("Link post: " + urlPost);
+        $("#urlPost").html("<strong>Link post: </strong><a href=\"" + urlPost+'">'+urlPost+'</a>');
     });
 
     // edit slug post then update url
@@ -133,7 +133,7 @@ $(document).ready(function () {
         let slugPost = $("#slugPost").val();
         slugPost = convertUrl(slugPost);
         const urlPost = setUrlPost(slugCategory, slugPost);
-        $("#urlPost").text("Link post: " + urlPost);
+        $("#urlPost").html("<strong>Link post: </strong><a href=\"" + urlPost+'">'+urlPost+'</a>');
     });
 
     // config url's post affter update url's post
@@ -149,7 +149,7 @@ $(document).ready(function () {
         let slugPost = $("#slugPost").val();
         const urlPost = setUrlPost(slugCategory, slugPost);
         $("#slugCategory").val(slugCategory);
-        $("#urlPost").text("Link post: " + urlPost);
+        $("#urlPost").html("<strong>Link post: </strong><a href=\"" + urlPost+'">'+urlPost+'</a>');
     });
 
     $("#imageInput").click(() => {
@@ -372,7 +372,7 @@ const getSlugCategory = () => {
 
 const setUrlPost = (slugCategory, slugPost) => {
     postDetail.postSlug = slugCategory + "/" + slugPost;
-    return window.location.origin + postDetail.postSlug;
+    return window.location.origin + '/post'+postDetail.postSlug;
 };
 
 const resizeImagePre = () => {

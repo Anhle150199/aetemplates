@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\DB;
 class CategoryController extends Controller
 {
     public function __construct(){
-        // if (Cache::has('systemDetail') == false) {
+        if (Cache::has('systemDetail') == false) {
             $system = System::all();
             $systemArr = array();
             foreach ($system as $item){
                 $systemArr[$item->system_key] = $item->system_value;
             }
             Cache::put('systemDetail', $systemArr, 600);
-        // }
+        }
     }
 
     public function showCategory(Request $request)
