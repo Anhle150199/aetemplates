@@ -17,10 +17,13 @@
                                                 alt="">
                                         </a>
                                         <div class="trend-top-cap trend-top-cap2">
-                                            <?php $categoryArr = explode('/', $posts[0]->post_slug);
-                                            $category = str_replace('-', ' ', $categoryArr[1]); ?>
+                                            <?php $categoryArr = explode('/', $posts[0]->post_slug); ?>
                                             @if (sizeof($categoryArr) > 2)
-                                                <span class="bgr">{{ $category }}</span>
+                                                <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
+                                                    ?>
+                                                <span
+                                                    class="bgr">{{ str_replace('-', ' ', $categoryArr[$i]) }}</span>
+                                                <?php } ?>
                                             @endif
                                             <h2 class="text-white string-2" style="height: 57px;"><a
                                                     href="{{ url('/') . '/post' . $posts[0]->post_slug }}"
@@ -46,10 +49,13 @@
                                                 alt="">
                                         </a>
                                         <div class="trend-top-cap trend-top-cap2">
-                                            <?php $categoryArr = explode('/', $posts[1]->post_slug);
-                                            $category = str_replace('-', ' ', $categoryArr[1]); ?>
+                                            <?php $categoryArr = explode('/', $posts[1]->post_slug); ?>
                                             @if (sizeof($categoryArr) > 2)
-                                                <span class="bgr">{{ $category }}</span>
+                                                <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
+                                                ?>
+                                                <span
+                                                    class="bgr">{{ str_replace('-', ' ', $categoryArr[$i]) }}</span>
+                                                <?php } ?>
                                             @endif
                                             <h2 class="text-white string-2" style="font-size: 17px;height: 50px;"><a
                                                     href="{{ url('/') . '/post' . $posts[1]->post_slug }}"
@@ -69,10 +75,13 @@
                                                 alt="">
                                         </a>
                                         <div class="trend-top-cap trend-top-cap2">
-                                            <?php $categoryArr = explode('/', $posts[2]->post_slug);
-                                            $category = str_replace('-', ' ', $categoryArr[1]); ?>
+                                            <?php $categoryArr = explode('/', $posts[2]->post_slug); ?>
                                             @if (sizeof($categoryArr) > 2)
-                                                <span class="bgr">{{ $category }}</span>
+                                                <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
+                                                ?>
+                                                <span
+                                                    class="bgr">{{ str_replace('-', ' ', $categoryArr[$i]) }}</span>
+                                                <?php } ?>
                                             @endif
                                             <h2 class="text-white string-2" style="font-size: 17px;height: 50px;"><a
                                                     href="{{ url('/') . '/post' . $posts[2]->post_slug }}"
@@ -119,12 +128,13 @@
                                                     href="{{ url('/') . '/post' . $post->post_slug }}">{{ $post->post_title }}</a>
                                             </h4>
                                             <p>
-                                                <?php $categoryArr = explode('/', $post->post_slug);
-                                                $category = str_replace('-', ' ', $categoryArr[1]); ?>
+                                                <?php $categoryArr = explode('/', $post->post_slug); ?>
                                                 @if (sizeof($categoryArr) > 2)
-                                                    {{ $category . ' - ' }}
+                                                    <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
+                                                    ?>{{ str_replace('-', ' ', $categoryArr[$i]) . ' | ' }}
+                                                    <?php } ?>
                                                 @else
-                                                    None -
+                                                    None | 
                                                 @endif
                                                 {{ date('H:i F d, Y', strtotime($post->created_at)) }}
                                             </p>
@@ -188,12 +198,13 @@
                                                                 href="{{ url('/') . '/post' . $post->post_slug }}">{{ $post->post_title }}</a>
                                                         </h4>
                                                         <span>
-                                                            <?php $categoryArr = explode('/', $post->post_slug);
-                                                            $category = str_replace('-', ' ', $categoryArr[1]); ?>
+                                                            <?php $categoryArr = explode('/', $post->post_slug); ?>
                                                             @if (sizeof($categoryArr) > 2)
-                                                                {{ $category . ' - ' }}
+                                                                <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
+                                                                ?>{{ str_replace('-', ' ', $categoryArr[$i]) . ' | ' }}
+                                                                <?php } ?>
                                                             @else
-                                                                None -
+                                                                None |
                                                             @endif
                                                             {{ date('H:i F d, Y', strtotime($post->created_at)) }}
                                                         </span>

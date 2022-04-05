@@ -15,8 +15,8 @@ use Laravel\Jetstream\Http\Controllers\Inertia\OtherBrowserSessionsController;
 Route::get('/', [WebsiteController::class, 'getHome'])->name('home');
 Route::get('/get-all-posts', [WebsiteController::class, 'getAllPost'])->name('get-all-posts');
 Route::get('/post/{slug}', [WebsiteController::class, 'getPost'])->where('slug', '.*');
-Route::get('/categories/{category}',[WebsiteController::class, 'getPostForCategory'])->where('slug', '.*')->name('get-post-category');
-Route::get('/tags/{tag}', [WebsiteController::class, 'getPostForTag']);
+Route::get('/category/{category}',[WebsiteController::class, 'getPostForCategory'])->where('category', '.*')->name('get-post-category');
+Route::get('/tag/{tag}', [WebsiteController::class, 'getPostForTag']);
 Route::get('/search/{search}', [WebsiteController::class, 'getSearch']);
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {

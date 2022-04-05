@@ -45,18 +45,28 @@ class WebsiteController extends Controller
         $this->allTags = Cache::get('allTags');
     }
 
+    // home page
     public function getHome()
     {
         $posts = Post::where('post_type', 'Public')->orderBy('id', 'desc')->select('post_title', 'post_excerpt', 'post_slug', 'post_thumbnail', 'created_at')->limit('10')->get();
         return view('website.index', ['posts' => $posts, 'system' => $this->system, 'postsPopular' => $this->postsPopular]);
     }
 
+    // get list all post
     public function getAllPost()
     {
-        $posts = Post::where('post_type', 'Public')->paginate(10);
+        $posts = Post::where('post_type', 'Public')->orderBy('id','desc')->paginate(10);
         return view('website.listPost', ['status'=>'Recent Post', 'posts' => $posts, 'system' => $this->system, 'postsPopular' => $this->postsPopular, 'postLast' => $this->postsLast, 'allTags' => $this->allTags]);
+    }
+
+    public function getPostForCategory($slug)
+    {
+        $category =Category::where('cate_slug','/'.$slug)->first();
+        $posts = CategoryRelationship::where( 'cate_id', $category->id)->join('ae_posts', 'post_id', 'ae_posts.id')->select('post_title', 'post_excerpt', 'post_slug', 'post_thumbnail', 'ae_posts.created_at')->orderBy('ae_posts.id','desc')->paginate(10);
+        return view('website.listPost', ['status'=>'Category: '.$category->cate_name, 'posts' => $posts, 'system' => $this->system, 'postsPopular' => $this->postsPopular, 'postLast' => $this->postsLast, 'allTags' => $this->allTags]);
 
     }
+    //get detail post
     public function getPost($slug)
     {
         $post = Post::where('post_type', 'Public')->where('post_slug', '/' . $slug)->first();

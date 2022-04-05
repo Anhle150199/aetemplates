@@ -26,10 +26,8 @@
                     <div class="whats-news-wrapper">
                         <!-- Heading & Nav Button -->
                         <div class="row justify-content-between align-items-end mb-15">
-                            <div class="col-xl-4">
-                                <div class="section-tittle mb-30">
-                                    <h3>{{ $status }}</h3>
-                                </div>
+                            <div class="section-tittle mb-30 ml-5">
+                                <h4 style="font-weight: 700;">{{ $status }}</h4>
                             </div>
                         </div>
                         <!-- Tab content -->
@@ -42,7 +40,7 @@
                                         aria-labelledby="nav-home-tab">
                                         <div class="row">
                                             @foreach ($posts as $post)
-                                                <div class="col-xxl-6 col-lg-6 col-md-6">
+                                                <div class="col-xxl-12 col-lg-12 col-md-12">
                                                     <div class="whats-news-single mb-40 mb-40">
                                                         <div class="whates-img">
                                                             <a style="font-size:21px;"
@@ -56,12 +54,13 @@
                                                                     href="{{ url('/') . '/post' . $post->post_slug }}">{{ $post->post_title }}</a>
                                                             </h4>
                                                             <span>
-                                                                <?php $categoryArr = explode('/', $post->post_slug);
-                                                                $category = str_replace('-', ' ', $categoryArr[1]); ?>
+                                                                <?php $categoryArr = explode('/', $post->post_slug); ?>
                                                                 @if (sizeof($categoryArr) > 2)
-                                                                    {{ $category . ' - ' }}
+                                                                    <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
+                                                                    ?>{{ str_replace('-', ' ', $categoryArr[$i]) . ' | ' }}
+                                                                    <?php } ?>
                                                                 @else
-                                                                    None -
+                                                                    None |
                                                                 @endif
                                                                 {{ timePost($post->created_at) }}
                                                             </span>
