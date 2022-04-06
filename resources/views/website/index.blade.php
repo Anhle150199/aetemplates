@@ -30,7 +30,9 @@
                                                     data-animation="fadeInUp" data-delay=".4s"
                                                     data-duration="1000ms">{{ $posts[0]->post_title }}</a></h2>
                                             <p data-animation="fadeInUp" data-delay=".6s" data-duration="1000ms">
-                                                {{ date('F d, Y', strtotime($posts[0]->created_at)) }}</p>
+                                                <i class="fas fa-calendar-check ml-2"></i>
+                                                {{ date('F d, Y', strtotime($posts[0]->created_at)) }}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -62,7 +64,9 @@
                                                     data-animation="fadeInUp" data-delay=".4s"
                                                     data-duration="1000ms">{{ $posts[1]->post_title }}</a></h2>
                                             <p data-animation="fadeInUp" data-delay=".6s" data-duration="1000ms">
-                                                {{ date('F d, Y', strtotime($posts[1]->created_at)) }}</p>
+                                                <i class="fas fa-calendar-check ml-2"></i>
+                                                {{ date('F d, Y', strtotime($posts[1]->created_at)) }}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -88,6 +92,7 @@
                                                     data-animation="fadeInUp" data-delay=".4s"
                                                     data-duration="1000ms">{{ $posts[2]->post_title }}</a></h2>
                                             <p data-animation="fadeInUp" data-delay=".6s" data-duration="1000ms">
+                                                <i class="fas fa-calendar-check ml-2"></i>
                                                 {{ date('F d, Y', strtotime($posts[2]->created_at)) }}</p>
                                         </div>
                                     </div>
@@ -127,16 +132,21 @@
                                             <h4 class="string-2" style="height: 45px;"><a
                                                     href="{{ url('/') . '/post' . $post->post_slug }}">{{ $post->post_title }}</a>
                                             </h4>
-                                            <p>
+                                            <p style="text-transform: capitalize;">
+                                                <i class="fas fa-folder"></i>
                                                 <?php $categoryArr = explode('/', $post->post_slug); ?>
                                                 @if (sizeof($categoryArr) > 2)
                                                     <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
-                                                    ?>{{ str_replace('-', ' ', $categoryArr[$i]) . ' | ' }}
+                                                    ?>{{ str_replace('-', ' ', $categoryArr[$i]) }}
+                                                    @if ($i < sizeof($categoryArr) - 2)
+                                                        <i class="fas fa-angle-double-right"></i>
+                                                    @endif
                                                     <?php } ?>
                                                 @else
-                                                    None | 
+                                                    None
                                                 @endif
-                                                {{ date('H:i F d, Y', strtotime($post->created_at)) }}
+                                                <i class="fas fa-calendar-check ml-2"></i>
+                                                {{ date('F d, Y', strtotime($post->created_at)) }}
                                             </p>
                                         </div>
                                     </div>
@@ -197,17 +207,23 @@
                                                         <h4 class="string-2"><a
                                                                 href="{{ url('/') . '/post' . $post->post_slug }}">{{ $post->post_title }}</a>
                                                         </h4>
-                                                        <span>
+                                                        <span style="text-transform: capitalize;">
+                                                            <i class="fas fa-folder"></i>
                                                             <?php $categoryArr = explode('/', $post->post_slug); ?>
                                                             @if (sizeof($categoryArr) > 2)
                                                                 <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
-                                                                ?>{{ str_replace('-', ' ', $categoryArr[$i]) . ' | ' }}
+                                                                ?>{{ str_replace('-', ' ', $categoryArr[$i]) }}
+                                                                @if ($i < sizeof($categoryArr) - 2)
+                                                                    <i class="fas fa-angle-double-right"></i>
+                                                                @endif
                                                                 <?php } ?>
                                                             @else
-                                                                None |
+                                                                None
                                                             @endif
-                                                            {{ date('H:i F d, Y', strtotime($post->created_at)) }}
+                                                            <i class="fas fa-calendar-check ml-2"></i>
+                                                            {{ date('F d, Y', strtotime($post->created_at)) }}
                                                         </span>
+
                                                         <p class="string-2">{{ $post->post_excerpt }}</p>
                                                     </div>
                                                 </div>

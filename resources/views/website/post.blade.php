@@ -11,10 +11,10 @@
                     <div class="">
                         <h2 style="font-weight: 700;">{{ $post->post_title }}</h2>
                         <ul class="blog-info-link mt-3 mb-4">
-                            <li><i class="fas fa-tags"></i>
+                            <li><i class="fas fa-folder"></i>
                                 @foreach ($categories as $category)
                                     <i class="fas fa-angle-double-right"></i>
-                                    <a href="{{ url('/') . '/categories' . $category->cate_slug }}">
+                                    <a href="{{ url('/') . '/category' . $category->cate_slug }}">
                                         {{ $category->cate_name }}
                                     </a>
                                 @endforeach
@@ -47,7 +47,7 @@
                                     @foreach ($tags as $tag)
                                         <li>
                                             <a
-                                                href="{{ url('/') . '/tags/' . $tag->tag_slug }}">{{ $tag->tag_name }}</a>
+                                                href="{{ url('/') . '/tag/' . $tag->tag_slug }}">{{ $tag->tag_name }}</a>
                                         </li>
                                     @endforeach
                                 </ul>

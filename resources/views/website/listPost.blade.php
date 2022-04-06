@@ -39,37 +39,53 @@
                                     <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
                                         aria-labelledby="nav-home-tab">
                                         <div class="row">
-                                            @foreach ($posts as $post)
-                                                <div class="col-xxl-12 col-lg-12 col-md-12">
-                                                    <div class="whats-news-single mb-40 mb-40">
-                                                        <div class="whates-img">
-                                                            <a style="font-size:21px;"
-                                                                href="{{ url('/') . '/post' . $post->post_slug }}">
-                                                                <img
-                                                                    src="{{ url('/') . '/storage/images/' . $post->post_thumbnail }}">
-                                                            </a>
-                                                        </div>
-                                                        <div class="whates-caption whates-caption2">
-                                                            <h4 class="string-2"><a style="font-size:21px;"
-                                                                    href="{{ url('/') . '/post' . $post->post_slug }}">{{ $post->post_title }}</a>
-                                                            </h4>
-                                                            <span>
-                                                                <?php $categoryArr = explode('/', $post->post_slug); ?>
-                                                                @if (sizeof($categoryArr) > 2)
-                                                                    <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
-                                                                    ?>{{ str_replace('-', ' ', $categoryArr[$i]) . ' | ' }}
-                                                                    <?php } ?>
-                                                                @else
-                                                                    None |
-                                                                @endif
-                                                                {{ timePost($post->created_at) }}
-                                                            </span>
-                                                            <p class="string-2" style="font-size:12px;">
-                                                                {{ $post->post_excerpt }}</p>
+
+                                            @if (sizeof($posts)>0)
+                                                @foreach ($posts as $post)
+                                                    <div class="col-xxl-12 col-lg-12 col-md-12 ">
+                                                        <div class="whats-news-single mb-40 mb-40 row border-bottom">
+                                                            <div class="whates-img col-6 p-0">
+                                                                <a style="font-size:21px;"
+                                                                    href="{{ url('/') . '/post' . $post->post_slug }}">
+                                                                    <img
+                                                                        src="{{ url('/') . '/storage/images/' . $post->post_thumbnail }}">
+                                                                </a>
+                                                            </div>
+                                                            <div class="whates-caption whates-caption2 col-6">
+                                                                <h4 class="string-2"
+                                                                    style="-webkit-line-clamp: 3; height: 75px;"><a
+                                                                        style="font-size:21px;"
+                                                                        href="{{ url('/') . '/post' . $post->post_slug }}">{{ $post->post_title }}</a>
+                                                                </h4>
+                                                                <span style="text-transform: capitalize;">
+                                                                    <i class="fas fa-folder"></i>
+                                                                    <?php $categoryArr = explode('/', $post->post_slug); ?>
+                                                                    @if (sizeof($categoryArr) > 2)
+                                                                        <?php for ($i=1; $i < sizeof($categoryArr)-1; $i++) {
+                                                                    ?>{{ str_replace('-', ' ', $categoryArr[$i]) }}
+                                                                        @if ($i < sizeof($categoryArr) - 2)
+                                                                            <i class="fas fa-angle-double-right"></i>
+                                                                        @endif
+                                                                        <?php } ?>
+                                                                    @else
+                                                                        None
+                                                                    @endif
+                                                                    <i class="fas fa-calendar-check ml-2"></i>
+                                                                    {{ timePost($post->created_at) }}
+                                                                </span>
+                                                                <p class="string-2" style="font-size:12px;">
+                                                                    {{ $post->post_excerpt }}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                @endforeach
+                                            @else
+                                                <div class="d-flex justify-content-center w-100">
+                                                    <p>Sorry, but we couldn't find nothing that match your request. Please
+                                                        try again.</p>
+
                                                 </div>
-                                            @endforeach
+                                            @endif
                                         </div>
                                         {{ $posts->links('pagination::bootstrap-4') }}
                                     </div>

@@ -66,6 +66,14 @@ class WebsiteController extends Controller
         return view('website.listPost', ['status'=>'Category: '.$category->cate_name, 'posts' => $posts, 'system' => $this->system, 'postsPopular' => $this->postsPopular, 'postLast' => $this->postsLast, 'allTags' => $this->allTags]);
 
     }
+
+    public function getPostForTag($slug)
+    {
+        $tag = Tag::where('tag_slug', $slug)->first();
+        $posts = TagRelationship::where('tag_id', $tag->id)->join('ae_posts', 'post_id', 'ae_posts.id')->select('post_title', 'post_excerpt', 'post_slug', 'post_thumbnail', 'ae_posts.created_at')->orderBy('ae_posts.id','desc')->paginate(10);
+        return view('website.listPost', ['status'=>'Tag: '.$tag->tag_name, 'posts' => $posts, 'system' => $this->system, 'postsPopular' => $this->postsPopular, 'postLast' => $this->postsLast, 'allTags' => $this->allTags]);
+
+    }
     //get detail post
     public function getPost($slug)
     {
@@ -76,6 +84,15 @@ class WebsiteController extends Controller
         $previous = Post::where('id', '<', $post->id)->orderBy('id', 'desc')->select('post_slug', 'post_title', 'post_thumbnail')->first();
         $next = Post::where('id', '>', $post->id)->orderBy('id', 'asc')->select('post_slug', 'post_title', 'post_thumbnail')->first();
         return view('website.post', ['post' => $post, 'postId' => $post->id, 'tags' => $tags, 'categories' => $categories,'relatedPost' =>$relatedPost, 'next' => $next, 'previous' => $previous, 'system' => $this->system, 'postsPopular' => $this->postsPopular, 'postLast' => $this->postsLast, 'allTags' => $this->allTags]);
+    }
+
+    public function getSearch(Request $request)
+    {
+
+        if($request->has('search')){
+            $posts = Post::where('post_type', 'Public')->where('post_title','like', '%'.$request->search.'%')->paginate(10);
+            return view('website.listPost', ['status'=>'Search Results for: '.$request->search, 'posts' => $posts, 'system' => $this->system, 'postsPopular' => $this->postsPopular, 'postLast' => $this->postsLast, 'allTags' => $this->allTags]);
+        };
     }
 
 }

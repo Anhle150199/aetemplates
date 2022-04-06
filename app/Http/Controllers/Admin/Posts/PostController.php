@@ -299,9 +299,12 @@ class PostController extends Controller
         foreach ($tagList as $addTag) {
             $checkTag = Tag::where('tag_slug', $addTag->slug)->first();
             if ($checkTag === null) {
-                $dataTag = ['tag_name' => $addTag->name, 'tag_slug' => $addTag->slug, 'posts_count' => 1];
-                $tagId = Tag::insertGetId($dataTag);
-                $dataTag = ['id' => $tagId, 'name' => $addTag->name, 'slug' => $addTag->slug, 'posts' => 1];
+                $addNewTag = new Tag();
+                $addNewTag->tag_name = $addTag->name;
+                $addNewTag->tag_slug = $addTag->slug;
+                $addNewTag->posts_count = 1;
+                $addNewTag->save();
+                $dataTag = ['id' => $addNewTag->id, 'name' => $addTag->name, 'slug' => $addTag->slug, 'posts' => 1];
                 array_push($newTag, (object)$dataTag);
             } else {
                 $tagId = $checkTag->id;
