@@ -45,7 +45,7 @@
                     <div class="row d-flex align-items-center">
                         <div class="col-xl-3 col-lg-3 col-md-3 d-none d-md-block">
                             <div class="logo">
-                                <a href="{{ route('home') }}"><img src="{{ url('/') . $system['logo'] }}"
+                                <a href="{{ route('home') }}"><img src="{{ url('/') . Cache::get('systemDetail')['logo'] }}"
                                         alt=""></a>
                             </div>
                         </div>
@@ -61,10 +61,10 @@
                     <div class="row align-items-center">
                         <div class="col-xl-8 col-lg-8 col-md-12 header-flex">
                             <div class="sticky-logo info-open">
-                                <a href="{{ route('home') }}"><img src="{{ url('/') . $system['logo'] }}"
+                                <a href="{{ route('home') }}"><img src="{{ url('/') . Cache::get('systemDetail')['logo'] }}"
                                         alt=""></a>
                             </div>
-                            <?php echo $system['menu_html']; ?>
+                            <?php echo Cache::get('systemDetail')['menu_html']; ?>
                         </div>
                         <div class="col-xl-4 col-lg-4 col-md-4">
                             <div class="header-right f-right d-none d-lg-block">

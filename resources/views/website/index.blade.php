@@ -119,7 +119,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="weekly2-news-active d-flex">
-                                @foreach ($postsPopular as $post)
+                                @foreach (Cache::get('postsPopular') as $post)
                                     <div class="weekly2-single">
                                         <div class="weekly2-img">
                                             <a style="font-size:21px;"

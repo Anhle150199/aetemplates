@@ -39,17 +39,13 @@ class WebsiteController extends Controller
             $this->allTags = Tag::all();
             Cache::put('allTags', $this->allTags, 600);
         }
-        $this->postsPopular = Cache::get('postsPopular');
-        $this->postsLast = Cache::get('postsLast');
-        $this->system = Cache::get('systemDetail');
-        $this->allTags = Cache::get('allTags');
     }
 
     // home page
     public function getHome()
     {
         $posts = Post::where('post_type', 'Public')->orderBy('id', 'desc')->select('post_title', 'post_excerpt', 'post_slug', 'post_thumbnail', 'created_at')->limit('10')->get();
-        return view('website.index', ['posts' => $posts, 'system' => $this->system, 'postsPopular' => $this->postsPopular]);
+        return view('website.index', ['posts' => $posts]);
     }
 
     // get list all post
@@ -62,6 +58,7 @@ class WebsiteController extends Controller
     public function getPostForCategory($slug)
     {
         $category =Category::where('cate_slug','/'.$slug)->first();
+        if ($category ==null) return view('errors.404');
         $posts = CategoryRelationship::where( 'cate_id', $category->id)->join('ae_posts', 'post_id', 'ae_posts.id')->select('post_title', 'post_excerpt', 'post_slug', 'post_thumbnail', 'ae_posts.created_at')->orderBy('ae_posts.id','desc')->paginate(10);
         return view('website.listPost', ['status'=>'Category: '.$category->cate_name, 'posts' => $posts, 'system' => $this->system, 'postsPopular' => $this->postsPopular, 'postLast' => $this->postsLast, 'allTags' => $this->allTags]);
 
@@ -70,6 +67,7 @@ class WebsiteController extends Controller
     public function getPostForTag($slug)
     {
         $tag = Tag::where('tag_slug', $slug)->first();
+        if ($tag ==null) return view('errors.404');
         $posts = TagRelationship::where('tag_id', $tag->id)->join('ae_posts', 'post_id', 'ae_posts.id')->select('post_title', 'post_excerpt', 'post_slug', 'post_thumbnail', 'ae_posts.created_at')->orderBy('ae_posts.id','desc')->paginate(10);
         return view('website.listPost', ['status'=>'Tag: '.$tag->tag_name, 'posts' => $posts, 'system' => $this->system, 'postsPopular' => $this->postsPopular, 'postLast' => $this->postsLast, 'allTags' => $this->allTags]);
 
@@ -78,6 +76,7 @@ class WebsiteController extends Controller
     public function getPost($slug)
     {
         $post = Post::where('post_type', 'Public')->where('post_slug', '/' . $slug)->first();
+        if ($post ==null) return view('errors.404');
         $tags = TagRelationship::where('post_id', $post->id)->join('ae_tags', 'tag_id', 'ae_tags.id')->get();
         $categories = CategoryRelationship::where('post_id', $post->id)->join('ae_categories', 'cate_id', 'ae_categories.id')->orderBy('ae_categories_relationship.id','desc')->get();
         $relatedPost = CategoryRelationship::where('cate_id', $categories[0]->id)->join('ae_posts', 'post_id','ae_posts.id')->orderBy('ae_posts.id','desc')->limit(6)->get();

@@ -154,7 +154,7 @@
                                                                         {{ $post->post_title }}
                                                                     </a>
                                                                 </h6>
-                                                                <span style="font-size: 12px;">
+                                                                <span style="font-size: 12px;"><i class="fas fa-calendar-check"></i>
                                                                     {{ timePost($post->created_at) }}
                                                                 </span>
                                                             </div>

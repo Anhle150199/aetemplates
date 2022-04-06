@@ -15,7 +15,7 @@
         </aside>
         <aside class="single_sidebar_widget popular_post_widget">
             <h3 class="widget_title">Recent Post</h3>
-            @foreach ($postLast as $post)
+            @foreach (Cache::get('postsLast') as $post)
                 <div class="media post_item">
                     <div style="width: 35%">
                         <a href="{{ url('/') . '/post' . $post->post_slug }}">
@@ -34,7 +34,7 @@
         </aside>
         <aside class="single_sidebar_widget popular_post_widget">
             <h3 class="widget_title">Most Popular</h3>
-            @foreach ($postsPopular as $post)
+            @foreach (Cache::get('postsPopular') as $post)
                 <div class="media post_item">
                     <div style="width: 35%">
                         <a href="{{ url('/') . '/post' . $post->post_slug }}">
@@ -54,7 +54,7 @@
         <aside class="single_sidebar_widget tag_cloud_widget">
             <h4 class="widget_title">Tag Clouds</h4>
             <ul class="list">
-                @foreach ($allTags as $tag)
+                @foreach (Cache::get('allTags') as $tag)
                     <li>
                         <a href="{{ url('/') . '/tag/' . $tag->tag_slug }}">{{ $tag->tag_name }}</a>
                     </li>
@@ -63,3 +63,8 @@
         </aside>
     </div>
 </div>
+<style>
+    .list li{
+        text-transform: capitalize;
+    }
+</style>

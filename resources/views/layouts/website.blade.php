@@ -8,7 +8,7 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $system['app_name'] }} </title>
+    <title>{{ Cache::get('systemDetail')['app_name'] }} </title>
     <link href="{{ url('/') }}/img/logo/favicon.ico" rel="icon" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/css?family=Barlow:300,600,700,900|Roboto:100,300,500,700&display=swap"
         rel="stylesheet">
@@ -65,7 +65,7 @@
                                         <script>
                                             document.write(new Date().getFullYear());
                                         </script> All rights reserved | This template is customized by
-                                        {{ $system['app_name'] }}
+                                        {{ Cache::get('systemDetail')['app_name'] }}
                                     </p>
                                 </div>
                             </div>
