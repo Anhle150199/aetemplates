@@ -20,6 +20,8 @@ Route::get('/category/{category}',[WebsiteController::class, 'getPostForCategory
 Route::get('/tag/{tag}', [WebsiteController::class, 'getPostForTag']);
 Route::get('/search', [WebsiteController::class, 'getSearch'])->name('search-post');
 Route::put('/update-view', [WebsiteController::class, 'updateView'])->name('update-view');
+Route::get('/contact', [WebsiteController::class, 'getContact'])->name('contact');
+Route::post('/send-contact', [WebsiteController::class, 'sendContact'])->name('send-contact');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::redirect('/admin', '/dashboard');

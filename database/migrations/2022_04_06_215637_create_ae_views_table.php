@@ -15,7 +15,7 @@ class CreateAeViewsTable extends Migration
     {
         Schema::create('ae_views', function (Blueprint $table) {
             $table->id();
-            $table->integer('type');
+            $table->integer('id_current')->default(0);
             $table->string('period');
             $table->integer('views');
         });

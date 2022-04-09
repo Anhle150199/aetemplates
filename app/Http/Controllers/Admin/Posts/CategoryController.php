@@ -190,7 +190,7 @@ class CategoryController extends Controller
         $categories = Category::all();
         $startMenu = '<div class="main-menu d-none d-md-block"><nav><ul id="navigation"><li><a href="' . url('/') . '">Home</a></li>';
         $startMenu = $this->printItemMenu($categories, 0, $startMenu);
-        $menu = $startMenu . "</ul></nav></div>";
+        $menu = $startMenu . "<li><a href=".url('/').'/contact'.">Contact</a></li></ul></nav></div>";
         DB::table('ae_system')->where('system_key', 'menu_html')->update(['system_value' => $menu]);
     }
 

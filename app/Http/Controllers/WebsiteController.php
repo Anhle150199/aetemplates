@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\CategoryRelationship;
+use App\Models\Contact;
 use App\Models\Post;
 use App\Models\System;
 use App\Models\Tag;
 use App\Models\TagRelationship;
 use App\Models\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class WebsiteController extends Controller
 {
@@ -41,7 +44,7 @@ class WebsiteController extends Controller
     public function getHome()
     {
         $posts = Post::where('post_type', 'Public')->orderBy('id', 'desc')->select('post_title', 'post_excerpt', 'post_slug', 'post_thumbnail', 'created_at')->limit('10')->get();
-        return view('website.index', ['status' => 'Home','posts' => $posts]);
+        return view('website.index', ['status' => 'Home', 'posts' => $posts]);
     }
 
     // get list all post
@@ -91,6 +94,34 @@ class WebsiteController extends Controller
         };
     }
 
+    public function getContact()
+    {
+        return view('website.contact');
+    }
+
+    public function sendContact(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'message' => ['required', 'string'],
+                'name' => ['required', 'string'],
+                'email' => ['required', 'string'],
+                'subject' => ['required', 'string'],
+            ]
+        );
+        if ($validator->fails()) {
+            return redirect()->route('contact')->withErrors($validator);
+        } else {
+            $contact = new Contact();
+            $contact->name = $request->name;
+            $contact->email = $request->email;
+            $contact->subject = $request->subject;
+            $contact->message = $request->message;
+            $contact->save();
+            return redirect()->route('contact');
+        }
+    }
     public function updateView(Request $request)
     {
         if ($request->has('param')) {
@@ -102,12 +133,12 @@ class WebsiteController extends Controller
             $month = date('Ym', strtotime('now'));
             $day = date('Ymd', strtotime('now'));
             try {
-                $viewDay = View::where('type', 0)->where('period', $day)->first();
+                $viewDay = View::where('id_current', 0)->where('period', $day)->first();
                 if ($viewDay == null) {
                     $viewDay = new View();
                     $viewDay->period = $day;
                     $viewDay->views = 0;
-                    $viewDay->type = 0;
+                    $viewDay->id_current = 0;
                 }
                 $viewDay->views = $viewDay->views + 1;
                 $viewDay->save();
@@ -115,33 +146,37 @@ class WebsiteController extends Controller
                 return response()->json([' day', $viewDay], 200);
             }
 
-            $viewMonth = View::where('type', 0)->where('period', $month)->first();
+            $viewMonth = View::where('id_current', 0)->where('period', $month)->first();
             if ($viewMonth == null) {
                 $viewMonth = new View();
                 $viewMonth->views = 0;
-                $viewMonth->type = 0;
+                $viewMonth->id_current = 0;
                 $viewMonth->period = $month;
             }
             $viewMonth->views = $viewMonth->views + 1;
             $viewMonth->save();
 
-            $viewYear = View::where('type', 0)->where('period', $year)->first();
-            if ($viewYear == null) {
-                $viewYear = new View();
-                $viewYear->views = 0;
-                $viewMonth->type = 0;
-                $viewYear->period = $year;
+            try {
+                $viewYear = View::where('id_current', 0)->where('period', $year)->first();
+                if ($viewYear == null) {
+                    $viewYear = new View();
+                    $viewYear->views = 0;
+                    $viewMonth->id_current = 0;
+                    $viewYear->period = $year;
+                }
+                $viewYear->views = $viewYear->views + 1;
+                $viewYear->save();
+            } catch (\Throwable $th) {
+                return response()->json([' viewYear', $viewYear, $th], 200);
             }
-            $viewYear->views = $viewYear->views + 1;
-            $viewYear->save();
 
             try {
-                $viewDayPost = View::where('type', 1)->where('period', $day . '-' . $post->id)->first();
+                $viewDayPost = View::where('id_current', $post->id)->where('period', $day)->first();
                 if ($viewDayPost == null) {
                     $viewDayPost = new View();
-                    $viewDayPost->period = $day . '-' . $post->id;
+                    $viewDayPost->period = $day;
                     $viewDayPost->views = 0;
-                    $viewDayPost->type = 1;
+                    $viewDayPost->id_current = $post->id;
                 }
                 $viewDayPost->views = $viewDayPost->views + 1;
                 $viewDayPost->save();
@@ -149,12 +184,12 @@ class WebsiteController extends Controller
                 return response()->json([' day', $viewDayPost], 200);
             }
 
-            $viewMonthPost = View::where('type', 1)->where('period', $month . '-' . $post->id)->first();
+            $viewMonthPost = View::where('id_current', $post->id)->where('period', $month)->first();
             if ($viewMonthPost == null) {
                 $viewMonthPost = new View();
                 $viewMonthPost->views = 0;
-                $viewMonthPost->type = 1;
-                $viewMonthPost->period = $month . '-' . $post->id;
+                $viewMonthPost->id_current = $post->id;
+                $viewMonthPost->period = $month;
             }
             $viewMonthPost->views = $viewMonthPost->views + 1;
             $viewMonthPost->save();

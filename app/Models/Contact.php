@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class View extends Model
+class Contact extends Model
 {
     use HasFactory;
-    protected $table = 'ae_views';
+    protected $table = 'ae_contact';
 
     protected $fillable = [
-        'id_current',
-        'period',
-        'views'
+        'name',
+        'email',
+        'subject',
+        'message'
     ];
-    public $timestamps = false;
-
 }
