@@ -50,12 +50,13 @@ class PostController extends Controller
                 'post_slug' => ['required', 'string', 'max:150', 'unique:ae_posts'],
                 'file' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 'created_at' => 'required|string',
-                'cate_id' => ['integer', function ($attribute, $value, $fail) {
-                    if ($value != 0) {
-                        $checkCategory = Category::where('id', $value)->first();
-                        if ($checkCategory == null) {
-                            return $fail(__('Category is valid!' . $value));
-                        }
+                'cate_id' => ['required', 'integer', function ($attribute, $value, $fail) {
+                    if ($value == 0) {
+                        return $fail(__('Category cannot be None!' . $value));
+                    }
+                    $checkCategory = Category::where('id', $value)->first();
+                    if ($checkCategory == null) {
+                        return $fail(__('Category is valid!' . $value));
                     }
                 }],
                 'ssImage' => 'required| string| regex: /^image+[0-9]+$/',
@@ -122,7 +123,7 @@ class PostController extends Controller
 
         $editPost = Post::where('id', $id)->first();
         $tags = TagRelationship::where('post_id', $editPost->id)->join('ae_tags', 'ae_tags.id', 'tag_id')->get();
-        $category = CategoryRelationship::where('post_id', $editPost->id)->join('ae_categories', 'ae_categories.id', 'cate_id')->select('ae_categories.id', 'cate_name', 'cate_slug')->orderBy('ae_categories_relationship.id','asc')->first();
+        $category = CategoryRelationship::where('post_id', $editPost->id)->join('ae_categories', 'ae_categories.id', 'cate_id')->select('ae_categories.id', 'cate_name', 'cate_slug')->orderBy('ae_categories_relationship.id', 'asc')->first();
         return view('posts.detailPost', ['status' => 'Edit', 'session' => $session, 'editPost' => $editPost, 'tags' => $tags, 'category' => $category]);
     }
 
@@ -141,15 +142,16 @@ class PostController extends Controller
                         return $fail(__('Post type valid!' . $value));
                     }
                 }],
-                'post_slug' => ['required', 'string', 'max:150', 'unique:ae_posts'],
+                'post_slug' => ['required', 'string', 'max:150'],
                 'file' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
                 'created_at' => 'required|string',
-                'cate_id' => ['integer', function ($attribute, $value, $fail) {
-                    if ($value != 0) {
-                        $checkCategory = Category::where('id', $value)->first();
-                        if ($checkCategory == null) {
-                            return $fail(__('Category is valid!' . $value));
-                        }
+                'cate_id' => ['required', 'integer', function ($attribute, $value, $fail) {
+                    if ($value == 0) {
+                        return $fail(__('Category cannot be None!' . $value));
+                    }
+                    $checkCategory = Category::where('id', $value)->first();
+                    if ($checkCategory == null) {
+                        return $fail(__('Category is valid!' . $value));
                     }
                 }],
                 'tag_list' => 'string',
@@ -273,7 +275,6 @@ class PostController extends Controller
                 CategoryRelationship::where('post_id', $post->id)->delete();
                 ImageRelationship::where('post_id', $post->id)->delete();
                 $post->delete();
-
             } catch (\Throwable $th) {
                 return new JsonResponse(['errors' => ['Cant delete post']], 419);
             }
@@ -299,9 +300,12 @@ class PostController extends Controller
         foreach ($tagList as $addTag) {
             $checkTag = Tag::where('tag_slug', $addTag->slug)->first();
             if ($checkTag === null) {
-                $dataTag = ['tag_name' => $addTag->name, 'tag_slug' => $addTag->slug, 'posts_count' => 1];
-                $tagId = Tag::insertGetId($dataTag);
-                $dataTag = ['id' => $tagId, 'name' => $addTag->name, 'slug' => $addTag->slug, 'posts' => 1];
+                $addNewTag = new Tag();
+                $addNewTag->tag_name = $addTag->name;
+                $addNewTag->tag_slug = $addTag->slug;
+                $addNewTag->posts_count = 1;
+                $addNewTag->save();
+                $dataTag = ['id' => $addNewTag->id, 'name' => $addTag->name, 'slug' => $addTag->slug, 'posts' => 1];
                 array_push($newTag, (object)$dataTag);
             } else {
                 $tagId = $checkTag->id;
@@ -316,8 +320,8 @@ class PostController extends Controller
     {
         if ($cateId != 0) {
             CategoryRelationship::insert(['cate_id' => $cateId, 'post_id' => $postId]);
-            $parentCategory = Category::where('id',$cateId)->first();
-            $this->addCategoryRelationship( $parentCategory->parent_id, $postId);
+            $parentCategory = Category::where('id', $cateId)->first();
+            $this->addCategoryRelationship($parentCategory->parent_id, $postId);
         }
     }
 }

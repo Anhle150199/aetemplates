@@ -9,7 +9,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name') }} - Admin</title>
-    <link href="{{ url('/') }}/img/logo/TF.png" rel="icon" type="image/png">
+    <link href="{{ url('/') }}/img/logo/favicon.ico" rel="icon" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
 
     <!-- Icons -->

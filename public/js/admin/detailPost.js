@@ -38,8 +38,8 @@ $(document).ready(function () {
     var ctrlDown = false, ctrlKey = 17, vKey = 86;
 
     $(document)
-        .keydown(function (e) { if (e.keyCode == ctrlKey) ctrlDown = true;})
-        .keyup(function (e) { if (e.keyCode == ctrlKey) ctrlDown = false;});
+        .keydown(function (e) { if (e.keyCode == ctrlKey) ctrlDown = true; })
+        .keyup(function (e) { if (e.keyCode == ctrlKey) ctrlDown = false; });
     $("#inputTitlePost").keydown(function (e) {
         if (ctrlDown && e.keyCode == vKey) checkLengthTitle(e);
     });
@@ -99,7 +99,7 @@ $(document).ready(function () {
                     return;
                 }
             } else {
-                addTags.push({name: tagName,slug: slug});
+                addTags.push({ name: tagName, slug: slug });
             }
 
             $(spanTag(tagName, "new-tag")).insertBefore("#input-tag>input");
@@ -124,7 +124,7 @@ $(document).ready(function () {
         const slugPost = convertUrl(titlePost);
         const urlPost = setUrlPost(slugCategory, slugPost);
         $("#slugPost").val(slugPost);
-        $("#urlPost").text("Link post: " + urlPost);
+        $("#urlPost").html("<strong>Link post: </strong><a href=\"" + urlPost + '">' + urlPost + '</a>');
     });
 
     // edit slug post then update url
@@ -133,7 +133,7 @@ $(document).ready(function () {
         let slugPost = $("#slugPost").val();
         slugPost = convertUrl(slugPost);
         const urlPost = setUrlPost(slugCategory, slugPost);
-        $("#urlPost").text("Link post: " + urlPost);
+        $("#urlPost").html("<strong>Link post: </strong><a href=\"" + urlPost + '">' + urlPost + '</a>');
     });
 
     // config url's post affter update url's post
@@ -149,7 +149,7 @@ $(document).ready(function () {
         let slugPost = $("#slugPost").val();
         const urlPost = setUrlPost(slugCategory, slugPost);
         $("#slugCategory").val(slugCategory);
-        $("#urlPost").text("Link post: " + urlPost);
+        $("#urlPost").html("<strong>Link post: </strong><a href=\"" + urlPost + '">' + urlPost + '</a>');
     });
 
     $("#imageInput").click(() => {
@@ -213,8 +213,8 @@ $(document).ready(function () {
                     $("#imageInput img").attr(
                         "src",
                         location.origin +
-                            "/storage/images/" +
-                            data.newPost.post_thumbnail
+                        "/storage/images/" +
+                        data.newPost.post_thumbnail
                     );
                     postDetailOld = { ...postDetail };
                     oldTags = [...addTags];
@@ -229,7 +229,7 @@ $(document).ready(function () {
                     tagsList = tagsList.concat(data.newTag);
                     addOptionDatalist(data.newTag);
                     $("#submit-post").text('Update');
-                    history.pushState(null, null, "/posts/edit-post/"+data.newPost.id);
+                    history.pushState(null, null, "/posts/edit-post/" + data.newPost.id);
                 },
                 error: function (data) {
                     errors = data.responseJSON.errors;
@@ -248,11 +248,11 @@ $(document).ready(function () {
                 formData.append("tag_delete", JSON.stringify(addDeleteTags));
             }
             if (
-                postDetail.cateId != "" &&
+                postDetail.cateId != 0 &&
                 postDetail.cateId != postDetailOld.cateId
             ) {
                 formData.append("cate_id", postDetail.cateId);
-            }
+            } 
             let postId = $("#remove-post").data("id");
             formData.append("post_id", postId);
 
@@ -269,8 +269,8 @@ $(document).ready(function () {
                     $("#imageInput img").attr(
                         "src",
                         location.origin +
-                            "/storage/images/" +
-                            data.editPost.post_thumbnail
+                        "/storage/images/" +
+                        data.editPost.post_thumbnail
                     );
 
                     if (addDeleteTags.length > 0) {
@@ -308,7 +308,7 @@ $(document).ready(function () {
         }
     });
 
-    $("#remove-post").click(()=>{
+    $("#remove-post").click(() => {
         let postId = $("#remove-post").data('id');
         $.ajax({
             type: "delete",
@@ -318,7 +318,7 @@ $(document).ready(function () {
             },
             dataType: "json",
             success: function (data) {
-                window.location.href = location.origin+'/posts/all';
+                window.location.href = location.origin + '/posts/all';
             },
             error: function (data) {
                 errors = data.responseJSON.errors;
@@ -372,7 +372,7 @@ const getSlugCategory = () => {
 
 const setUrlPost = (slugCategory, slugPost) => {
     postDetail.postSlug = slugCategory + "/" + slugPost;
-    return window.location.origin + postDetail.postSlug;
+    return window.location.origin + '/post' + postDetail.postSlug;
 };
 
 const resizeImagePre = () => {
@@ -453,7 +453,7 @@ function editSelectCategory() {
 }
 
 function addOptionDatalist(list) {
-    list.forEach((tag) => {$("#tag-list-available").append(`<option value="${tag.name}">${tag.slug}</option>`);});
+    list.forEach((tag) => { $("#tag-list-available").append(`<option value="${tag.name}">${tag.slug}</option>`); });
 }
 
 $("#tag-list-available").click((event) => {

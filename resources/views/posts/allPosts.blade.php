@@ -54,7 +54,7 @@
                             <tbody>
                                 @foreach ($allPosts as $post)
                                     <tr id="{{ $post->id }}" data-id="{{ $post->id }}">
-                                        <td><a href="{{ url('/') . $post->post_slug }}" id="title{{$post->id}}">{{ $post->post_title }}</a></td>
+                                        <td><a href="{{ url('/') .'/post'. $post->post_slug }}" id="title{{$post->id}}">{{ $post->post_title }}</a></td>
                                         <td>{{ $post->post_views }}</td>
                                         <td>
                                             <div class="w-100">
