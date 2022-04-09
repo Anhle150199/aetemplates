@@ -27,7 +27,7 @@
                         <a href="{{ url('/') . '/post' . $post->post_slug }}">
                             <h3 class="string-2" style="height: 40px;">{{ $post->post_title }}</h3>
                         </a>
-                        <p>{{ timePost($post->created_at) }}</p>
+                        <p><i class="fas fa-calendar-check ml-1 mr-2"></i>{{ timePost($post->created_at) }}</p>
                     </div>
                 </div>
             @endforeach
@@ -46,7 +46,7 @@
                         <a href="{{ url('/') . '/post' . $post->post_slug }}">
                             <h3 class="string-2" style="height: 40px;">{{ $post->post_title }}</h3>
                         </a>
-                        <p>{{ timePost($post->created_at) }}</p>
+                        <p><i class="fas fa-eye"></i> {{ $post->post_views }}<i class="fas fa-calendar-check ml-2 mr-2"></i>{{ timePost($post->created_at) }}</p>
                     </div>
                 </div>
             @endforeach

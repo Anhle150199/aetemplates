@@ -1,4 +1,12 @@
 @extends('layouts.website')
+@section('title', $status)
+@push('meta')
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ $status }} | {{ Cache::get('systemDetail')['app_name'] }} " />
+    <meta property="og:description" content="{{ Cache::get('systemDetail')['decription_page'] }}" />
+    <meta property="og:image" content="{{ url('/') . Cache::get('systemDetail')['logo'] }}" />
+@endpush
 @section('content')
     <!-- Trending Area Start -->
     <div class="trending-area fix pt-25 gray-bg">
@@ -93,7 +101,8 @@
                                                     data-duration="1000ms">{{ $posts[2]->post_title }}</a></h2>
                                             <p data-animation="fadeInUp" data-delay=".6s" data-duration="1000ms">
                                                 <i class="fas fa-calendar-check ml-2"></i>
-                                                {{ date('F d, Y', strtotime($posts[2]->created_at)) }}</p>
+                                                {{ date('F d, Y', strtotime($posts[2]->created_at)) }}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -242,5 +251,4 @@
             </div>
         </div>
     </section>
-    <!-- Whats New End -->
 @endsection

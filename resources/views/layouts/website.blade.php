@@ -8,17 +8,15 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ Cache::get('systemDetail')['app_name'] }} </title>
+    <title>@yield('title') | {{ Cache::get('systemDetail')['app_name'] }} </title>
+    @stack('meta')
     <link href="{{ url('/') }}/img/logo/favicon.ico" rel="icon" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/css?family=Barlow:300,600,700,900|Roboto:100,300,500,700&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="{{ url('/') }}/css/website/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url('/') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css"
-        type="text/css">
-
+    <link rel="stylesheet" href="{{ url('/') }}/vendor/@fortawesome/fontawesome-free/css/all.min.css" type="text/css">
     <link rel="stylesheet" href="{{ url('/') }}/css/website/slicknav.css">
-
     <link rel="stylesheet" href="{{ url('/') }}/css/website/slick.css">
     @stack('css')
     <link rel="stylesheet" href="{{ url('/') }}/css/website/style.css">
@@ -46,7 +44,6 @@
 </head>
 
 <body>
-
     <main>
         @include('layouts.navbars.header')
         @yield('content')
@@ -87,7 +84,7 @@
     <script src="{{ url('/') }}/js/website/jquery.ajaxchimp.min.js"></script>
     <!-- Jquery Plugins, main Jquery -->
     <script src="{{ url('/') }}/js/website/main.js"></script>
-
+    @stack('js')
 </body>
 
 </html>

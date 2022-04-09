@@ -42,6 +42,7 @@ return array(
     'App\\Models\\Image' => $baseDir . '/app/Models/Image.php',
     'App\\Models\\ImageRelationship' => $baseDir . '/app/Models/ImageRelationship.php',
     'App\\Models\\Post' => $baseDir . '/app/Models/Post.php',
+    'App\\Models\\System' => $baseDir . '/app/Models/System.php',
     'App\\Models\\Tag' => $baseDir . '/app/Models/Tag.php',
     'App\\Models\\TagRelationship' => $baseDir . '/app/Models/TagRelationship.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',

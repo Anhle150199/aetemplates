@@ -1,9 +1,25 @@
 @extends('layouts.website')
+@push('meta')
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ $post->post_title }} | {{ Cache::get('systemDetail')['app_name'] }}" />
+    <meta property="og:description" content="{{ $post->post_excerpt }}" />
+    <meta property="og:image" content="{{ url('/') . '/storage/images/' . $post->post_thumbnail }}" />
+@endpush
+@section('title', $post->post_title)
 <?php function timePost($time)
 {
     return date('F d, Y', strtotime($time));
 } ?>
+@push('css')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
 @section('content')
+
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous"
+        src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v13.0&appId=654995545568149&autoLogAppEvents=1"
+        nonce="uQFpFuX6"></script>
     <section class="blog_area single-post-area section-padding" style="padding-bottom: 40px;">
         <div class="container">
             <div class="row">
@@ -36,6 +52,11 @@
                             <?php echo $post->post_content; ?>
                         </div>
                     </div>
+                    <div class="fb-share-button"
+                        data-href="{{url()->current()}}"
+                        data-layout="button" data-size="large"><a target="_blank"
+                            href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fblog.hubspot.com%2Fblog%2Ftabid%2F6307%2Fbid%2F29544%2Fthe-ultimate-cheat-sheet-for-creating-social-media-buttons.aspx&amp;src=sdkpreparse"
+                            class="fb-xfbml-parse-ignore"></a></div>
                     <div class="blog_right_sidebar">
 
                         <aside class="single_sidebar_widget tag_cloud_widget bg-white m-0">
@@ -154,7 +175,8 @@
                                                                         {{ $post->post_title }}
                                                                     </a>
                                                                 </h6>
-                                                                <span style="font-size: 12px;"><i class="fas fa-calendar-check"></i>
+                                                                <span style="font-size: 12px;"><i
+                                                                        class="fas fa-calendar-check"></i>
                                                                     {{ timePost($post->created_at) }}
                                                                 </span>
                                                             </div>
@@ -174,3 +196,6 @@
         </div>
     </section>
 @endsection
+@push('js')
+    <script src="{{ url('/') }}/js/website/post.js"></script>
+@endpush

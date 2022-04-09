@@ -1,4 +1,12 @@
 @extends('layouts.website')
+@section('title', $status )
+@push('meta')
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ $status }} | {{ Cache::get('systemDetail')['app_name'] }} " />
+    <meta property="og:description" content="{{ Cache::get('systemDetail')['decription_page'] }}" />
+    <meta property="og:image" content="{{ url('/') . Cache::get('systemDetail')['logo'] }}" />
+@endpush
 @push('css')
     <style>
         .page-item.active .page-link {

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Posts\TagController;
 use App\Http\Controllers\Admin\Posts\CategoryController;
 use App\Http\Controllers\Admin\Posts\PostController;
 use App\Http\Controllers\Admin\Posts\MediaController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Redis;
 use Laravel\Jetstream\Http\Controllers\Inertia\OtherBrowserSessionsController;
@@ -18,12 +19,11 @@ Route::get('/post/{slug}', [WebsiteController::class, 'getPost'])->where('slug',
 Route::get('/category/{category}',[WebsiteController::class, 'getPostForCategory'])->where('category', '.*')->name('get-post-category');
 Route::get('/tag/{tag}', [WebsiteController::class, 'getPostForTag']);
 Route::get('/search', [WebsiteController::class, 'getSearch'])->name('search-post');
+Route::put('/update-view', [WebsiteController::class, 'updateView'])->name('update-view');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::redirect('/admin', '/dashboard');
-    Route::get('/dashboard', function () {
-        return view('dashboard', ['slidebar' => ['dashboards',]]);
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     // Posts manage
     Route::prefix('posts')->group(function () {

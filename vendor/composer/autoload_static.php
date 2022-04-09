@@ -608,6 +608,7 @@ class ComposerStaticInit92c83ea1ea30b592f2a31942d4a20d99
         'App\\Models\\Image' => __DIR__ . '/../..' . '/app/Models/Image.php',
         'App\\Models\\ImageRelationship' => __DIR__ . '/../..' . '/app/Models/ImageRelationship.php',
         'App\\Models\\Post' => __DIR__ . '/../..' . '/app/Models/Post.php',
+        'App\\Models\\System' => __DIR__ . '/../..' . '/app/Models/System.php',
         'App\\Models\\Tag' => __DIR__ . '/../..' . '/app/Models/Tag.php',
         'App\\Models\\TagRelationship' => __DIR__ . '/../..' . '/app/Models/TagRelationship.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
